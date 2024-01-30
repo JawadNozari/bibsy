@@ -15,7 +15,7 @@ model User {
   password String?
   name     String?
   email    String  @unique
-  phone    Int     @unique
+  phone    String  @unique
   image    String  @db.VarChar(255)
 }
 
