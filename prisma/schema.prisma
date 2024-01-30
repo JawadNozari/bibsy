@@ -6,19 +6,45 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 // the blew code is used as an example
+
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
-  posts Post[]
+  id       Int     @id @default(autoincrement())
+  admin    Boolean @default(false)
+  password String?
+  name     String?
+  email    String  @unique
+  phone    Int     @unique
+  image    String  @db.VarChar(255)
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String
-  published Boolean
-  userId    Int
-  user      User    @relation(fields: [userId], references: [id])
+model Book {
+  id            Int            @id @default(autoincrement())
+  title         String?
+  author        String?
+  published     DateTime       @default(now())
+  isbn          String?
+  invNr         Int            @unique
+  availabe      Boolean
+  missingBooks  missingBook[]
+  borrowedBooks borrowedBook[]
+}
+
+model missingBook {
+  id      Int      @id @default(autoincrement())
+  userID  Int?
+  regDate DateTime @default(now())
+  note    String   @db.VarChar(255)
+  Book    Book?    @relation(fields: [bookId], references: [id])
+  bookId  Int?
+}
+
+model borrowedBook {
+  id      Int      @id @default(autoincrement())
+  userID  Int?
+  regDate DateTime @default(now())
+  note    String   @db.VarChar(255)
+  Book    Book?    @relation(fields: [bookId], references: [id])
+  bookId  Int?
 }
