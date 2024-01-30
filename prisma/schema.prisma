@@ -15,7 +15,7 @@ model User {
   password String?
   name     String?
   email    String  @unique
-  phone    String  @unique
+  phone    String  @unique  @db.VarChar(13)
   image    String  @db.VarChar(255)
 }
 
@@ -24,14 +24,15 @@ model Book {
   title         String?
   author        String?
   published     DateTime       @default(now())
+  regDate       DateTime       @default(now())
   isbn          String?
   invNr         Int            @unique
   availabe      Boolean
-  missingBooks  missingBook[]
-  borrowedBooks borrowedBook[]
+  missing       missingBooks[]
+  borrowed      borrowedBooks[]
 }
 
-model missingBook {
+model missingBooks {
   id      Int      @id @default(autoincrement())
   userID  Int?
   regDate DateTime @default(now())
@@ -40,7 +41,7 @@ model missingBook {
   bookId  Int?
 }
 
-model borrowedBook {
+model borrowedBooks {
   id      Int      @id @default(autoincrement())
   userID  Int?
   regDate DateTime @default(now())
