@@ -7,8 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// the blew code is used as an example
-
 model Staff {
   id        Int             @id @default(autoincrement())
   admin     Boolean         @default(false)
