@@ -51,7 +51,7 @@ model Book {
   missing     missingBooks[]
   borrowed    borrowedBooks[]
   returned    returnedBooks[]
-  loanedBooks loanedBooks[]
+  history     loanedBooks[]
 }
 
 model missingBooks {
