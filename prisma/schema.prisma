@@ -29,7 +29,7 @@ model Book {
   published DateTime        @default(now())
   regDate   DateTime        @default(now())
   isbn      String?
-  invNr     Int             @unique
+  invNr     Int             
   available Boolean         @default(true)
   missing   missingBooks[]
   borrowed  borrowedBooks[]
