@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export default async function getStaff() {
   try {
-    const allUsers = await prisma.Staff.findMany();
+    const allUsers = await prisma.staff.findMany();
     return(allUsers)
   } catch (error) {
     console.error(error);
