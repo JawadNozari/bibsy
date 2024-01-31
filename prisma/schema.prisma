@@ -9,7 +9,7 @@ datasource db {
 
 // the blew code is used as an example
 
-model User {
+model Staff {
   id       Int             @id @default(autoincrement())
   admin    Boolean         @default(false)
   password String?
@@ -17,50 +17,85 @@ model User {
   email    String          @unique
   phone    String          @unique @db.VarChar(13)
   image    String          @db.VarChar(255)
+  history  loanedBooks[]
+  missing  missingBooks[]
+  borrowed borrowedBooks[]
+  returned returnedBooks[]
+}
+
+model Student {
+  id       Int             @id @default(autoincrement())
+  password String?
+  name     String?
+  email    String          @unique
+  phone    String          @unique @db.VarChar(13)
+  image    String          @db.VarChar(255)
+  history  loanedBooks[]
   missing  missingBooks[]
   borrowed borrowedBooks[]
   returned returnedBooks[]
 }
 
 model Book {
-  id        Int             @id @default(autoincrement())
-  title     String?
-  author    String?
-  published DateTime        @default(now())
-  regDate   DateTime        @default(now())
-  isbn      String?
-  invNr     Int             
-  available Boolean         @default(true)
-  missing   missingBooks[]
-  borrowed  borrowedBooks[]
-  returned  returnedBooks[]
+  id          Int             @id @default(autoincrement())
+  bookImg     String          @db.VarChar(255)
+  title       String?
+  author      String?
+  publishers  String?
+  published   DateTime        @default(now())
+  regDate     DateTime        @default(now())
+  isbn        String?
+  invNr       Int
+  price       Int
+  available   Boolean         @default(true)
+  missing     missingBooks[]
+  borrowed    borrowedBooks[]
+  returned    returnedBooks[]
+  loanedBooks loanedBooks[]
 }
 
 model missingBooks {
-  id      Int      @id @default(autoincrement())
-  regDate DateTime @default(now())
-  note    String   @db.VarChar(255)
-  Book    Book?    @relation(fields: [bookId], references: [id])
-  bookId  Int?
-  User    User?    @relation(fields: [userId], references: [id])
-  userId  Int?
+  id        Int      @id @default(autoincrement())
+  regDate   DateTime @default(now())
+  note      String   @db.VarChar(255)
+  Book      Book?    @relation(fields: [bookId], references: [id])
+  bookId    Int?
+  Staff     Staff?   @relation(fields: [staffId], references: [id])
+  staffId   Int?
+  Student   Student? @relation(fields: [studentId], references: [id])
+  studentId Int?
 }
 
 model borrowedBooks {
-  id      Int      @id @default(autoincrement())
-  regDate DateTime @default(now())
-  note    String   @db.VarChar(255)
-  Book    Book?    @relation(fields: [bookId], references: [id])
-  bookId  Int?
-  User    User?    @relation(fields: [userId], references: [id])
-  userId  Int?
+  id        Int      @id @default(autoincrement())
+  regDate   DateTime @default(now())
+  note      String   @db.VarChar(255)
+  Book      Book?    @relation(fields: [bookId], references: [id])
+  bookId    Int?
+  Staff     Staff?   @relation(fields: [staffId], references: [id])
+  staffId   Int?
+  Student   Student? @relation(fields: [studentId], references: [id])
+  studentId Int?
 }
 
 model returnedBooks {
-  id      Int      @id @default(autoincrement())
-  regDate DateTime @default(now())
-  Book    Book?    @relation(fields: [bookId], references: [id])
-  bookId  Int?
-  User    User?    @relation(fields: [userId], references: [id])
-  userId  Int?
+  id        Int      @id @default(autoincrement())
+  regDate   DateTime @default(now())
+  Book      Book?    @relation(fields: [bookId], references: [id])
+  bookId    Int?
+  Staff     Staff?   @relation(fields: [staffId], references: [id])
+  staffId   Int?
+  Student   Student? @relation(fields: [studentId], references: [id])
+  studentId Int?
+}
+
+model loanedBooks {
+  id        Int      @id @default(autoincrement())
+  regDate   DateTime @default(now())
+  Book      Book?    @relation(fields: [bookId], references: [id])
+  bookId    Int?
+  Staff     Staff?   @relation(fields: [staffId], references: [id])
+  staffId   Int?
+  Student   Student? @relation(fields: [studentId], references: [id])
+  studentId Int?
 }
