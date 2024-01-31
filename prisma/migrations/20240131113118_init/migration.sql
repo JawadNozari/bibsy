@@ -3,7 +3,8 @@ CREATE TABLE "Staff" (
     "id" SERIAL NOT NULL,
     "admin" BOOLEAN NOT NULL DEFAULT false,
     "password" TEXT,
-    "name" TEXT,
+    "firstName" TEXT,
+    "lastName" TEXT,
     "email" TEXT NOT NULL,
     "phone" VARCHAR(13) NOT NULL,
     "image" VARCHAR(255) NOT NULL,
@@ -15,7 +16,8 @@ CREATE TABLE "Staff" (
 CREATE TABLE "Student" (
     "id" SERIAL NOT NULL,
     "password" TEXT,
-    "name" TEXT,
+    "firstName" TEXT,
+    "lastName" TEXT,
     "email" TEXT NOT NULL,
     "phone" VARCHAR(13) NOT NULL,
     "image" VARCHAR(255) NOT NULL,
@@ -32,7 +34,7 @@ CREATE TABLE "Book" (
     "publishers" TEXT,
     "published" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "regDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "isbn" TEXT,
+    "isbn" INTEGER NOT NULL,
     "invNr" INTEGER NOT NULL,
     "price" INTEGER NOT NULL,
     "available" BOOLEAN NOT NULL DEFAULT true,
@@ -65,25 +67,14 @@ CREATE TABLE "borrowedBooks" (
 );
 
 -- CreateTable
-CREATE TABLE "returnedBooks" (
+CREATE TABLE "bookHistory" (
     "id" SERIAL NOT NULL,
     "regDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "bookId" INTEGER,
     "staffId" INTEGER,
     "studentId" INTEGER,
 
-    CONSTRAINT "returnedBooks_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "loanedBooks" (
-    "id" SERIAL NOT NULL,
-    "regDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "bookId" INTEGER,
-    "staffId" INTEGER,
-    "studentId" INTEGER,
-
-    CONSTRAINT "loanedBooks_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "bookHistory_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -117,19 +108,10 @@ ALTER TABLE "borrowedBooks" ADD CONSTRAINT "borrowedBooks_staffId_fkey" FOREIGN 
 ALTER TABLE "borrowedBooks" ADD CONSTRAINT "borrowedBooks_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "returnedBooks" ADD CONSTRAINT "returnedBooks_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "Book"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "bookHistory" ADD CONSTRAINT "bookHistory_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "Book"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "returnedBooks" ADD CONSTRAINT "returnedBooks_staffId_fkey" FOREIGN KEY ("staffId") REFERENCES "Staff"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "bookHistory" ADD CONSTRAINT "bookHistory_staffId_fkey" FOREIGN KEY ("staffId") REFERENCES "Staff"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "returnedBooks" ADD CONSTRAINT "returnedBooks_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "loanedBooks" ADD CONSTRAINT "loanedBooks_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "Book"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "loanedBooks" ADD CONSTRAINT "loanedBooks_staffId_fkey" FOREIGN KEY ("staffId") REFERENCES "Staff"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "loanedBooks" ADD CONSTRAINT "loanedBooks_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "bookHistory" ADD CONSTRAINT "bookHistory_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE SET NULL ON UPDATE CASCADE;

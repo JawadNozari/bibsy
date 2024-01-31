@@ -2,13 +2,9 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function main() {
+export default async function getStaff() {
   try {
-    const allUsers = await prisma.user.findMany({
-        include: {
-          
-        }
-    });
+    const allUsers = await prisma.Staff.findMany();
     return(allUsers)
   } catch (error) {
     console.error(error);
@@ -17,14 +13,3 @@ async function main() {
     await prisma.$disconnect();
   }
 }
-
-// Call the main function
-main()
-.then((test) => {
-    console.log(test)
-    }
-    )
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });

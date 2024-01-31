@@ -7,51 +7,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// the blew code is used as an example
-
 model Staff {
-  id       Int             @id @default(autoincrement())
-  admin    Boolean         @default(false)
-  password String?
-  name     String?
-  email    String          @unique
-  phone    String          @unique @db.VarChar(13)
-  image    String          @db.VarChar(255)
-  history  loanedBooks[]
-  missing  missingBooks[]
-  borrowed borrowedBooks[]
-  returned returnedBooks[]
+  id        Int             @id @default(autoincrement())
+  admin     Boolean         @default(false)
+  qrCode    Int             @unique
+  password  String?
+  firstName String?
+  lastName  String?
+  email     String          @unique
+  phone     String          @unique @db.VarChar(13)
+  image     String          @db.VarChar(255)
+  history   bookHistory[]
+  missing   missingBooks[]
+  borrowed  borrowedBooks[]
 }
 
 model Student {
-  id       Int             @id @default(autoincrement())
-  password String?
-  name     String?
-  email    String          @unique
-  phone    String          @unique @db.VarChar(13)
-  image    String          @db.VarChar(255)
-  history  loanedBooks[]
-  missing  missingBooks[]
-  borrowed borrowedBooks[]
-  returned returnedBooks[]
+  id        Int             @id @default(autoincrement())
+  qrCode    Int             @unique
+  password  String?
+  firstName String?
+  lastName  String?
+  email     String          @unique
+  phone     String          @unique @db.VarChar(13)
+  image     String          @db.VarChar(255)
+  history   bookHistory[]
+  missing   missingBooks[]
+  borrowed  borrowedBooks[]
 }
 
 model Book {
-  id          Int             @id @default(autoincrement())
-  bookImg     String          @db.VarChar(255)
-  title       String?
-  author      String?
-  publishers  String?
-  published   DateTime        @default(now())
-  regDate     DateTime        @default(now())
-  isbn        String?
-  invNr       Int
-  price       Int
-  available   Boolean         @default(true)
-  missing     missingBooks[]
-  borrowed    borrowedBooks[]
-  returned    returnedBooks[]
-  history     loanedBooks[]
+  id         Int             @id @default(autoincrement())
+  bookImg    String          @db.VarChar(255)
+  title      String?
+  author     String?
+  publishers String?
+  published  DateTime        @default(now())
+  regDate    DateTime        @default(now())
+  isbn       Int
+  invNr      Int
+  price      Int
+  available  Boolean         @default(true)
+  missing    missingBooks[]
+  borrowed   borrowedBooks[]
+  history    bookHistory[]
 }
 
 model missingBooks {
@@ -78,18 +77,7 @@ model borrowedBooks {
   studentId Int?
 }
 
-model returnedBooks {
-  id        Int      @id @default(autoincrement())
-  regDate   DateTime @default(now())
-  Book      Book?    @relation(fields: [bookId], references: [id])
-  bookId    Int?
-  Staff     Staff?   @relation(fields: [staffId], references: [id])
-  staffId   Int?
-  Student   Student? @relation(fields: [studentId], references: [id])
-  studentId Int?
-}
-
-model loanedBooks {
+model bookHistory {
   id        Int      @id @default(autoincrement())
   regDate   DateTime @default(now())
   Book      Book?    @relation(fields: [bookId], references: [id])
