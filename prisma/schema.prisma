@@ -7,8 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// the blew code is used as an example
-
 model User {
   id       Int             @id @default(autoincrement())
   admin    Boolean         @default(false)
@@ -17,8 +15,8 @@ model User {
   email    String          @unique
   phone    String          @unique @db.VarChar(13)
   image    String          @db.VarChar(255)
-  missing  missingBooks[]
   borrowed borrowedBooks[]
+  missing  missingBooks[]
   returned returnedBooks[]
 }
 
@@ -29,10 +27,10 @@ model Book {
   published DateTime        @default(now())
   regDate   DateTime        @default(now())
   isbn      String?
-  invNr     Int             
+  invNr     Int
   available Boolean         @default(true)
-  missing   missingBooks[]
   borrowed  borrowedBooks[]
+  missing   missingBooks[]
   returned  returnedBooks[]
 }
 
@@ -40,27 +38,27 @@ model missingBooks {
   id      Int      @id @default(autoincrement())
   regDate DateTime @default(now())
   note    String   @db.VarChar(255)
-  Book    Book?    @relation(fields: [bookId], references: [id])
   bookId  Int?
-  User    User?    @relation(fields: [userId], references: [id])
   userId  Int?
+  Book    Book?    @relation(fields: [bookId], references: [id])
+  User    User?    @relation(fields: [userId], references: [id])
 }
 
 model borrowedBooks {
   id      Int      @id @default(autoincrement())
   regDate DateTime @default(now())
   note    String   @db.VarChar(255)
-  Book    Book?    @relation(fields: [bookId], references: [id])
   bookId  Int?
-  User    User?    @relation(fields: [userId], references: [id])
   userId  Int?
+  Book    Book?    @relation(fields: [bookId], references: [id])
+  User    User?    @relation(fields: [userId], references: [id])
 }
 
 model returnedBooks {
   id      Int      @id @default(autoincrement())
   regDate DateTime @default(now())
-  Book    Book?    @relation(fields: [bookId], references: [id])
   bookId  Int?
-  User    User?    @relation(fields: [userId], references: [id])
   userId  Int?
+  Book    Book?    @relation(fields: [bookId], references: [id])
+  User    User?    @relation(fields: [userId], references: [id])
 }
