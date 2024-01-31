@@ -1,4 +1,4 @@
-'use clitent'
+'use client'
 
 import Image from "next/image";
 
