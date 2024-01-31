@@ -7,60 +7,83 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// the blew code is used as an example
+model Staff {
+  id        Int             @id @default(autoincrement())
+  admin     Boolean         @default(false)
+  password  String?
+  firstName String?
+  lastName  String?
+  email     String          @unique
+  phone     String          @unique @db.VarChar(13)
+  image     String          @db.VarChar(255)
+  qrCode    Int             @unique
+  history   bookHistory[]
+  borrowed  borrowedBooks[]
+  missing   missingBooks[]
+}
 
-model User {
-  id       Int             @id @default(autoincrement())
-  admin    Boolean         @default(false)
-  password String?
-  name     String?
-  email    String          @unique
-  phone    String          @unique @db.VarChar(13)
-  image    String          @db.VarChar(255)
-  missing  missingBooks[]
-  borrowed borrowedBooks[]
-  returned returnedBooks[]
+model Student {
+  id        Int             @id @default(autoincrement())
+  password  String?
+  firstName String?
+  lastName  String?
+  email     String          @unique
+  phone     String          @unique @db.VarChar(13)
+  image     String          @db.VarChar(255)
+  qrCode    Int             @unique
+  history   bookHistory[]
+  borrowed  borrowedBooks[]
+  missing   missingBooks[]
 }
 
 model Book {
-  id        Int             @id @default(autoincrement())
-  title     String?
-  author    String?
-  published DateTime        @default(now())
-  regDate   DateTime        @default(now())
-  isbn      String?
-  invNr     Int             
-  available Boolean         @default(true)
-  missing   missingBooks[]
-  borrowed  borrowedBooks[]
-  returned  returnedBooks[]
+  id         Int             @id @default(autoincrement())
+  bookImg    String          @db.VarChar(255)
+  title      String?
+  author     String?
+  publishers String?
+  published  DateTime        @default(now())
+  regDate    DateTime        @default(now())
+  isbn       Int
+  invNr      Int
+  price      Int
+  available  Boolean         @default(true)
+  history    bookHistory[]
+  borrowed   borrowedBooks[]
+  missing    missingBooks[]
 }
 
 model missingBooks {
-  id      Int      @id @default(autoincrement())
-  regDate DateTime @default(now())
-  note    String   @db.VarChar(255)
-  Book    Book?    @relation(fields: [bookId], references: [id])
-  bookId  Int?
-  User    User?    @relation(fields: [userId], references: [id])
-  userId  Int?
+  id        Int      @id @default(autoincrement())
+  regDate   DateTime @default(now())
+  note      String   @db.VarChar(255)
+  bookId    Int?
+  staffId   Int?
+  studentId Int?
+  Book      Book?    @relation(fields: [bookId], references: [id])
+  Staff     Staff?   @relation(fields: [staffId], references: [id])
+  Student   Student? @relation(fields: [studentId], references: [id])
 }
 
 model borrowedBooks {
-  id      Int      @id @default(autoincrement())
-  regDate DateTime @default(now())
-  note    String   @db.VarChar(255)
-  Book    Book?    @relation(fields: [bookId], references: [id])
-  bookId  Int?
-  User    User?    @relation(fields: [userId], references: [id])
-  userId  Int?
+  id        Int      @id @default(autoincrement())
+  regDate   DateTime @default(now())
+  note      String   @db.VarChar(255)
+  bookId    Int?
+  staffId   Int?
+  studentId Int?
+  Book      Book?    @relation(fields: [bookId], references: [id])
+  Staff     Staff?   @relation(fields: [staffId], references: [id])
+  Student   Student? @relation(fields: [studentId], references: [id])
 }
 
-model returnedBooks {
-  id      Int      @id @default(autoincrement())
-  regDate DateTime @default(now())
-  Book    Book?    @relation(fields: [bookId], references: [id])
-  bookId  Int?
-  User    User?    @relation(fields: [userId], references: [id])
-  userId  Int?
+model bookHistory {
+  id        Int      @id @default(autoincrement())
+  regDate   DateTime @default(now())
+  bookId    Int?
+  staffId   Int?
+  studentId Int?
+  Book      Book?    @relation(fields: [bookId], references: [id])
+  Staff     Staff?   @relation(fields: [staffId], references: [id])
+  Student   Student? @relation(fields: [studentId], references: [id])
 }
