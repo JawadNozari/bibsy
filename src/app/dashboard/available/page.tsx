@@ -9,7 +9,7 @@ const Page = () => {
 
   React.useEffect(() => {
     const getBooks = async () => {
-      const response = await axios.get("http://localhost:3000/api/availableBooks");
+      const response = await axios.get("/api/availableBooks");
       setAvailableBooks(response.data.books);
     };
     getBooks();
