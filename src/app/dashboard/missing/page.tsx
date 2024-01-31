@@ -10,11 +10,11 @@ const Page = () => {
 
   React.useEffect(() => {
     const getBooks = async () => {
-      const response = await axios("http://localhost:3000/api/registeredBooks");
+      const response = await axios("/api/registeredBooks");
       if (response.data.books !== null) {
         setBooks(response.data.books);
 
-        const missing = await axios("http://localhost:3000/api/missingBooks");
+        const missing = await axios("/api/missingBooks");
         setMissingBooks(missing.data.books);
       } else {
         console.log(response);
@@ -27,10 +27,10 @@ const Page = () => {
     event.preventDefault();
     let userId = event.target.userId.value;
     userId = parseInt(userId);
-    const response = await axios.post(
-      "http://localhost:3000/api/missingBooks",
-      { userId, userType: "student" }
-    );
+    const response = await axios.post("/api/missingBooks", {
+      userId,
+      userType: "student",
+    });
     setMissingBooks(response.data.books);
   };
 

@@ -8,10 +8,12 @@ const Page = () => {
   const [books, setBooks] = React.useState([]);
   React.useEffect(() => {
     const getBooks = async () => {
-      const response = await axios.get(
-        "http://localhost:3000/api/registeredBooks"
-      );
-      setBooks(response.data.books);
+      try {
+        const response = await axios.get("/api/registeredBooks");
+        setBooks(response.data.books);
+      } catch (err) {
+        console.log(err);
+      }
     };
     getBooks();
   }, []);
@@ -40,7 +42,11 @@ const Page = () => {
                 <td>{`${book.title}`}</td>
                 <td>{`${book.author}`}</td>
                 <td>{`${book.isbn}`}</td>
-                <td>{`${book.regDate.split("T")[0] + " " + book.regDate.split("T")[1].split(".")[0]}`}</td>
+                <td>{`${
+                  book.regDate.split("T")[0] +
+                  " " +
+                  book.regDate.split("T")[1].split(".")[0]
+                }`}</td>
                 <td>{`${book.published.split("T")[0]}`}</td>
                 <td>{`${book.available}`}</td>
               </tr>

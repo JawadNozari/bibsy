@@ -21,11 +21,11 @@ const Page = () => {
 
   React.useEffect(() => {
     const getBooks = async () => {
-      const response = await axios("http://localhost:3000/api/registeredBooks");
+      const response = await axios("/api/registeredBooks");
       if(response.data.books !== null) {
         setBooks(response.data.books);
 
-        const borrowed = await axios("http://localhost:3000/api/borrowedBooks");
+        const borrowed = await axios("/api/borrowedBooks");
         setBorrowedBooks(borrowed.data.books);
       }
     };
@@ -36,12 +36,12 @@ const Page = () => {
     event.preventDefault();
     let userId = event.target.userId.value;
     userId = parseInt(userId);
-    const response = await axios.post("http://localhost:3000/api/borrowedBooks", { userId, userType: "student"});
+    const response = await axios.post("/api/borrowedBooks", { userId, userType: "student"});
     setBorrowedBooks(response.data.books);
   }
 
   const setBookMissing = async (bookId: number) => {
-    const response = await axios.post("http://localhost:3000/api/setBookMissing", { bookId, userType: "student"});
+    const response = await axios.post("/api/setBookMissing", { bookId, userType: "student"});
     console.log(response.data);
     //setBorrowedBooks(response.data.books);
   }
