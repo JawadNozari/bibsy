@@ -14,7 +14,7 @@ interface User {
 
 interface ApiResponse {
     staffUsers: User[];
-    studentsUsers: User[];
+    studentUsers: User[];
 }
 
 export default function Home() {
@@ -23,7 +23,7 @@ export default function Home() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('/api/allUsers');
+                const response = await fetch('/api/getUsers');
                 const data: ApiResponse = await response.json();
                 setApiData((prevData) => [...prevData, data]);
             } catch (error) {
@@ -45,7 +45,7 @@ export default function Home() {
                     ))}
 
                     <p>Students Users:</p>
-                    {data.studentsUsers.map((student) => (
+                    {data.studentUsers.map((student) => (
                         <p key={student.id}>{student.firstName}</p>
                     ))}
                 </div>
