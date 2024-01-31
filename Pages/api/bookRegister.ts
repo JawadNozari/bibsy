@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 type Data = {
     title: string;
     author: string;
-    isbn: string;
+    isbn: number;
     invNr: number;
     price: number;
     image: string;

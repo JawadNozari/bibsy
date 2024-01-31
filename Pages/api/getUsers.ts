@@ -8,8 +8,8 @@ const prisma = new PrismaClient();
     res: NextApiResponse
   ) {
     try {
-      const staffUsers = await prisma.Staff.findMany();
-      const studentUsers = await prisma.Student.findMany();
+      const staffUsers = await prisma.staff.findMany();
+      const studentUsers = await prisma.student.findMany();
       const data = { staffUsers, studentUsers };
       console.log(data);
       res.status(200).json(data);
