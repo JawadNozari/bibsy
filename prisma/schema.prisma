@@ -10,30 +10,30 @@ datasource db {
 model Staff {
   id        Int             @id @default(autoincrement())
   admin     Boolean         @default(false)
-  qrCode    Int             @unique
   password  String?
   firstName String?
   lastName  String?
   email     String          @unique
   phone     String          @unique @db.VarChar(13)
   image     String          @db.VarChar(255)
+  qrCode    Int             @unique
   history   bookHistory[]
-  missing   missingBooks[]
   borrowed  borrowedBooks[]
+  missing   missingBooks[]
 }
 
 model Student {
   id        Int             @id @default(autoincrement())
-  qrCode    Int             @unique
   password  String?
   firstName String?
   lastName  String?
   email     String          @unique
   phone     String          @unique @db.VarChar(13)
   image     String          @db.VarChar(255)
+  qrCode    Int             @unique
   history   bookHistory[]
-  missing   missingBooks[]
   borrowed  borrowedBooks[]
+  missing   missingBooks[]
 }
 
 model Book {
@@ -48,42 +48,42 @@ model Book {
   invNr      Int
   price      Int
   available  Boolean         @default(true)
-  missing    missingBooks[]
-  borrowed   borrowedBooks[]
   history    bookHistory[]
+  borrowed   borrowedBooks[]
+  missing    missingBooks[]
 }
 
 model missingBooks {
   id        Int      @id @default(autoincrement())
   regDate   DateTime @default(now())
   note      String   @db.VarChar(255)
-  Book      Book?    @relation(fields: [bookId], references: [id])
   bookId    Int?
-  Staff     Staff?   @relation(fields: [staffId], references: [id])
   staffId   Int?
-  Student   Student? @relation(fields: [studentId], references: [id])
   studentId Int?
+  Book      Book?    @relation(fields: [bookId], references: [id])
+  Staff     Staff?   @relation(fields: [staffId], references: [id])
+  Student   Student? @relation(fields: [studentId], references: [id])
 }
 
 model borrowedBooks {
   id        Int      @id @default(autoincrement())
   regDate   DateTime @default(now())
   note      String   @db.VarChar(255)
-  Book      Book?    @relation(fields: [bookId], references: [id])
   bookId    Int?
-  Staff     Staff?   @relation(fields: [staffId], references: [id])
   staffId   Int?
-  Student   Student? @relation(fields: [studentId], references: [id])
   studentId Int?
+  Book      Book?    @relation(fields: [bookId], references: [id])
+  Staff     Staff?   @relation(fields: [staffId], references: [id])
+  Student   Student? @relation(fields: [studentId], references: [id])
 }
 
 model bookHistory {
   id        Int      @id @default(autoincrement())
   regDate   DateTime @default(now())
-  Book      Book?    @relation(fields: [bookId], references: [id])
   bookId    Int?
-  Staff     Staff?   @relation(fields: [staffId], references: [id])
   staffId   Int?
-  Student   Student? @relation(fields: [studentId], references: [id])
   studentId Int?
+  Book      Book?    @relation(fields: [bookId], references: [id])
+  Staff     Staff?   @relation(fields: [staffId], references: [id])
+  Student   Student? @relation(fields: [studentId], references: [id])
 }
