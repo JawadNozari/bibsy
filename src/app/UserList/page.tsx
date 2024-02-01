@@ -1,5 +1,5 @@
 "use client"
-
+import Image from "next/image";
 // import '../student&user.css';
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
             list.push(
                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th scope="row" className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    <img className="w-10 h-10 rounded-full" src={student.image} alt="Bob Bergman"/>
+                    <Image className="w-10 h-10 rounded-full" src={student.image} alt="Bob Bergman"/>
                     <div className="ps-3">
                         <div className="text-base font-semibold">{student.name}</div>
                         <div className="font-normal text-gray-500">{student.email}</div>
@@ -50,7 +50,7 @@ export default function Home() {
                         <div className="studentcard bg-white shadow-xl rounded-lg py-3">
                             <h2 className="text-xl font-bold">Student detail</h2>
                             <div className="photo-wrapper p-2">
-                                <img className="w-32 h-32 rounded-full mx-auto" src={student.image} alt="Bob Bergman"/>
+                                <Image className="w-32 h-32 rounded-full mx-auto" src={student.image} alt="Bob Bergman"/>
                             </div>
                             <div className="p-2">
                                 <h3 className="text-center text-xl text-gray-900 font-medium leading-8">{student.name}</h3>

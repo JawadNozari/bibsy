@@ -7,7 +7,6 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    prisma.$connect()
     try {
         const response = await prisma.book.findMany({
             where: {

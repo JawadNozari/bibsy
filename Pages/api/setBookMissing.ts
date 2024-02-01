@@ -7,7 +7,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  prisma.$connect();
   if (req.method === "POST") {
     try {
       const getBook = await prisma.borrowedBooks.findMany({
