@@ -18,6 +18,15 @@ const config: Config = {
 	plugins: [
 		({ addUtilities }: { addUtilities: any }) => {
 			const newUtilities = {
+				".sleek-scrollbar::-webkit-scrollbar": {
+					backgroundColor: "#333333",
+					borderRadius: "10px",
+					width: "9px",
+				},
+				".sleek-scrollbar::-webkit-scrollbar-thumb": {
+					backgroundColor: "#222222",
+					borderRadius: "10px",
+				},
 				".no-scrollbar::-webkit-scrollbar": {
 					backgroundColor: "transparent",
 				},

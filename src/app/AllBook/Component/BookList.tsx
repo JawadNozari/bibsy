@@ -3,7 +3,7 @@ import { error } from "console"
 import React, { useState, useEffect } from "react"
 
 interface Book {
-	id: number
+	id: string
 	price: number
 	category: string
 	rating: number
@@ -24,7 +24,7 @@ export default function BookList() {
 	return (
 		// TableTemplate edited
 		<div className="size-9/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh">
-			<div className="absolute bottom-0 no-scrollbar overflow-x-auto shadow-md sm:rounded-lg size-10/12 ">
+			<div className="absolute bottom-0 overflow-x-auto sleek-scrollbar shadow-md sm:rounded-lg size-10/12 ">
 				<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 					<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0 p-3">
 						<tr>
@@ -68,7 +68,7 @@ export default function BookList() {
 								</td>
 								<td className="px-6 py-4">
 									<a
-										href="#hi"
+										href={books[index]?.id}
 										className="font-medium text-red-600 hover:underline"
 									>
 										Lost
