@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -13,8 +13,10 @@ const prisma = new PrismaClient();
       const data = { staffUsers, studentUsers };
       console.log(data);
       res.status(200).json(data);
+      prisma.$disconnect();
     } catch (error) {
       //console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: "Internal Server Error" });
+      prisma.$disconnect();
     }
   }

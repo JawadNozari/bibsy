@@ -1,34 +1,34 @@
-"use client"
-import Image from "next/image"
-import { useState } from "react"
-import { ThemeProvider } from "next-themes"
-import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline"
+"use client";
+import Image from "next/image";
+import { useState } from "react";
+import { ThemeProvider } from "next-themes";
+import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 
 export default function Page() {
-	const [username, setUsername] = useState<string>("")
-	const [password, setPassword] = useState<string>("")
-	const [remember, setRemember] = useState<boolean>(false)
-	const [showPassword, setShowPassword] = useState<boolean>(false)
+	const [username, setUsername] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
+	const [remember, setRemember] = useState<boolean>(false);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
 
 	const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setUsername(e.target.value)
-	}
+		setUsername(e.target.value);
+	};
 
 	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setPassword(e.target.value)
-	}
+		setPassword(e.target.value);
+	};
 
 	const handleRememberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setRemember(e.target.checked)
-	}
+		setRemember(e.target.checked);
+	};
 
 	const handleShowPasswordChange = () => {
-		setShowPassword(!showPassword)
-	}
+		setShowPassword(!showPassword);
+	};
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-	}
+		e.preventDefault();
+	};
 
 	return (
 		<ThemeProvider attribute="class" defaultTheme="dark">
@@ -97,5 +97,5 @@ export default function Page() {
 				</div>
 			</div>
 		</ThemeProvider>
-	)
+	);
 }

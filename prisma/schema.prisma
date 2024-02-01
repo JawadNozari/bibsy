@@ -16,7 +16,7 @@ model Staff {
   email     String          @unique
   phone     String          @unique @db.VarChar(13)
   image     String          @db.VarChar(255)
-  qrCode    Int             @unique
+  qrCode    String          @unique @db.VarChar(255)
   history   bookHistory[]
   borrowed  borrowedBooks[]
   missing   missingBooks[]
@@ -24,13 +24,14 @@ model Staff {
 
 model Student {
   id        Int             @id @default(autoincrement())
+  class     String?
   password  String?
   firstName String?
   lastName  String?
   email     String          @unique
   phone     String          @unique @db.VarChar(13)
   image     String          @db.VarChar(255)
-  qrCode    Int             @unique
+  qrCode    String          @unique @db.VarChar(255)
   history   bookHistory[]
   borrowed  borrowedBooks[]
   missing   missingBooks[]
@@ -45,7 +46,7 @@ model Book {
   published  DateTime        @default(now())
   regDate    DateTime        @default(now())
   isbn       Int
-  invNr      Int
+  invNr      Int             @unique
   price      Int
   available  Boolean         @default(true)
   history    bookHistory[]

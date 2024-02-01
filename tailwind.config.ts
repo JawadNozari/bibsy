@@ -16,6 +16,7 @@ const config: Config = {
 		},
 	},
 	plugins: [
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		({ addUtilities }: { addUtilities: any }) => {
 			const newUtilities = {
 				".no-scrollbar::-webkit-scrollbar": {
@@ -28,6 +29,7 @@ const config: Config = {
 			}
 			addUtilities(newUtilities)
 		},
+		require("daisyui"),
 	],
 }
 export default config
