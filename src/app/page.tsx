@@ -1,6 +1,6 @@
 "use client"
 
-// import UserList from './userList/page';
+import UserList from './UserList/page';
 
 export default function Home() {
   return (
