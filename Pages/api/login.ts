@@ -1,30 +1,19 @@
 import { PrismaClient } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
 
-async function main() {
-  // try {
-  //   const allUsers = await prisma.user.findMany({
-  //       include: {
-          
-  //       }
-  //   });
-  //   return(allUsers)
-  // } catch (error) {
-  //   console.error(error);
-  //   throw error; // Throw the error to be caught in the catch block below
-  // } finally {
-  //   await prisma.$disconnect();
-  // }
-}
-
-// Call the main function
-main()
-.then((test) => {
-    console.log(test)
-    }
-    )
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
+export default async function main(req: NextApiRequest, res: NextApiResponse) {
+   try {
+      const allUsers = await prisma.student.findMany({
+          include: {
+            
+          }
+      });
+      console.log(allUsers);
+      res.status(200).json(allUsers);
+    } catch (error) {
+      res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+      await prisma.$disconnect();
+  }}

@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image'
-import {  useState } from 'react'
+import {  useState, ChangeEvent, FormEvent } from 'react'
 import { ThemeProvider } from 'next-themes'
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
 
@@ -10,20 +10,21 @@ const hidePasswordClass = "peer h-10 w-full border-0 border-b-2 text-white borde
 const labelClass = "absolute left-0 -top-3.5 text-white peer-placeholder-shown:text-gray-400  peer-placeholder-shown:text-base peer-placeholder-shown:top-2 transition-all duration-500 peer-focus:-top-3.5 peer-focus:text-white peer-focus:text-sm";
 
 const Page = () => {
-  const [username, setUsername] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
+
+  // Hooks
+  const [formData, setFormData] = useState({ username: '', password: '' });
   const [remember, setRemember] = useState<boolean>(false)
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value)
-  }
+  // Handling functions
+  const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevData) => ({ ...prevData, username: e.target.value }));
+  };
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevData) => ({ ...prevData, password: e.target.value }));
+  };
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value)
-  }
-
-  const handleRememberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRememberChange = (e: ChangeEvent<HTMLInputElement>) => {
     setRemember(e.target.checked)
   }
 
@@ -31,8 +32,30 @@ const Page = () => {
     setShowPassword(!showPassword)
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    try {
+      const response = await fetch('/api/login', { // API call to server
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(FormData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if(remember == true) {
+          console.log('Login successful:', data[0].firstName + " " + formData.username + " " + remember);
+        }
+      } else {
+        const errorData = await response.json();
+        console.error('Login failed:', errorData.error);
+      }
+    } catch (error) {
+      console.error('Error during form submission:', error);
+    }
   }
 
   return (
@@ -52,7 +75,7 @@ const Page = () => {
                 <div className="relative h-11 mb-6">
                   <input
                     type="text"
-                    value={username}
+                    value={formData.username}
                     onChange={handleUsernameChange}
                     placeholder="Användarnamn"
                     className={showPasswordClass}
@@ -70,7 +93,7 @@ const Page = () => {
                 <div className="relative h-11 mb-6 flex items-center">
                   <input
                     type="password"
-                    value={password}
+                    value={formData.password}
                     onChange={handlePasswordChange}
                     placeholder="Lösenord"
                     className={showPassword ? hidePasswordClass : showPasswordClass}
@@ -80,7 +103,7 @@ const Page = () => {
                   />
                   <input
                     type="text"
-                    value={password}
+                    value={formData.password}
                     onChange={handlePasswordChange}
                     placeholder="Lösenord"
                     className={showPassword ? showPasswordClass : hidePasswordClass}
