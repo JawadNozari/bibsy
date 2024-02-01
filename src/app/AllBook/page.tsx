@@ -1,10 +1,18 @@
-"use client"
+import React from "react";
+import BookList from "./component/BookList";
+// Define your component
+const Book = () => {
+	return (
+		<div
+			className="size-full"
+			style={{
+				height: "100edvh",
+			}}
+		>
+			<BookList />
+		</div>
+	);
+};
 
-import React from 'react'
-
-export default function page() {
-  return (
-    <div>page</div>
-  )
-}
-
+// Export your component
+export default Book;
