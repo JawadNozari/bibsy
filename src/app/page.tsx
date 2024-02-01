@@ -1,12 +1,23 @@
 "use client"
-
+import axios from "axios";
 // import UserList from './userList/page';
 
 export default function Home() {
-  return (
+  axios.get("/api/test").then((res) => {
+    return (
       // <UserList/>
       <div>
-        hello Main Page
+       {res.data}
       </div>
-      );
+    );
+  }).catch((err) => {
+    return (
+      // <UserList/>
+      <div>
+        {err}
+      </div>
+    );
   }
+  );
+  
+}
