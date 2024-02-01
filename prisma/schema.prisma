@@ -24,6 +24,7 @@ model Staff {
 
 model Student {
   id        Int             @id @default(autoincrement())
+  class     String?
   password  String?
   firstName String?
   lastName  String?
@@ -44,8 +45,8 @@ model Book {
   publishers String?
   published  DateTime        @default(now())
   regDate    DateTime        @default(now())
-  isbn       Int
-  invNr      Int
+  isbn       Int             
+  invNr      Int             @unique
   price      Int
   available  Boolean         @default(true)
   history    bookHistory[]
