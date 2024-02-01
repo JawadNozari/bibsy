@@ -21,18 +21,20 @@ export default function Home() {
     const [apiData, setApiData] = useState<ApiResponse[]>([]);
 
     useEffect(() => {
+        console.log(apiData);
         const fetchData = async () => {
             try {
                 const response = await fetch('/api/getUsers');
                 const data: ApiResponse = await response.json();
-                setApiData((prevData) => [...prevData, data]);
+                setApiData([data]);
             } catch (error) {
                 console.error(error);
             }
         };
+        if(apiData.length === 0)
+        {fetchData();}
 
-        fetchData();
-    }, []);
+    }, [apiData]);
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -41,7 +43,7 @@ export default function Home() {
                 <div key={index}>
                     <p>Staff Users:</p>
                     {data.staffUsers.map((staff) => (
-                        <p key={staff.id}>{staff.firstName}</p>
+                        <p key={staff.id}>{staff.firstName}{staff.lastName}</p>
                     ))}
 
                     <p>Students Users:</p>
