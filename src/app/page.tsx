@@ -1,9 +1,12 @@
 "use client"
 
-import UserList from './userList/page';
+// import UserList from './userList/page';
 
 export default function Home() {
   return (
-      <UserList/>
+      // <UserList/>
+      <div>
+        hello Main Page
+      </div>
       );
   }

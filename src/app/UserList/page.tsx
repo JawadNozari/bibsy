@@ -1,6 +1,6 @@
 "use client"
 
-import '../student&user.css';
+// import '../student&user.css';
 
 export default function Home() {
     const student = {
