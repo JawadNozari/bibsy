@@ -1,5 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from "next";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 type Data = {
@@ -14,7 +14,7 @@ type Data = {
 // Handler function for handling book registration
 export default async function BookRegister(req: NextApiRequest, res: NextApiResponse) {
     // Check if the request method is POST
-    if (req.method === 'POST') {
+    if (req.method === "POST") {
         console.log(req.body);
         const { title, author, isbn, invNr, price, image}:Data = req.body;
 
@@ -44,6 +44,6 @@ export default async function BookRegister(req: NextApiRequest, res: NextApiResp
         }
     } else {
         // Send a 400 Bad Request response if the request method is not POST
-        res.status(400).json({ error: 'Wrong request method' });
+        res.status(400).json({ error: "Wrong request method" });
     }
 }

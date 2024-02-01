@@ -1,5 +1,5 @@
-"use client"
-import React, { useEffect, useState } from "react"
+"use client";
+import React, { useEffect, useState } from "react";
 
 interface User {
 	id: number
@@ -18,21 +18,21 @@ interface ApiResponse {
 }
 
 export default function Home() {
-	const [apiData, setApiData] = useState<ApiResponse[]>([])
+	const [apiData, setApiData] = useState<ApiResponse[]>([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch("/api/getUsers")
-				const data: ApiResponse = await response.json()
-				setApiData((prevData) => [...prevData, data])
+				const response = await fetch("/api/getUsers");
+				const data: ApiResponse = await response.json();
+				setApiData((prevData) => [...prevData, data]);
 			} catch (error) {
-				console.error(error)
+				console.error(error);
 			}
-		}
+		};
 
-		fetchData()
-	}, [])
+		fetchData();
+	}, []);
 
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -52,5 +52,5 @@ export default function Home() {
 				</div>
 			))}
 		</main>
-	)
+	);
 }

@@ -3,16 +3,16 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
-type Book = {
-  id: number;
-  title: string;
-  author: string;
-  isbn: string;
-  published: string;
-  regDate: string;
-  available: boolean;
-  borrowedBy: string;
-};
+// type Book = {
+//   id: number;
+//   title: string;
+//   author: string;
+//   isbn: string;
+//   published: string;
+//   regDate: string;
+//   available: boolean;
+//   borrowedBy: string;
+// };
 
 const Page = () => {
   const router = useRouter();
@@ -60,7 +60,7 @@ const Page = () => {
       listType: "borrowed",
     });
     setBooks(response.data.books);
-  }
+  };
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-between  p-24 bg-neutral-50">

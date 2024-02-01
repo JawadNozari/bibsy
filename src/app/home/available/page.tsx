@@ -23,7 +23,7 @@ const Page = () => {
       listType: "available",
     });
     setAvailableBooks(response.data.books);
-  }
+  };
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-between  p-24 bg-neutral-50">

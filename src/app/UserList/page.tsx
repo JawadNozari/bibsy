@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 // import '../student&user.css';
 
@@ -8,7 +8,7 @@ export default function Home() {
         email: "User@ntig.ga.se",
         class: "T04",
         phone: "07693434256",
-        image: 'https://www.gravatar.com/avatar/2acfb745ecf9d4dccb3364752d17f65f?s=260&d=mp', // Replace with the actual image URL
+        image: "https://www.gravatar.com/avatar/2acfb745ecf9d4dccb3364752d17f65f?s=260&d=mp", // Replace with the actual image URL
     };
 
     const forLoopList = () => { 
@@ -38,7 +38,7 @@ export default function Home() {
             );
         }
         return list;
-    }
+    };
 
 
     return (  
