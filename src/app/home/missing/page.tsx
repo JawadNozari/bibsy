@@ -5,8 +5,19 @@ import axios from "axios";
 
 const Page = () => {
   const router = useRouter();
-  const [books, setBooks] = React.useState<any[]>([]);
-  const [missingBooks, setMissingBooks] = React.useState<any[]>([]);
+  interface Book {
+    bookId: number;
+    note: string;
+    staffId: number;
+    studentId: number;
+    id: number;
+    title: string;
+    author: string;
+    regDate: string;
+  }
+
+  const [books, setBooks] = React.useState<Book[]>([]);
+  const [missingBooks, setMissingBooks] = React.useState<Book[]>([]);
 
   React.useEffect(() => {
     const getBooks = async () => {
@@ -23,10 +34,10 @@ const Page = () => {
     getBooks();
   }, []);
 
-  const onSubmit = async (event: any) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let userId = event.target.userId.value;
-    userId = parseInt(userId);
+    const userId = (event.target as HTMLInputElement).value as unknown as number;
+   
     const response = await axios.post("/api/missingBooks", {
       userId,
       userType: "student",
@@ -52,8 +63,8 @@ const Page = () => {
           </tr>
         </thead>
         <tbody>
-          {books.map((book: any) => {
-            return missingBooks.map((missingBook: any) => {
+            {books.map((book: Book) => {
+            return missingBooks.map((missingBook: Book) => {
               if (missingBook.bookId === book.id) {
                 return (
                   <tr key={book.id}>
@@ -61,9 +72,7 @@ const Page = () => {
                     <td>{`${book.author}`}</td>
                     <td>{`${missingBook.note}`}</td>
                     <td>{`${
-                      book.regDate.split("T")[0] +
-                      " " +
-                      book.regDate.split("T")[1].split(".")[0]
+                      `${book.regDate.split("T")[0]} ${book.regDate.split("T")[1].split(".")[0]}`
                     }`}</td>
                     <td>{missingBook.staffId}</td>
                     <td>{missingBook.studentId}</td>
@@ -89,25 +98,29 @@ const Page = () => {
         style={{ width: 1000, display: "flex", justifyContent: "space-around" }}
       >
         <button
-          onClick={() => router.push("/dashboard/allbooks")}
+          type="button"
+          onClick={() => router.push("/home/allbooks")}
           style={{ backgroundColor: "lightblue", color: "black" }}
         >
           All Books
         </button>
         <button
-          onClick={() => router.push("/dashboard/available")}
+          type="button"
+          onClick={() => router.push("/home/available")}
           style={{ backgroundColor: "lightblue", color: "black" }}
         >
           Available Books
         </button>
         <button
-          onClick={() => router.push("/dashboard/borrowed")}
+          type="button"
+          onClick={() => router.push("/home/borrowed")}
           style={{ backgroundColor: "lightblue", color: "black" }}
         >
           Borrowed Books
         </button>
         <button
-          onClick={() => router.push("/dashboard/missing")}
+          type="button"
+          onClick={() => router.push("/home/missing")}
           style={{ backgroundColor: "lightblue", color: "black" }}
         >
           Missing Books
