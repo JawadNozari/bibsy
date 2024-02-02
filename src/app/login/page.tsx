@@ -4,11 +4,21 @@ import { useState } from "react";
 import { ThemeProvider } from "next-themes";
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 
-export default function Page() {
+const showPasswordClass =
+	"peer h-10 w-full border-0 border-b-2 text-white border-gray-300 outline-none focus:border-rose-500 bg-transparent placeholder-transparent";
+const hidePasswordClass =
+	"peer h-10 w-full border-0 border-b-2 text-white border-gray-300 outline-none focus:border-rose-500 bg-transparent placeholder-transparent hidden";
+
+const labelClass =
+	"absolute left-0 -top-3.5 text-white peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 transition-all duration-500 peer-focus:-top-3.5 peer-focus:text-white peer-focus:text-sm";
+
+const Page = () => {
 	const [username, setUsername] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [remember, setRemember] = useState<boolean>(false);
 	const [showPassword, setShowPassword] = useState<boolean>(false);
+
+	const [checked, setChecked] = useState<boolean>(false);
 
 	const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setUsername(e.target.value);
@@ -20,6 +30,7 @@ export default function Page() {
 
 	const handleRememberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setRemember(e.target.checked);
+		setChecked(e.target.checked);
 	};
 
 	const handleShowPasswordChange = () => {
@@ -41,37 +52,63 @@ export default function Page() {
 						objectFit="cover"
 						className="rounded-lg h-full w-full"
 					/>
-					<div className="w-2/5 h-2/5 bg-black opacity-50 relative -top-10  flex rounded-lg">
+					<div className="w-2/5 h-2/5 bg-black opacity-78 relative bottom-12 flex rounded-lg p-[8.5rem]">
 						<div className="absolute top-0 left-0 h-full w-full flex flex-col items-center justify-center">
 							<form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-								<input
-									type="text"
-									value={username}
-									onChange={handleUsernameChange}
-									placeholder="Användarnamn"
-									className="p-2 border rounded bg-black focus:outline-none focus:ring-2 focus:ring-purple-600"
-									id="username"
-								/>
-								<div className="flex items-center">
+								<div className="relative h-11 mb-6">
 									<input
-										type={showPassword ? "text" : "password"}
+										type="text"
+										value={username}
+										onChange={handleUsernameChange}
+										placeholder="Användarnamn"
+										className={showPasswordClass}
+										id="username"
+										required
+										autoComplete="off"
+									/>
+									<label htmlFor="username" className={labelClass}>
+										Användarnamn
+									</label>
+								</div>
+								<div className="relative h-11 mb-6 flex items-center">
+									<input
+										type="password"
 										value={password}
 										onChange={handlePasswordChange}
 										placeholder="Lösenord"
-										className="p-2 border rounded bg-black focus:outline-none focus:ring-2 focus:ring-purple-600"
+										className={
+											showPassword ? hidePasswordClass : showPasswordClass
+										}
 										id="password"
+										required
+										autoComplete="off"
+									/>
+									<input
+										type="text"
+										value={password}
+										onChange={handlePasswordChange}
+										placeholder="Lösenord"
+										className={
+											showPassword ? showPasswordClass : hidePasswordClass
+										}
+										id="password"
+										required
+										autoComplete="off"
 									/>
 									<button
 										type="button"
 										onClick={handleShowPasswordChange}
-										className="ml-2"
+										className="ml-2 absolute right-0"
 									>
 										{showPassword ? (
-											<EyeOffIcon className="h-6 w-6 text-gray-800" />
+											<EyeOffIcon className="h-6 w-6 text-white " />
 										) : (
-											<EyeIcon className="h-6 w-6 text-gray-800" />
+											<EyeIcon className="h-6 w-6 text-white" />
 										)}
 									</button>
+									<label htmlFor="password" className={labelClass}>
+										Lösenord
+									</label>
 								</div>
 								<div className="flex items-center">
 									<input
@@ -81,7 +118,11 @@ export default function Page() {
 										className="mr-2"
 										id="remember"
 									/>
-									<label htmlFor="remember" className="text-gray-800">
+									<label
+										htmlFor="remember"
+										className="text-gray-400"
+										style={{ color: checked ? "white" : "gray" }}
+									>
 										Remember Me
 									</label>
 								</div>
@@ -98,4 +139,6 @@ export default function Page() {
 			</div>
 		</ThemeProvider>
 	);
-}
+};
+
+export default Page;
