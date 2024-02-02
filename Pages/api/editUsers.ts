@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client';
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { PrismaClient } from "@prisma/client";
+import type { NextApiRequest } from "next";
 
 const prisma = new PrismaClient();
 
 
-export default async function edit(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
+export default async function edit(req: NextApiRequest) {
+  if (req.method === "POST") {
     try {
       if (req.body.userType === "staff") {
       await prisma.staff.update({
@@ -17,7 +17,7 @@ export default async function edit(req: NextApiRequest, res: NextApiResponse) {
           email:req.body.email,
           phone:req.body.phone 
         },
-      })
+      });
       }else {
         await prisma.student.update({
           where: { id: req.body.id },
@@ -28,10 +28,10 @@ export default async function edit(req: NextApiRequest, res: NextApiResponse) {
             email:req.body.email,
             phone:req.body.phone
           },
-        })
+        });
       }
     }catch {
-      console.log(Error)
+      console.log(Error);
     }
   }
 }
