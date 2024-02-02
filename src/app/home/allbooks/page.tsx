@@ -1,22 +1,22 @@
-"use client";
-import React from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation";
+"use client"
+import React from "react"
+import axios from "axios"
+import { useRouter } from "next/navigation"
 
 const Page = () => {
-	const router = useRouter();
-	const [books, setBooks] = React.useState([]);
+	const router = useRouter()
+	const [books, setBooks] = React.useState([])
 	React.useEffect(() => {
 		const getBooks = async () => {
 			try {
-				const response = await axios.get("/api/registeredBooks");
-				setBooks(response.data.books);
+				const response = await axios.get("/api/registeredBooks")
+				setBooks(response.data.books)
 			} catch (err) {
-				console.log(err);
+				console.log(err)
 			}
-		};
-		getBooks();
-	}, []);
+		}
+		getBooks()
+	}, [])
 
 	return (
 		<div>
@@ -48,7 +48,7 @@ const Page = () => {
 								<td>{`${book.published.split("T")[0]}`}</td>
 								<td>{`${book.available}`}</td>
 							</tr>
-						);
+						)
 					})}
 				</tbody>
 			</table>
@@ -86,7 +86,7 @@ const Page = () => {
 				</button>
 			</div>
 		</div>
-	);
-};
+	)
+}
 
-export default Page;
+export default Page

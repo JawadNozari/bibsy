@@ -1,16 +1,16 @@
 //Just a test page for the bookregister
 
-"use client";
-import React, { useState } from "react";
-import axios from "axios";
+"use client"
+import React, { useState } from 'react';
+import axios from 'axios';
 
 export default function BookForm() {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
   const [isbn, setIsbn] = useState(0);
   const [invNr, setInvNr] = useState(0);
   const [price, setPrice] = useState(0);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState('');
 
 //   const handleSubmit = (e) => {
 //     e.preventDefault();
@@ -19,7 +19,7 @@ export default function BookForm() {
 
 const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    axios.post("/api/bookRegister", {
+    axios.post('/api/bookRegister', {
       title: title,
       author: author,
       isbn: isbn,
@@ -27,11 +27,11 @@ const handleSubmit = (e: React.SyntheticEvent) => {
       price: price,
       image: image
       
-    });
-};
+    })
+}
 
 
-console.log(title);
+console.log(title)
   return (
     <form onSubmit={handleSubmit}>
       <span>Image:</span>
