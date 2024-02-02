@@ -1,21 +1,21 @@
-"use client"
-import React from "react"
-import { useRouter } from "next/navigation"
-import axios from "axios"
+"use client";
+import React from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 // Add import statement for BookType
 
 const Page = () => {
-	const router = useRouter()
-	const [availableBooks, setAvailableBooks] = React.useState([])
+	const router = useRouter();
+	const [availableBooks, setAvailableBooks] = React.useState([]);
 
 	React.useEffect(() => {
 		const getBooks = async () => {
-			const response = await axios.get("/api/availableBooks")
-			setAvailableBooks(response.data.books)
-		}
-		getBooks()
-	}, [])
+			const response = await axios.get("/api/availableBooks");
+			setAvailableBooks(response.data.books);
+		};
+		getBooks();
+	}, []);
 
 	return (
 		<div>
@@ -33,7 +33,7 @@ const Page = () => {
 					</tr>
 				</thead>
 				<tbody>
-					{availableBooks.map((book:any) => (
+					{availableBooks.map((book: any) => (
 						<tr key={book.invNr}>
 							<td>{`${book.title}`}</td>
 							<td>{`${book.author}`}</td>
@@ -80,7 +80,7 @@ const Page = () => {
 				</button>
 			</div>
 		</div>
-	)
-}
+	);
+};
 
-export default Page
+export default Page;

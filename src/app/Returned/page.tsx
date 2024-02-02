@@ -35,5 +35,5 @@ export default function ReturnedPage() {
                 </table>
             </div>
         </div>
-    )
+    );
 }

@@ -24,6 +24,7 @@ model Staff {
 
 model Student {
   id        Int             @id @default(autoincrement())
+  class     String?
   password  String?
   firstName String?
   lastName  String?
@@ -31,7 +32,6 @@ model Student {
   phone     String          @unique @db.VarChar(13)
   image     String          @db.VarChar(255)
   qrCode    String          @unique @db.VarChar(255)
-  class     String?
   history   bookHistory[]
   borrowed  borrowedBooks[]
   missing   missingBooks[]

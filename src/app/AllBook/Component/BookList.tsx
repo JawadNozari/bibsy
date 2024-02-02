@@ -1,6 +1,5 @@
-"use client"
-import { error } from "console"
-import React, { useState, useEffect } from "react"
+"use client";
+import React, { useState, useEffect } from "react";
 
 interface Book {
 	id: number
@@ -11,15 +10,15 @@ interface Book {
 	products: object
 }
 export default function BookList() {
-	const [books, setBooks] = useState<Array<Book>>([])
+	const [books, setBooks] = useState<Array<Book>>([]);
 
 	useEffect(() => {
 		fetch("https://dummyjson.com/products")
 			.then((res) => res.json())
 			.then((data) => setBooks(data.products))
-			.catch((error) => console.log(error))
-	}, [])
-	console.log(books)
+			.catch((error) => console.log(error));
+	}, []);
+	console.log(books);
 
 	return (
 		// TableTemplate edited
@@ -80,5 +79,5 @@ export default function BookList() {
 				</table>
 			</div>
 		</div>
-	)
+	);
 }
