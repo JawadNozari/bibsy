@@ -41,13 +41,13 @@ const Page = () => {
     const userId = (event.target as HTMLInputElement).value as unknown as number;
     const response = await axios.post("/api/borrowedBooks", { userId, userType: "student"});
     setBorrowedBooks(response.data.books);
-  }
+  };
 
   const setBookMissing = async (bookId: number) => {
     const response = await axios.post("/api/setBookMissing", { bookId, userType: "student"});
     console.log(response.data);
     //setBorrowedBooks(response.data.books);
-  }
+  };
 
   return (
     <div>

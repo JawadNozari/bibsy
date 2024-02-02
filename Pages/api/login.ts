@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -21,7 +21,7 @@ async function main() {
 // Call the main function
 main()
 .then((test) => {
-    console.log(test)
+    console.log(test);
     }
     )
   .catch((e) => {

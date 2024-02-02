@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 // import UserList from './userList/page';
 
