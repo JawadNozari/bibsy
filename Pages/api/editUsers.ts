@@ -26,7 +26,7 @@ export default async function edit(req: NextApiRequest, res: NextApiResponse) {
             lastName:req.body.lastname,
             password:req.body.password,
             email:req.body.email,
-            phone:req.body.phone 
+            phone:req.body.phone
           },
         })
       }

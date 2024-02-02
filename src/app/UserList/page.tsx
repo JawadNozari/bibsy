@@ -181,7 +181,7 @@ export default function Home() {
                 const response = await fetch('/api/getUsers');
                 const data: ApiResponse = await response.json();
                 setApiData(data);
-                console.log(apiData);
+                console.log(response);
             } catch (error) {
                 console.error(error);
             }
@@ -190,8 +190,10 @@ export default function Home() {
         fetchData();
     }, []);
 
-    const renderUsers = (users: User[]) => {
-        return users.map((user) => (
+    const renderUsers = (users: User[] | undefined) => {
+        console.log("hej")
+        console.log(users)
+        return users?.map((user) => (
             <tr key={user.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th scope="row" className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     <Image className="w-10 h-10 rounded-full" src={user.image} alt="Bob Bergman"/>
@@ -222,7 +224,7 @@ export default function Home() {
                         <div className="studentcard bg-white shadow-xl rounded-lg py-3">
                             <h2 className="text-xl font-bold">Student detail</h2>
                             <div className="photo-wrapper p-2">
-                                <Image className="w-32 h-32 rounded-full mx-auto" src={"d"} alt="Bob Bergman"/>
+                                <Image className="w-32 h-32 rounded-full  mx-auto" width={200} height={200} src="https://pbs.twimg.com/profile_images/1701878932176351232/AlNU3WTK_400x400.jpg" alt="Bob Bergman" />
                             </div>
                             <div className="p-2">
                                 <h3 className="text-center text-xl text-gray-900 font-medium leading-8">{"d"}</h3>
