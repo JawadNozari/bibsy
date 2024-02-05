@@ -8,7 +8,7 @@ export default async function edit(req: NextApiRequest) {
   if (req.method === "POST") {
     try {
       console.log(req.body);
-      const{first, last, password, email, phone, qrCode, studentclass} = req.body;
+      const{first, last, password, email, phone, qrCode, classroom} = req.body;
       const admin = Boolean(req.body.Admin);
       if (req.body.userType === "staff") {
         console.log("Staff");
@@ -35,7 +35,7 @@ export default async function edit(req: NextApiRequest) {
             email: email,
             phone: phone,
             qrCode: qrCode,
-            class: studentclass
+            classroom
           },
         });
       }

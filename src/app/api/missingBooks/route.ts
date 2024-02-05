@@ -2,7 +2,18 @@ import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
-	return NextResponse.json({ message: "Hello World" });
+	return await prisma.missingBooks
+		.findMany()
+		.then((response) => {
+			console.log("response", response);
+			return NextResponse.json({ books: response }, { status: 200 });
+		})
+		.catch((error) => {
+			return NextResponse.json({ message: error }, { status: 500 });
+		})
+		.finally(() => {
+			prisma.$disconnect();
+		});
 };
 
 const prisma = new PrismaClient();

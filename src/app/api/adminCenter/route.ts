@@ -1,3 +1,5 @@
+//TODO: Check if the user already exists before creating a new user (ERROR handling)
+
 import { PrismaClient, Student } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,20 +12,12 @@ const prisma = new PrismaClient();
 // Handler function for handling student registration
 export const POST = async (req: NextRequest) => {
 	// Get the student data from the request body
-	const {
-		password,
-		firstName,
-		lastName,
-		email,
-		phone,
-		image,
-		class: studentClass,
-	} = (await req.json()) as Student; // We have to await the request body to get the data
+	const { password, firstName, lastName, email, phone, image, classroom } =
+		(await req.json()) as Student; // We have to await the request body to get the data
 
-	console.log(` \n\n\nUsers Email:${email}`); // Data is coming through as expected you need a way to prosses it JONATAN!!
-
+	console.log(` \n\n\nUsers Email:${email}`); 
 	// Create a new student record using Prisma client
-	// This method is not working as expected
+	
 	return await prisma.student
 		.create({
 			data: {
@@ -33,14 +27,16 @@ export const POST = async (req: NextRequest) => {
 				email,
 				phone,
 				image,
-				class: studentClass,
-				qrCode: "", // Add the qrCode property with a default value
-			},
+				classroom,
+				qrCode: "6456", // Add the qrCode property with a default value
+			} as Student,
 		})
 		.then((student) => {
 			return NextResponse.json(student, { status: 201 });
 		})
 		.catch((error) => {
+			
+			console.log(error);
 			return NextResponse.json(error, { status: 500 });
 		})
 		.finally(() => {

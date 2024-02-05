@@ -10,7 +10,7 @@ export const GET = async () => {
 			},
 		})
 		.then((books) => {
-			return NextResponse.json(books, { status: 200 });
+			return NextResponse.json({ books: books }, { status: 200 });
 		})
 		.catch((error) => {
 			return NextResponse.json({ message: error }, { status: 500 });

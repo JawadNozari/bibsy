@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
+import { Student } from "@prisma/client";
 
 export default function Page() {
 	const [password, setPassword] = useState<string>("");
@@ -37,16 +38,16 @@ export default function Page() {
 		e.preventDefault();
 		return axios
 			.post("/api/adminCenter", {
-				id: 8,
+				id: 8536,
 				password: "123",
 				firstName: "csJohn",
 				lastName: "Dcscsoe",
 				email: "jocshn.doe@gmail.com",
 				phone: "122334567890",
 				image: "TestB42ild.png",
-				class: "3A",
-				qrCode: "1234567890",
-			})
+				classroom: "3A",
+				qrCode: "1233890", // This needs to be unique evertime a new student is added
+			} as Student)
 			.then((res) => {
 				console.log(res);
 			})

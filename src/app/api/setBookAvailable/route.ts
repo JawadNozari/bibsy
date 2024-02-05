@@ -26,7 +26,7 @@ export const POST = async (req: NextRequest) => {
 				await prisma.missingBooks
 					.delete({ where: { id: bookId } })
 					.then((book) => {
-						return NextResponse.json({ "book status": book }, { status: 200 });
+						return NextResponse.json({ book: book }, { status: 200 });
 					});
 			})
 			.catch((error) => {

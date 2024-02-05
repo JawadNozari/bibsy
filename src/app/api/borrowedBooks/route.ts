@@ -2,7 +2,17 @@ import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
-	return NextResponse.json({ message: "This Method is not allowed" });
+	return await prisma.borrowedBooks
+		.findMany()
+		.then((response) => {
+			return NextResponse.json({ books: response }, { status: 200 });
+		})
+		.catch((error) => {
+			return NextResponse.json({ message: error }, { status: 500 });
+		})
+		.finally(() => {
+			prisma.$disconnect();
+		});
 };
 
 const prisma = new PrismaClient();

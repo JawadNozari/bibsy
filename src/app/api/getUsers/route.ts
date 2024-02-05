@@ -23,7 +23,7 @@ export const GET = async () => {
 	try {
 		const staffUsers = await fetchUsers("staff"); // Fetch staff users
 		const studentUsers = await fetchUsers("student"); // Fetch student users
-		const data = { "Staff Users": staffUsers, "Student Users": studentUsers }; // Combine the data
+		const data = { staffUsers: staffUsers, studentUsers: studentUsers }; // Combine the data
 		return NextResponse.json(data);
 	} catch (error) {
 		return NextResponse.json({ error: error });
