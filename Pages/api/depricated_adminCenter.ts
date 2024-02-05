@@ -9,7 +9,8 @@ type Data = {
 	email: string;
 	phone: string;
 	image: string;
-	class: string;
+	classroom: string;
+	qrCode: string;
 };
 
 // Handler function for handling student registration
@@ -27,7 +28,7 @@ export default async function adminCenter(
 			email,
 			phone,
 			image,
-			class: studentClass,
+			classroom,
 		}: Data = req.body;
 
 		try {
@@ -40,7 +41,8 @@ export default async function adminCenter(
 					email,
 					phone,
 					image,
-					class: studentClass,
+					classroom,
+					qrCode: "", // Add the qrCode property with a default value
 				},
 			});
 
