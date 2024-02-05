@@ -8,11 +8,8 @@ export default async function handler(
   res: NextApiResponse
 )
 {
-    const userInvNr = 2131534756;
-    const selectedUser = {userType: "studentUser", id: 4};
-    const currentStaff = {id: 3};
-
-    // if the teacher is borrowing a book for self. 
+    const userInvNr = 1231;
+    const selectedUser = {userType: "staffUser", id: 1};
     if (selectedUser.userType === "staffUser") {
         try {
             const updateBook = await prisma.book.update({
@@ -27,13 +24,13 @@ export default async function handler(
                 data: {
                     bookId: updateBook.id,
                     studentId: null,
-                    note: "Borrowed by staff for self",
-                    staffId: currentStaff.id,
+                    note: "Borrowed by staff",
+                    staffId: selectedUser.id,
                 },
             });
             const userUpdate = await prisma.staff.update({
                 where: {
-                    id: currentStaff.id,
+                    id: selectedUser.id,
                 },
                 data:{
                     borrowed: {
@@ -43,22 +40,7 @@ export default async function handler(
                     },
                 },
                 });
-                const historyUpdate = await prisma.bookHistory.create({
-                    data: {
-                        Book: {
-                            connect: {
-                                id: updateBook.id,
-                            },
-                        },
-                        Staff: {
-                            connect: {
-                                id: currentStaff.id,
-                            },
-                        },
-                    }
-                    
-                });
-            res.status(200).json({historyUpdate, userUpdate, loanOut });
+            res.status(200).json({userUpdate, loanOut });
         } catch (error) {
             console.log(error);
             res.status(404).json({ message: error });
@@ -79,7 +61,7 @@ export default async function handler(
                     bookId: updateBook.id,
                     studentId: selectedUser.id,
                     note: "Borrowed by student",
-                    staffId: currentStaff.id,
+                    staffId: null,
                 },
             });
             const userUpdate = await prisma.student.update({
@@ -94,27 +76,7 @@ export default async function handler(
                     },
                 },
                 });
-                const historyUpdate = await prisma.bookHistory.create({
-                    data: {
-                        Book: {
-                            connect: {
-                                id: updateBook.id,
-                            },
-                        },
-                        Staff: {
-                            connect: {
-                                id: currentStaff.id,
-                            },
-                        },
-                        Student: {
-                            connect: {
-                                id: selectedUser.id,
-                            },
-                        },
-                    }
-                    
-                });
-            res.status(200).json({historyUpdate, userUpdate, loanOut });
+            res.status(200).json({userUpdate, loanOut });
         } catch (error) {
             console.log(error);
             res.status(404).json({ message: error });

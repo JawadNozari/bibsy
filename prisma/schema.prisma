@@ -40,10 +40,10 @@ model Student {
 model Book {
   id         Int             @id @default(autoincrement())
   bookImg    String          @db.VarChar(255)
-  title      String?         @db.VarChar(255)
+  title      String?
   author     String?
   publishers String?
-  published  DateTime
+  published  DateTime        @default(now())
   regDate    DateTime        @default(now())
   isbn       Int
   invNr      Int             @unique
