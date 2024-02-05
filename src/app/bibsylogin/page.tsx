@@ -1,6 +1,10 @@
 'use client';
 import Image from 'next/image'
+<<<<<<< Updated upstream
 import {  useState, ChangeEvent, FormEvent } from 'react'
+=======
+import { useState, ChangeEvent } from 'react'
+>>>>>>> Stashed changes
 import { ThemeProvider } from 'next-themes'
 import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
 
@@ -35,6 +39,7 @@ const Page = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
+<<<<<<< Updated upstream
     try {
       const response = await fetch('/api/login', { // API call to server
         method: 'POST',
@@ -56,19 +61,21 @@ const Page = () => {
     } catch (error) {
       console.error('Error during form submission:', error);
     }
+=======
+>>>>>>> Stashed changes
   }
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark">
       <div className="h-screen w-screen bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center">
         <div className="h-full w-2/4 relative flex justify-center items-center">
-          <Image
+          {/* <Image bilden är overlayed
             src="/login.png"
             alt="Login page"
             layout="fill"
             objectFit="cover"
             className="rounded-lg h-full w-full"
-          />
+          /> */}
           <div className='w-2/5 h-2/5 bg-black opacity-78 relative bottom-12  flex rounded-lg p-[8.5rem]'>
             <div className="absolute top-0 left-0 h-full w-full flex flex-col items-center justify-center">
               <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
@@ -97,7 +104,7 @@ const Page = () => {
                     onChange={handlePasswordChange}
                     placeholder="Lösenord"
                     className={showPassword ? hidePasswordClass : showPasswordClass}
-                    id="password"
+                    id="password1"
                     required
                     autoComplete="off"
                   />
@@ -107,7 +114,7 @@ const Page = () => {
                     onChange={handlePasswordChange}
                     placeholder="Lösenord"
                     className={showPassword ? showPasswordClass : hidePasswordClass}
-                    id="password"
+                    id="password2"
                     required
                     autoComplete="off"
                   />
