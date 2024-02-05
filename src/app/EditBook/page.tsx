@@ -56,7 +56,7 @@ export default function Page() {
                 name="author"
             />
             <input
-                type="text"
+                type="number"
                 value={isbn}
                 onChange={handleIsbnChange}
                 placeholder="isbn"
