@@ -10,6 +10,7 @@ type Data = {
     phone: string,
     image: string,
     class: string,
+    qrCode: string,
 };
 
 // Handler function for handling student registration
@@ -30,6 +31,7 @@ export default async function adminCenter(req: NextApiRequest, res: NextApiRespo
                     phone,
                     image,
                     class: studentClass,
+                    qrCode: ""
                 },
             });
 
