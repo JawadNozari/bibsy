@@ -22,9 +22,7 @@ const prisma = new PrismaClient();
           },
         }
       );
-      const students = studentUsers.sort((a:any, b:any) => a.id - b.id);
-      const staff = staffUsers.sort((a:any, b:any) => a.id - b.id);
-      const data = { staffUsers: staff, studentUsers: students };
+      const data = { staffUsers, studentUsers };
       res.status(200).json(data);
       prisma.$disconnect();
     } catch (error) {

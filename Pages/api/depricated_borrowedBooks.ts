@@ -8,7 +8,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    console.log(req.body);
     try {
       if (req.body.userId !== 0 && req.body.userId !== null) {
         if (req.body.userType === "staff") {

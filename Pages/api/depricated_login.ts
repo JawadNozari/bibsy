@@ -1,28 +1,54 @@
-// import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
+import jwt from "jsonwebtoken";
 
-// const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
-async function main() {
-	// try {
-	//   const allUsers = await prisma.user.findMany({
-	//       include: {
-	//       }
-	//   });
-	//   return(allUsers)
-	// } catch (error) {
-	//   console.error(error);
-	//   throw error; // Throw the error to be caught in the catch block below
-	// } finally {
-	//   await prisma.$disconnect();
-	// }
+export default async function main(
+  req: NextApiRequest, 
+  res: NextApiResponse
+  ) {
+   try {
+
+      var userInfo = {
+        username: req.body.userCredentials.username, // USERNAME IS EMAIL
+        password: req.body.userCredentials.password,
+        remember: req.body.remember
+      };
+
+      const checkLoginStaff = await prisma.staff.findFirst({
+        where: {
+          AND: [
+            { email: userInfo.username },
+            { password: userInfo.password},
+            { admin: true }
+          ]
+        }
+      });
+
+      const checkLoginStudent = await prisma.student.findFirst({
+        where: {
+          AND: [
+            { email: userInfo.username },
+            { password: userInfo.password }
+          ]
+        }
+      });
+
+      console.log(checkLoginStudent);
+
+      if (checkLoginStaff || checkLoginStudent) {
+        const token = jwt.sign({ username: userInfo.username, timestamp: Date.now() }, "your-secret-key", { expiresIn: "1h" });
+        res.status(200).json({ token });
+      } else {
+        res.status(401).json({ error: "Invalid credentials" });
+      }
+
+      res.status(200);
+
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    } finally {
+      await prisma.$disconnect();
+  }
 }
-
-// Call the main function
-main()
-	.then((test) => {
-		console.log(test);
-	})
-	.catch((e) => {
-		console.error(e);
-		process.exit(1);
-	});

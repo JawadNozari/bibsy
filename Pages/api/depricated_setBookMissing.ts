@@ -16,12 +16,11 @@ export default async function handler(
       });
       const book = getBook[0];
 
-      await prisma.borrowedBooks.delete({
-        where: {
-          id: book.id,
-        },
-      });
-
+      // const removeBook = await prisma.borrowedBooks.delete({
+      //   where: {
+      //     id: book.id,
+      //   },
+      // });
       const response = await prisma.missingBooks.create({
         data: {
           studentId: book.studentId,
