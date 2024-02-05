@@ -3,6 +3,10 @@ import path from "path";
 import { writeFile, mkdir } from "fs/promises";
 import { PrismaClient } from "@prisma/client";
 
+export const GET = async () => {
+    return NextResponse.json({ message: "Hello World" });
+};
+
 const prisma = new PrismaClient();
 
 export const POST = async (req: NextRequest) => {
@@ -49,7 +53,7 @@ export const POST = async (req: NextRequest) => {
 				book,
 			};
 		})
-		.catch((error:any) => {
+		.catch((error: unknown ) => {
 			return { Message: error, status: 500 };
 		});
 	return NextResponse.json(resp);
