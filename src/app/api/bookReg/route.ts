@@ -4,7 +4,7 @@ import { writeFile, mkdir } from "fs/promises";
 import { PrismaClient } from "@prisma/client";
 
 export const GET = async () => {
-    return NextResponse.json({ message: "Hello World" });
+	return NextResponse.json({ message: "Hello World" });
 };
 
 const prisma = new PrismaClient();
@@ -47,14 +47,18 @@ export const POST = async (req: NextRequest) => {
 			},
 		})
 		.then((book) => {
+			prisma.$disconnect();
 			return {
 				Message: `${filename} and form data saved successfully`,
 				status: 201,
 				book,
 			};
 		})
-		.catch((error: unknown ) => {
+		.catch((error: unknown) => {
 			return { Message: error, status: 500 };
+		})
+		.finally(() => {
+			prisma.$disconnect();
 		});
 	return NextResponse.json(resp);
 };

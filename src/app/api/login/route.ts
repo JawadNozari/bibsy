@@ -3,19 +3,26 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-const POST = async () => {
-	// try {
-	// 	const allUsers = await prisma.user.findMany({
-	// 		include: {},
-	// 	});
-	// 	return allUsers;
-	// } catch (error) {
-	// 	console.error(error);
-	// 	throw error; // Throw the error to be caught in the catch block below
-	// } finally {
-	// 	await prisma.$disconnect();
-	// }
-	NextResponse.json({ message: "Jonatan this is for you" });
+export const POST = async () => {
+	//TODO Property user does not exist on type PrismaClient right now. We can use staff for now for testing purposes
+	return await prisma.staff
+		.findMany({
+			include: {
+				//TODO Password check ?
+				//TODO Username check ?
+			},
+		})
+		.then((users) => {
+			//TODO Maybe return usertype and a session token ?
+			return NextResponse.json(users, { status: 200 });
+		})
+		.catch((error) => {
+			return NextResponse.json({ message: error }, { status: 500 });
+		})
+		.finally(() => {
+			prisma.$disconnect();
+		});
 };
-
-// Call the main function
+export const GET = async () => {
+	return NextResponse.json({ message: "This method is not implemented yet" });
+};

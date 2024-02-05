@@ -2,30 +2,66 @@ import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
-	return NextResponse.json({ message: "Hello World" });
+	return NextResponse.json({ message: "This Method is not Allowed" });
 };
 
 const prisma = new PrismaClient();
-
 export const POST = async (req: NextRequest) => {
-	// try {
-	//     console.log(req.body);
-	//     const{title, author, publisher, invNr, price, image} = req.body;
-	//     const isbn = Number(req.body.isbn);
-	//     const edit = await prisma.book.update({
-	//         where: { id: req.body.id },
-	//         data: {
-	//             title:title,
-	//             author:author,
-	//             publishers:publisher,
-	//             invNr:invNr,
-	//             price:price,
-	//             isbn:isbn,
-	//             bookImg:image,
-	//         },
-	//     });
-	//     console.log(edit);
-	// }catch {
-	//     console.log(Error);
-	// }
+	const data = await req.json();
+	if (data === undefined) {
+		return NextResponse.json(
+			{ message: "Malformed request syntax, Invalid request message framing" },
+			{ status: 400 },
+		);
+	}
+	const { id, title, author, publisher, invNr, price, image, isbn } = data;
+
+	if (
+		!id ||
+		!title ||
+		!author ||
+		!publisher ||
+		!invNr ||
+		!price ||
+		!image ||
+		!isbn
+	) {
+		return NextResponse.json(
+			{
+				message: "Missing required data. Please provide all necessary fields.",
+			},
+			{ status: 400 },
+		);
+	}
+
+	return await prisma.book
+		.update({
+			where: { id: id },
+			data: {
+				title: title,
+				author: author,
+				publishers: publisher,
+				invNr: invNr,
+				price: price,
+				isbn: isbn, // ISBN Max Length is 9
+				bookImg: image,
+			},
+		})
+		.then((edit) => {
+			prisma.$disconnect();
+			return NextResponse.json(edit, { status: 200 });
+		})
+		.catch(() => {
+			prisma.$disconnect();
+			return NextResponse.json(
+				{
+					message:
+						"Validation Error. This can be cuased becuase of mallformed Data (Check Data Type)",
+				},
+				{ status: 500 },
+			);
+		})
+		.finally(() => {
+			prisma.$disconnect();
+		});
 };
