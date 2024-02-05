@@ -45,20 +45,23 @@ export default function Page() {
                 onChange={handleUsernameChange}
                 placeholder="title"
                 id="username"
+                name="title"
             />
             <input
                 type="text"
                 value={author}
                 onChange={handleAuthorChange}
                 placeholder="author"
-                id="username"
+                id="author"
+                name="author"
             />
             <input
                 type="text"
                 value={isbn}
                 onChange={handleIsbnChange}
                 placeholder="isbn"
-                id="username"
+                id="isbn"
+                name="isbn"
             />
             <div >
                 <input
@@ -66,6 +69,7 @@ export default function Page() {
                     value={publisher}
                     onChange={handleRememberChange}
                     placeholder="publisher"
+                    name="publisher"
                     id="publisher"
                 />
             </div>
