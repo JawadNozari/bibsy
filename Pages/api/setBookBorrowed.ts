@@ -8,9 +8,9 @@ export default async function handler(
   res: NextApiResponse
 )
 {
-    const userInvNr = 321;
-    const selectedUser = {userType: "studentUser", id: 2};
-    const currentStaff = {id: 1};
+    const userInvNr = 2131534756;
+    const selectedUser = {userType: "studentUser", id: 4};
+    const currentStaff = {id: 3};
 
     // if the teacher is borrowing a book for self. 
     if (selectedUser.userType === "staffUser") {
