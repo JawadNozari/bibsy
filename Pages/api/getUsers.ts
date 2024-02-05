@@ -22,8 +22,8 @@ const prisma = new PrismaClient();
           },
         }
       );
-      let students = studentUsers.sort((a:any, b:any) => a.id - b.id);
-      let staff = staffUsers.sort((a:any, b:any) => a.id - b.id);
+      const students = studentUsers.sort((a:any, b:any) => a.id - b.id);
+      const staff = staffUsers.sort((a:any, b:any) => a.id - b.id);
       const data = { staffUsers: staff, studentUsers: students };
       res.status(200).json(data);
       prisma.$disconnect();
