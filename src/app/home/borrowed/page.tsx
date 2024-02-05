@@ -22,6 +22,8 @@ const Page = () => {
   const router = useRouter();
   const [books, setBooks] = React.useState<Book[]>([]);
   const [borrowedBooks, setBorrowedBooks] = React.useState<Book[]>([]);
+  const [students, setStudents] = React.useState<any[]>([]);
+  const [staff, setStaff] = React.useState<any[]>([]);
 
   React.useEffect(() => {
     const getBooks = async () => {
@@ -32,29 +34,62 @@ const Page = () => {
         const borrowed = await axios("/api/borrowedBooks");
         setBorrowedBooks(borrowed.data.books);
       }
+
+      const response2 = await axios("/api/getUsers");
+      setStudents(response2.data.studentUsers);
+      setStaff(response2.data.staffUsers);
     };
     getBooks();
   }, []);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const userId = (event.target as HTMLInputElement).value as unknown as number;
-    const response = await axios.post("/api/borrowedBooks", { userId, userType: "student"});
+    let userId = (event.currentTarget[0] as HTMLInputElement)
+      .value as unknown as number;
+    userId = parseInt(userId.toString()); // Convert to string, then to number (has to be done in two steps because of TypeScript)
+    const response = await axios.post("/api/borrowedBooks", {
+      userId,
+      userType: "student",
+    });
     setBorrowedBooks(response.data.books);
   };
 
-  const setBookMissing = async (bookId: number) => {
+  const setBookMissing = async (event: any, bookId: number) => {
+    event.stopPropagation();
+    borrowedBooks.map((borrowedBook: Book) => {
+      if (borrowedBook.bookId === bookId) {
+        borrowedBooks.splice(borrowedBooks.indexOf(borrowedBook), 1);
+      }
+    });
+    setBorrowedBooks(borrowedBooks);
+
     const response = await axios.post("/api/setBookMissing", {
       bookId,
       userType: "student",
     });
     console.log(response.data);
-    //setBorrowedBooks(response.data.books);
   };
 
-  const handleSearch = async (event: any) => {
+  const setBookAvailable = async (event: any, bookId: number) => {
+    event.stopPropagation();
+    borrowedBooks.map((borrowedBook: Book) => {
+      if (borrowedBook.bookId === bookId) {
+        borrowedBooks.splice(borrowedBooks.indexOf(borrowedBook), 1);
+      }
+    });
+    setBorrowedBooks(borrowedBooks);
+
+    const response = await axios.post("/api/setBookAvailable", {
+      bookId,
+      userType: "student",
+      listType: "borrowed",
+    });
+    console.log(response.data);
+  };
+
+  const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const bookTitle = event.target.bookTitle.value;
+    const bookTitle = (event.currentTarget[0] as HTMLInputElement).value;
     const response = await axios.post("/api/searchForBooks", {
       bookTitle,
       listType: "borrowed",
@@ -69,19 +104,22 @@ const Page = () => {
           Borrowed Books
         </h1>
         <form onSubmit={onSubmit}>
-          <input type="text" name="userId" style={{color:"black"}} placeholder="User ID"/>
+          <input
+            type="text"
+            name="userId"
+            id="userId"
+            style={{ color: "white" }}
+            placeholder="User ID"
+          />
           <button type="submit">Submit</button>
         </form>
-        <form
-          method="POST"
-          onSubmit={handleSearch}
-        >
+        <form method="POST" onSubmit={handleSearch}>
           <input
             type="text"
             name="bookTitle"
             id="bookTitle"
             placeholder="Book Title"
-            style={{ color: "black" }}
+            style={{ color: "white" }}
           />
           <button type="submit">Submit</button>
         </form>
@@ -107,6 +145,7 @@ const Page = () => {
                 Student ID
               </th>
               <th scope="col" className="px-6 py-3" />
+              <th scope="col" className="px-6 py-3" />
             </tr>
           </thead>
           <tbody>
@@ -115,8 +154,12 @@ const Page = () => {
                 if (borrowedBook.bookId === book.id) {
                   return (
                     <tr
-                      className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
                       key={book.invNr}
+                      onClick={() =>
+                        router.push(`/home/bookDetails/${book.invNr}`)
+                      }
+                      style={{ zIndex: 1 }}
                     >
                       <th
                         scope="row"
@@ -124,18 +167,39 @@ const Page = () => {
                       >{`${book.title}`}</th>
                       <td className="px-6 py-4">{`${book.author}`}</td>
                       <td className="px-6 py-4">{`${borrowedBook.note}`}</td>
-                      <td className="px-6 py-4">{`${
-                        `${book.regDate.split("T")[0]} ${book.regDate.split("T")[1].split(".")[0]}`
-                      }`}</td>
-                      <td className="px-6 py-4">{borrowedBook.staffId}</td>
-                      <td className="px-6 py-4">{borrowedBook.studentId}</td>
+                      <td className="px-6 py-4">{`${`${book.regDate.split("T")[0]
+                        } ${book.regDate.split("T")[1].split(".")[0]}`}`}</td>
+                      <td className="px-6 py-4">{
+                        staff.map((staffMember) => {
+                          if (staffMember.id === book.staffId) {
+                            return staffMember.firstName + " " + staffMember.lastName + " | ID: " + staffMember.id;
+                          }
+                        })
+                      }</td>
+                      <td className="px-6 py-4">{
+                        students.map((student) => {
+                          if (student.id === book.studentId) {
+                            return student.firstName + " " + student.lastName + " | ID: " + student.id;
+                          }
+                        })
+                      }</td>
                       <td className="px-6 py-4">
                         <button
                           type="button"
-                          onClick={() => setBookMissing(borrowedBook.bookId)}
+                          onClick={(e) => setBookMissing(e, borrowedBook.bookId)}
                           className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                          style={{ zIndex: 2 }}
                         >
                           MISSING
+                        </button>
+                      </td>
+                      <td className="px-6 py-4">
+                        <button
+                          type="button"
+                          onClick={(e) => setBookAvailable(e, borrowedBook.bookId)}
+                          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                        >
+                          RETURNED
                         </button>
                       </td>
                     </tr>
@@ -147,56 +211,43 @@ const Page = () => {
           </tbody>
         </table>
       </div>
-      <table style={{width:1000, textAlign:"center"}}>
-        <thead>
-          <tr>
-            <th>Book Title</th>
-            <th>Author</th>
-            <th>Due At</th>
-            <th>Borrowed at</th>
-            <th>Staff ID</th>
-            <th>Student ID</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-        {books.map((book: Book) => {
-          return borrowedBooks.map((borrowedBook) => {
-            if (borrowedBook.bookId === book.id) {
-              return (
-                <tr key={book.id}>
-                  <td>{`${book.title}`}</td>
-                  <td>{`${book.author}`}</td>
-                  <td>{`${borrowedBook.note}`}</td>
-                  <td>{`${`${book.regDate.split("T")[0]} ${book.regDate.split("T")[1].split(".")[0]}`}`}</td>
-                  <td>{borrowedBook.staffId}</td>
-                  <td>{borrowedBook.studentId}</td>
-                  <td><button type="button" onClick={() => setBookMissing(borrowedBook.bookId)} style={{backgroundColor:"tomato"}} >MISSING</button></td>
-                </tr>
-              );
-            }
-            return null;
-          });
-        })}
-        </tbody>
-      </table>
-      <form method="POST" onSubmit={onSubmit}>
-        <label htmlFor="userId">User ID</label>
-        <input type="text" name="userId" id="userId" style={{color: "black"}}/>
-        <button type="submit">Submit</button>
-      </form>
-      <div style={{width:1000, display:"flex", justifyContent:"space-around"}}>
-        <button type="button" onClick={() => router.push("/home/allbooks")} style={{backgroundColor:"lightblue", color:"black"}}>
+      <div
+        style={{ width: 1000, display: "flex", justifyContent: "space-around" }}
+      >
+        <button
+          type="button"
+          onClick={() => router.push("/home/allbooks")}
+          style={{ backgroundColor: "lightblue", color: "black" }}
+        >
           All Books
         </button>
-        <button type="button" onClick={() => router.push("/home/available")} style={{backgroundColor:"lightblue", color:"black"}}>
+        <button
+          type="button"
+          onClick={() => router.push("/home/available")}
+          style={{ backgroundColor: "lightblue", color: "black" }}
+        >
           Available Books
         </button>
-        <button type="button" onClick={() => router.push("/home/borrowed")} style={{backgroundColor:"lightblue", color:"black"}}>
+        <button
+          type="button"
+          onClick={() => router.push("/home/borrowed")}
+          style={{ backgroundColor: "lightblue", color: "black" }}
+        >
           Borrowed Books
         </button>
-        <button type="button" onClick={() => router.push("/home/missing")} style={{backgroundColor:"lightblue", color:"black"}}>
+        <button
+          type="button"
+          onClick={() => router.push("/home/missing")}
+          style={{ backgroundColor: "lightblue", color: "black" }}
+        >
           Missing Books
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/home/history")}
+          style={{ backgroundColor: "lightblue", color: "black" }}
+        >
+          History
         </button>
       </div>
     </div>

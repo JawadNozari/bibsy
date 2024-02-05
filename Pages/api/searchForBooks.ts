@@ -52,7 +52,6 @@ export default async function handler(
         prisma.$disconnect();
       }
     } else if (req.body.listType === "missing") {
-      console.log("missing");
       try {
         queriedBooks.map(async (book: any) => {
           const borrowedBook = await prisma.missingBooks.findMany({

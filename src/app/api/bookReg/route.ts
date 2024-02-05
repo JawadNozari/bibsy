@@ -49,7 +49,7 @@ export const POST = async (req: NextRequest) => {
 				book,
 			};
 		})
-		.catch((error) => {
+		.catch((error:any) => {
 			return { Message: error, status: 500 };
 		});
 	return NextResponse.json(resp);

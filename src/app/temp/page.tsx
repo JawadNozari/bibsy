@@ -4,13 +4,23 @@ import axios from "axios";
 
 const Page = () => {
   const [users, setUsers] = React.useState<any>([]);
+  const [self, setSelf] = React.useState<any>([]);
   const [searchedUsers, setSearchedUsers] = React.useState<any>([]);
   const [searchValue, setSearchValue] = React.useState("");
+  const [selectedUserValue, setSelectedUserValue] = React.useState(0);
+
+  const selfId = 1;
 
   React.useEffect(() => {
     console.log("useEffect");
     const getUsers = async () => {
       const response = await axios.get("/api/getUsers");
+      let staff = response.data.staffUsers;
+      staff.map((user: any) => {
+        if (user.id === selfId) {
+          setSelf(user);
+        }
+      });
       setUsers(response.data.studentUsers);
       setSearchedUsers(response.data.studentUsers);
     };
@@ -18,6 +28,7 @@ const Page = () => {
   }, []);
 
   const handleSearch = (value: string) => {
+    console.log(users.length);
     if (value === "") {
       setSearchedUsers(users);
       return;
@@ -41,9 +52,29 @@ const Page = () => {
         );
       })
     );
-    if(searchedUsers.length === 0) {
+    if (searchedUsers.length === 0) {
       console.log("no users found");
       setSearchedUsers(users);
+    }
+  };
+
+  const handleSelect = (e: any) => {
+    if (parseInt(e.target.value) === (users.length + 1)) {
+      try {
+        setSearchValue(self.firstName + " " + self.lastName);
+        setSelectedUserValue(e.target.value);
+      }
+      catch {
+        console.log("error");
+      }
+    } else {
+      try {
+        setSearchValue(users[parseInt(e.target.value) - 1].firstName + " " + users[parseInt(e.target.value) - 1].lastName);
+        setSelectedUserValue(e.target.value);
+      }
+      catch {
+        console.log("error");
+      }
     }
   };
 
@@ -58,14 +89,14 @@ const Page = () => {
           setSearchValue(e.target.value), handleSearch(e.target.value);
         }}
         value={searchValue}
-        style={{ color: "black" }}
+        style={{ color: "white" }}
       />
       <select
         name="userType"
         id="userType"
-        onChange={(e) => console.log(e.target)}
-        value={searchValue}
-        style={{ color: "black" }}
+        onChange={(e) => handleSelect(e)}
+        value={selectedUserValue}
+        style={{ color: "white" }}
       >
         {searchedUsers.map((user: any) => {
           return (
@@ -74,6 +105,13 @@ const Page = () => {
             </option>
           );
         })}
+        {self ? (
+          <option key={users.length + 1} value={users.length + 1} style={{ color: "black" }}>
+            {self.firstName + " " + self.lastName}
+          </option>
+        ) : (
+          ""
+        )}
       </select>
     </div>
   );
