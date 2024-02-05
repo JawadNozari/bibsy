@@ -31,11 +31,7 @@ export default async function adminCenter(req: NextApiRequest, res: NextApiRespo
                     phone,
                     image,
                     class: studentClass,
-<<<<<<< HEAD
-                    qrCode: ""
-=======
                     qrCode: "", // Add the qrCode property with a default value
->>>>>>> feabdc948e06828396b41df66cd5190079050f05
                 },
             });
 
