@@ -4,89 +4,139 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const Page = () => {
-	const router = useRouter();
-	const [books, setBooks] = React.useState([]);
-	React.useEffect(() => {
-		const getBooks = async () => {
-			try {
-				const response = await axios.get("/api/registeredBooks");
-				setBooks(response.data.books);
-			} catch (err) {
-				console.log(err);
-			}
-		};
-		getBooks();
-	}, []);
+  const router = useRouter();
+  const [books, setBooks] = React.useState([]);
+  React.useEffect(() => {
+    const getBooks = async () => {
+      try {
+        const response = await axios.get("/api/registeredBooks");
+        setBooks(response.data.books);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getBooks();
+  }, []);
 
-	return (
-		<div>
-			<h1>All Books</h1>
-			<table
-				className="table-auto"
-				style={{ width: 1000, textAlign: "center" }}
-			>
-				<thead>
-					<tr>
-						<th>Book Title</th>
-						<th>Author</th>
-						<th>ISBN</th>
-						<th>Registered at</th>
-						<th>Published at</th>
-						<th>Availability</th>
-					</tr>
-				</thead>
-				<tbody>
-					{books.map((book: any) => {
-						return (
-							<tr key={book.invNr}>
-								<td>{`${book.title}`}</td>
-								<td>{`${book.author}`}</td>
-								<td>{`${book.isbn}`}</td>
-								<td>{`${`${book.regDate.split("T")[0]} ${
-									book.regDate.split("T")[1].split(".")[0]
-								}`}`}</td>
-								<td>{`${book.published.split("T")[0]}`}</td>
-								<td>{`${book.available}`}</td>
-							</tr>
-						);
-					})}
-				</tbody>
-			</table>
-			<div
-				style={{ width: 1000, display: "flex", justifyContent: "space-around" }}
-			>
-				<button
-					type="button"
-					onClick={() => router.push("/home/allbooks")}
-					style={{ backgroundColor: "lightblue", color: "black" }}
-				>
-					All Books
-				</button>
-				<button
-					type="button"
-					onClick={() => router.push("/home/available")}
-					style={{ backgroundColor: "lightblue", color: "black" }}
-				>
-					Available Books
-				</button>
-				<button
-					type="button"
-					onClick={() => router.push("/home/borrowed")}
-					style={{ backgroundColor: "lightblue", color: "black" }}
-				>
-					Borrowed Books
-				</button>
+  const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const bookTitle = (event.currentTarget[0] as HTMLInputElement).value;
+    const response = await axios.post("/api/searchForBooks", {
+      bookTitle,
+      listType: "allbooks",
+    });
+    setBooks(response.data.books);
+  };
 
-				<button
-					type="button"
-					onClick={() => router.push("/home/missing")}
-					style={{ backgroundColor: "lightblue", color: "black" }}
-				>
-					Missing Books
-				</button>
-			</div>
-		</div>
-	);
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-between  p-24 bg-neutral-50">
+      <div className=" overflow-x-auto shadow-md sm:rounded-lg overflow-scroll w-4/5 h-[38rem] dark:bg-gray-600">
+        <h1 className="text-4xl text-center font-bold  dark:bg-gray-700   dark:text-gray-100 p-10">
+          Registered Books
+        </h1>
+        <form method="POST" onSubmit={handleSearch}>
+          <input
+            type="text"
+            name="bookTitle"
+            id="bookTitle"
+            placeholder="Book Title"
+            style={{ color: "white" }}
+          />
+          <button type="submit">Submit</button>
+        </form>
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xl sticky top-0 text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                Title
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Author
+              </th>
+              <th scope="col" className="px-6 py-3">
+                ISBN
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Registered
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Published
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Available
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {books.map((book: any) => {
+              return (
+                <tr
+                  className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
+                  key={book.invNr}
+                  onClick={() => router.push(`/home/bookDetails/${book.invNr}`)}
+                >
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >{`${book.title}`}</th>
+                  <td className="px-6 py-4">{`${book.author}`}</td>
+                  <td className="px-6 py-4">{`${book.isbn}`}</td>
+                  <td className="px-6 py-4">{`${`${book.regDate.split("T")[0]
+                    } ${book.regDate.split("T")[1].split(".")[0]}`}`}</td>
+                  <td className="px-6 py-4">{`${book.published.split("T")[0]
+                    }`}</td>
+                  {book.available ? (
+                    <td className="px-6 py-4" style={{ backgroundColor: "lightgreen", color: "black" }}>Yes</td>
+                  ) : (
+                    <td className="px-6 py-4" style={{ backgroundColor: "tomato", color: "black" }}>No</td>
+                  )}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div
+        style={{ width: 1000, display: "flex", justifyContent: "space-around" }}
+      >
+        <button
+          type="button"
+          onClick={() => router.push("/home/allbooks")}
+          style={{ backgroundColor: "lightblue", color: "black" }}
+        >
+          All Books
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/home/available")}
+          style={{ backgroundColor: "lightblue", color: "black" }}
+        >
+          Available Books
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/home/borrowed")}
+          style={{ backgroundColor: "lightblue", color: "black" }}
+        >
+          Borrowed Books
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/home/missing")}
+          style={{ backgroundColor: "lightblue", color: "black" }}
+        >
+          Missing Books
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/home/history")}
+          style={{ backgroundColor: "lightblue", color: "black" }}
+        >
+          History
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default Page;
