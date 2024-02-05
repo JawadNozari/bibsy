@@ -1,0 +1,15 @@
+{
+	"sqltools.connections": [
+		{
+			"previewLimit": 50,
+			"server": "postgresql.jawad.se",
+			"port": 5432,
+			"driver": "PostgreSQL",
+			"name": "postgress",
+			"group": "server",
+			"database": "bibsy",
+			"username": "bibsy",
+			"connectionTimeout": 10
+		}
+	]
+}

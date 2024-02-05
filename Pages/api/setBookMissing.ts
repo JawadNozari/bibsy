@@ -7,7 +7,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  prisma.$connect();
   if (req.method === "POST") {
     try {
       const getBook = await prisma.borrowedBooks.findMany({
@@ -17,11 +16,11 @@ export default async function handler(
       });
       const book = getBook[0];
 
-      const removeBook = await prisma.borrowedBooks.delete({
-        where: {
-          id: book.id,
-        },
-      });
+      // const removeBook = await prisma.borrowedBooks.delete({
+      //   where: {
+      //     id: book.id,
+      //   },
+      // });
       const response = await prisma.missingBooks.create({
         data: {
           studentId: book.studentId,

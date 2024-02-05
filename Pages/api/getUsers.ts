@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -8,13 +8,26 @@ const prisma = new PrismaClient();
     res: NextApiResponse
   ) {
     try {
-      const staffUsers = await prisma.staff.findMany();
-      const studentUsers = await prisma.student.findMany();
+      const staffUsers = await prisma.staff.findMany(
+        {
+          include: {
+            borrowed: true,
+          },
+        }
+      );
+      const studentUsers = await prisma.student.findMany(
+        {
+          include: {
+            borrowed: true,
+          },
+        }
+      );
       const data = { staffUsers, studentUsers };
-      console.log(data);
       res.status(200).json(data);
+      prisma.$disconnect();
     } catch (error) {
-      //console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error(error);
+      res.status(500).json({ error: error });
+      prisma.$disconnect();
     }
   }
