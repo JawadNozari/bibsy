@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest } from "next";
 
 const prisma = new PrismaClient();
 
 
-export default async function edit(req: NextApiRequest, res: NextApiResponse) {
+export default async function edit(req: NextApiRequest) {
   if (req.method === "POST") {
     try {
         console.log(req.body);
