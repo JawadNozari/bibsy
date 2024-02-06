@@ -21,7 +21,7 @@ const config: Config = {
 			const newUtilities = {
 				".sleek-scrollbar::-webkit-scrollbar": {
 					backgroundColor: "#333333",
-					borderRadius: "10px",
+					borderRadius: "0 10px 0 0",
 					width: "9px",
 				},
 				".sleek-scrollbar::-webkit-scrollbar-thumb": {
