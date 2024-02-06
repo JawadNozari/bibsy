@@ -1,4 +1,6 @@
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata = {
 	title: "Next.js",
@@ -8,11 +10,15 @@ export const metadata = {
 export default function RootLayout({
 	children,
 }: {
-	children: React.ReactNode
+	children: React.ReactNode;
 }) {
 	return (
 		<html lang="en">
-			<body>{children}</body>
+			<body>
+				{children}
+				<Analytics />
+				<SpeedInsights />
+			</body>
 		</html>
 	);
 }
