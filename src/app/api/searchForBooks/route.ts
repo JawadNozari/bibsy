@@ -1,4 +1,4 @@
-import { Book, PrismaClient } from "@prisma/client";
+import { Book, PrismaClient, missingBooks } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
@@ -24,10 +24,10 @@ export const POST = async (req: NextRequest) => {
 				// 	bookId: book.id,
 				// },
 			})
-			.then((missing) => {
+			.then((missing:missingBooks) => {
 				return NextResponse.json(missing, { status: 200 });
 			})
-			.catch((error) => {
+			.catch((error:Error) => {
 				return NextResponse.json({ message: error }, { status: 500 });
 			})
 			.finally(() => {
@@ -69,7 +69,7 @@ export const POST = async (req: NextRequest) => {
 				},
 			},
 		})
-		.then((books) => {
+		.then((books:Book[]) => {
 			console.log(books);
 			if (listType === "available") {
 				return NextResponse.json(
@@ -115,7 +115,7 @@ export const POST = async (req: NextRequest) => {
 				// prisma.$disconnect();
 			}
 		})
-		.catch((error) => {
+		.catch((error:Error) => {
 			return NextResponse.json({ message: error }, { status: 500 });
 		})
 		.finally(() => {

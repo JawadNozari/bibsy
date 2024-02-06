@@ -34,8 +34,7 @@ export const POST = async (req: NextRequest) => {
 		.then((student) => {
 			return NextResponse.json(student, { status: 201 });
 		})
-		.catch((error) => {
-			
+		.catch((error: Error) => {
 			console.log(error);
 			return NextResponse.json(error, { status: 500 });
 		})

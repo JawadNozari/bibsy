@@ -1,13 +1,13 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient,Book } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
 	return await prisma.borrowedBooks
 		.findMany()
-		.then((response) => {
+		.then((response: Book[]) => { // Explicitly type 'response' as an array of BorrowedBook
 			return NextResponse.json({ books: response }, { status: 200 });
 		})
-		.catch((error) => {
+		.catch((error:Error) => {
 			return NextResponse.json({ message: error }, { status: 500 });
 		})
 		.finally(() => {
@@ -39,10 +39,10 @@ export const POST = async (req: NextRequest) => {
 				staffId: userId,
 			},
 		})
-		.then((Borrowed) => {
+		.then((Borrowed:Book[]) => {
 			return NextResponse.json(Borrowed, { status: 200 });
 		})
-		.catch((error) => {
+		.catch((error:Error) => {
 			return NextResponse.json({ message: error }, { status: 500 });
 		})
 		.finally(() => {
