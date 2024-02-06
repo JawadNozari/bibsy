@@ -1,45 +1,52 @@
-//TODO: Check if the user already exists before creating a new user (ERROR handling)
-
-import { PrismaClient, Student } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 
-export const GET = async () => {
-	return NextResponse.json({ message: "Hello World" });
-};
 
 const prisma = new PrismaClient();
+type Data = {
+   password: string,
+   firstName: string,
+   lastName: string,
+   email: string,
+   phone: string,
+   image: string,
+   studentClass: string,
+   qrCode: string,
+};
+
+export const GET = async (req: NextRequest, res: NextResponse) => {
+	return NextResponse.json("Hello World!");
+}
 
 // Handler function for handling student registration
-export const POST = async (req: NextRequest) => {
-	// Get the student data from the request body
-	const { password, firstName, lastName, email, phone, image, classroom } =
-		(await req.json()) as Student; // We have to await the request body to get the data
+export const POST = async (req: NextRequest, res: NextResponse) => {
+   // Check if the request method is POST
+   const resp = await req.formData();
 
-	console.log(` \n\n\nUsers Email:${email}`); 
-	// Create a new student record using Prisma client
-	
-	return await prisma.student
-		.create({
-			data: {
-				password,
-				firstName,
-				lastName,
-				email,
-				phone,
-				image,
-				classroom,
-				qrCode: "6456", // Add the qrCode property with a default value
-			} as Student,
-		})
-		.then((student) => {
-			return NextResponse.json(student, { status: 201 });
-		})
-		.catch((error) => {
-			
-			console.log(error);
-			return NextResponse.json(error, { status: 500 });
-		})
-		.finally(() => {
-			prisma.$disconnect();
-		});
-};
+   const firstname = resp.get("firstName") as string;
+   const lastname = resp.get("lastName") as string;
+   const email = resp.get("email") as string;
+   const phone = resp.get("phone") as string;
+   const password = resp.get("password") as string;
+   const image = resp.get("image") as string;
+   const studentClass = resp.get("studentClass") as string;
+   const qrCode = Number(resp.get("qrCode"));
+
+   const data: Data = {
+	  password,
+	  firstName: firstname,
+	  lastName: lastname,
+	  email,
+	  phone,
+	  image,
+	  studentClass,
+	  qrCode:qrCode.toString(),
+   };
+   const student = await prisma.student.create({
+	  data,
+   });
+
+
+
+	return resp;
+}
