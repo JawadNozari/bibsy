@@ -2,16 +2,17 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-export const GET = async () => {
+/* export const GET = async () => {
 	return NextResponse.json({ message: "Hello World" });
-};
+}; */
 
 const prisma = new PrismaClient();
 
-export const POST = async () => {
-	const userInvNr = 2131534756;
-	const selectedUser = { userType: "studentUser", id: 4 };
-	const currentStaff = { id: 3 };
+export const GET = async () => {
+	console.log("Here");
+	const userInvNr = 12318989;
+	const selectedUser = { userType: "studentUser", id: 1 };
+	const currentStaff = { id: 1 };
 
 	// if the teacher is borrowing a book for self.
 	if (selectedUser.userType === "staffUser") {

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
+export const GET = async () => {
+	return NextResponse.json({ message: "GET METHOD IS NOT ALLOWED" });
+};
 
 const prisma = new PrismaClient();
 type Data = {
