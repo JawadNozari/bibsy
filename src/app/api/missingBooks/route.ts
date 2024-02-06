@@ -1,14 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, missingBooks } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
 	return await prisma.missingBooks
 		.findMany()
-		.then((response) => {
+		.then((response: missingBooks) => {
 			console.log("response", response);
 			return NextResponse.json({ books: response }, { status: 200 });
 		})
-		.catch((error) => {
+		.catch((error: Error) => {
 			return NextResponse.json({ message: error }, { status: 500 });
 		})
 		.finally(() => {
@@ -41,10 +41,10 @@ export const POST = async () => {
 			// 	missing: true,
 			// },
 		})
-		.then((missing) => {
+		.then((missing: missingBooks) => {
 			return NextResponse.json(missing, { status: 200 });
 		})
-		.catch((error) => {
+		.catch((error: Error) => {
 			return NextResponse.json({ message: error }, { status: 500 });
 		})
 		.finally(() => {

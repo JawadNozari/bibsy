@@ -43,7 +43,7 @@ export const POST = async (req: NextRequest) => {
 						});
 				});
 		})
-		.catch((error) => {
+		.catch((error:Error) => {
 			return NextResponse.json({ message: error }, { status: 500 });
 		})
 		.finally(() => {

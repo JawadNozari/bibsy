@@ -50,7 +50,7 @@ export const POST = async (req: NextRequest) => {
 		.then((edit) => {
 			return NextResponse.json(edit, { status: 200 });
 		})
-		.catch((error) => {
+		.catch((error:Error) => {
 			console.debug(error);
 			return NextResponse.json(
 				{
