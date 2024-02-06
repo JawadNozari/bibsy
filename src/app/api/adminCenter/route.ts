@@ -4,7 +4,7 @@ import { PrismaClient, Student } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
-	return NextResponse.json({ message: "Hello World" });
+	return NextResponse.json({ message: "GET METHOD IS NOT ALLOWED" });
 };
 
 const prisma = new PrismaClient();
