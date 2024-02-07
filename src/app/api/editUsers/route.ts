@@ -51,4 +51,4 @@ export const POST = async (req: NextRequest) => {
 		console.log(Error);
 		prisma.$disconnect();
 };
-}
+};
