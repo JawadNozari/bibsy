@@ -5,6 +5,7 @@ const config: Config = {
 		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	theme: {
 		extend: {
@@ -20,13 +21,17 @@ const config: Config = {
 		({ addUtilities }: { addUtilities: any }) => {
 			const newUtilities = {
 				".sleek-scrollbar::-webkit-scrollbar": {
+<<<<<<< Updated upstream
 					backgroundColor: "#333333",
+=======
+					backgroundColor: "#555555",
+>>>>>>> Stashed changes
 					borderRadius: "0 10px 0 0",
 					width: "9px",
 				},
 				".sleek-scrollbar::-webkit-scrollbar-thumb": {
 					backgroundColor: "#222222",
-					borderRadius: "10px",
+					borderRadius: "0 10px 10px 0",
 				},
 				".no-scrollbar::-webkit-scrollbar": {
 					backgroundColor: "transparent",

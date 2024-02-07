@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 import React from "react";
 import BookList from "./Component/BookList";
+=======
+import React from "react"
+import BookList from "./Component/BookList"
+>>>>>>> Stashed changes
 // Define your component
 const Book = () => {
 	return (
@@ -11,8 +16,8 @@ const Book = () => {
 		>
 			<BookList />
 		</div>
-	);
-};
+	)
+}
 
 // Export your component
-export default Book;
+export default Book
