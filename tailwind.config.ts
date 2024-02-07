@@ -21,11 +21,7 @@ const config: Config = {
 		({ addUtilities }: { addUtilities: any }) => {
 			const newUtilities = {
 				".sleek-scrollbar::-webkit-scrollbar": {
-<<<<<<< Updated upstream
 					backgroundColor: "#333333",
-=======
-					backgroundColor: "#555555",
->>>>>>> Stashed changes
 					borderRadius: "0 10px 0 0",
 					width: "9px",
 				},

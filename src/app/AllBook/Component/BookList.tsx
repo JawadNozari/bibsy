@@ -20,12 +20,6 @@ interface Links {
 	name: string;
 	link: string;
 }
-<<<<<<< Updated upstream
-=======
-export default function BookList() {
-	const [books, setBooks] = useState<Array<Book>>([])
-	const [dropdown, setDropdown] = useState(false)
->>>>>>> Stashed changes
 
 interface LinkArray {
 	links: Links[];
@@ -51,21 +45,12 @@ export default function BookList() {
 		fetch("https://dummyjson.com/products")
 			.then((res) => res.json())
 			.then((data) => setBooks(data.products))
-<<<<<<< Updated upstream
 			.catch((error) => console.log(error));
 	}, []);
-=======
-			.catch((error) => console.log(error))
-	}, [])
-	console.log(books)
-	const dropdownClass =
-		"z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
->>>>>>> Stashed changes
 
 	// Dropdown class so that works with tailwind
 	return (
 		// TableTemplate edited
-<<<<<<< Updated upstream
 		<div className="size-9/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-start flex-wrap">
 			<div className="size-2/12 w-full">
 				{/* link container */}
@@ -86,10 +71,6 @@ export default function BookList() {
 				</div>
 			</div>
 			<div className="relative bottom-0 overflow-x-auto sleek-scrollbar shadow-md  size-10/12 rounded-tl-xl">
-=======
-		<div className="size-9/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh">
-			<div className="absolute bottom-0 overflow-x-auto sleek-scrollbar shadow-md  size-10/12 ">
->>>>>>> Stashed changes
 				<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 					<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0 p-3">
 						<tr>
@@ -145,7 +126,6 @@ export default function BookList() {
 					</tbody>
 				</table>
 			</div>
-<<<<<<< Updated upstream
 			<div
 				// dropdown Container
 				className="size-1/12 h-56 flex justify-start flex-col items-start"
@@ -209,61 +189,6 @@ export default function BookList() {
 						</li>
 					</ul>
 				</div>
-=======
-
-			<button
-				id="dropdownDefaultButton"
-				onClick={() => {
-					!dropdown ? setDropdown(true) : setDropdown(false)
-				}}
-				className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-				type="button"
-			>
-				Filter
-			</button>
-
-			<div
-				id="dropdown"
-				className={!dropdown ? "hidden" : `block ${dropdownClass}`}
-			>
-				<ul
-					className="py-2 text-sm text-gray-700 dark:text-gray-200"
-					aria-labelledby="dropdownDefaultButton"
-				>
-					<li>
-						<a
-							href="#TEMP"
-							className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-						>
-							Dashboard
-						</a>
-					</li>
-					<li>
-						<a
-							href="#TEMP"
-							className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-						>
-							Settings
-						</a>
-					</li>
-					<li>
-						<a
-							href="#TEMP"
-							className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-						>
-							Earnings
-						</a>
-					</li>
-					<li>
-						<a
-							href="#TEMP"
-							className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-						>
-							Sign out
-						</a>
-					</li>
-				</ul>
->>>>>>> Stashed changes
 			</div>
 		</div>
 	);

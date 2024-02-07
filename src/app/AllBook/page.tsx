@@ -1,10 +1,5 @@
-<<<<<<< Updated upstream
 import React from "react";
 import BookList from "./Component/BookList";
-=======
-import React from "react"
-import BookList from "./Component/BookList"
->>>>>>> Stashed changes
 // Define your component
 const Book = () => {
 	return (
