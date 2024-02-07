@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import { NextResponse } from "next/server";
 import example from "./example.json";
 export const GET = async () => {

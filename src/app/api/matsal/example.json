@@ -1,0 +1,64 @@
+{
+    "feedbackAllowed": true,
+    "weeks": [
+        {
+            "days": [
+                {
+                    "date": 1707091200,
+                    "items": [
+                        "Korv stroganoff med ris",
+                        "Vegetarisk Stroganoff med ris"
+                    ]
+                },
+                {
+                    "date": 1707177600,
+                    "items": [
+                        "Panerad fisk med kall örtsås & potatis",
+                        "Pad Thai med tofu & nudlar"
+                    ]
+                },
+                {
+                    "date": 1707264000,
+                    "items": [
+                        "Kyckling i curry serveras med ris",
+                        "Kikärtsbiff med varm currysås & ris"
+                    ]
+                },
+                {
+                    "date": 1707350400,
+                    "items": [
+                        "Spagetti med köttfärssås",
+                        "Spagetti med sojafärssås"
+                    ]
+                },
+                {
+                    "date": 1707436800,
+                    "items": [
+                        "Pannbiff med potatismos & tomatsås",
+                        "Vegobiff med potatismos & tomatsås"
+                    ]
+                }
+            ],
+            "number": 6,
+            "year": 2024
+        }
+    ],
+    "school": {
+        "URLName": "nti-gymnasiet-sodertorn",
+        "imageURL": "https://lh3.googleusercontent.com/tZkWrtMsOMKM1VkgfdLw5m1jUlQYy9V6S2cBGe4KGeqVgovn124UWXsN2Dzitxe0sHLX2uB2nLq-QPoUGd0",
+        "id": 282367002,
+        "district": {
+            "province": {
+                "URLName": "stockholms-lan",
+                "id": 5758661280399360,
+                "name": "Stockholms län"
+            },
+            "URLName": "huddinge-kommun",
+            "id": 78001,
+            "name": "Huddinge kommun"
+        },
+        "name": "NTI Gymnasiet Södertörn"
+    },
+    "id": 317010,
+    "bulletins": []
+}

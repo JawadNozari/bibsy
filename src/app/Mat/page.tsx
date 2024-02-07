@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function page() {
+export default function Page() {
 	const [currentLunch, setCurrentLunch] = useState(null);
 	const [currentVegetarian, setCurrentVegetarian] = useState(null);
 
