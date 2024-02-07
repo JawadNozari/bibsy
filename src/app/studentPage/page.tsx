@@ -1,22 +1,22 @@
-'use client'
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+"use client";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 
  
 
 const Table = ({ data }: { data: Array<object> }) => {
-  const [filteredData, setFilteredData] = useState(data)
-  console.log(filteredData)
+  const [filteredData, setFilteredData] = useState(data);
+  console.log(filteredData);
 
   const handleSearch = (event: { target: { value: string } }) => {
-    const value = event.target.value.toLowerCase()
+    const value = event.target.value.toLowerCase();
     const filtered = data.filter(
       (item) =>
         (item as { bookId: string, note: string }).bookId.toString().includes(value) || (item as { bookId: string, note: string }).note.toLowerCase().includes(value)
-    )
-    setFilteredData(filtered)
-  }
+    );
+    setFilteredData(filtered);
+  };
 
   return (
     <div className="container mx-auto px-4 sm:px-8">
@@ -111,34 +111,34 @@ const Table = ({ data }: { data: Array<object> }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 
 const Page = () => {
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]);
 
   useEffect(() => {
 
      const fetchData = async () => {
         try {
-          const response = await axios.get('/api/getUsers')
-          setData(response.data.staffUsers)
+          const response = await axios.get("/api/getUsers");
+          setData(response.data.staffUsers);
     
         } catch (error) {
-          console.error('Error fetching data:', error)
-          return []
+          console.error("Error fetching data:", error);
+          return [];
         }
-      }
-      fetchData()
-  }, [])
+      };
+      fetchData();
+  }, []);
 
-  console.log(data)
+  console.log(data);
   return (
     <div>
       <Table data={data} />
     </div>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;

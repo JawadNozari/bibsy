@@ -11,8 +11,8 @@ const Book = () => {
 		>
 			<BookList />
 		</div>
-	)
-}
+	);
+};
 
 // Export your component
-export default Book
+export default Book;
