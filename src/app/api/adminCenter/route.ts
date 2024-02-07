@@ -15,9 +15,9 @@ export const POST = async (req: NextRequest) => {
 	const { password, firstName, lastName, email, phone, image, classroom } =
 		(await req.json()) as Student; // We have to await the request body to get the data
 
-	console.log(` \n\n\nUsers Email:${email}`); 
+	console.log(` \n\n\nUsers Email:${email}`);
 	// Create a new student record using Prisma client
-	
+
 	return await prisma.student
 		.create({
 			data: {
@@ -34,8 +34,7 @@ export const POST = async (req: NextRequest) => {
 		.then((student) => {
 			return NextResponse.json(student, { status: 201 });
 		})
-		.catch((error) => {
-			
+		.catch((error: Error) => {
 			console.log(error);
 			return NextResponse.json(error, { status: 500 });
 		})
