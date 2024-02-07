@@ -9,10 +9,14 @@ const prisma = new PrismaClient();
 export const GET = async () => {
 	return await prisma.book
 		.findMany()
-		.then((books:Book[]) => {
+		.then((books: []) => {
+			// Sorts book by largest id
+			books.sort((a: Book, b: Book) => {
+				return b.id - a.id;
+			});
 			return NextResponse.json({ books: books }, { status: 200 });
 		})
-		.catch((error:Error) => {
+		.catch((error: Error) => {
 			return NextResponse.json({ message: error }, { status: 500 });
 		})
 		.finally(() => {
@@ -21,8 +25,7 @@ export const GET = async () => {
 };
 export const POST = async (req: NextRequest) => {
 	const request = await req.json();
-	const { invNr }: { invNr: number } = request;
-
+	const invNr: number = parseInt(request.invNr);
 	return await prisma.book
 		.findUnique({
 			where: {
@@ -32,8 +35,8 @@ export const POST = async (req: NextRequest) => {
 		.then((book) => {
 			return NextResponse.json(book, { status: 200 });
 		})
-		.catch((error:Error) => {
-			return NextResponse.json({ message: error }, { status: 500 });
+		.catch((error: Error) => {
+			return NextResponse.json({ message: error }, { status: 200 });
 		})
 		.finally(() => {
 			prisma.$disconnect();

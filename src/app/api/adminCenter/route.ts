@@ -12,20 +12,12 @@ const prisma = new PrismaClient();
 // Handler function for handling student registration
 export const POST = async (req: NextRequest) => {
 	// Get the student data from the request body
-	const {
-		password,
-		firstName,
-		lastName,
-		email,
-		phone,
-		image,
-		classroom,
-		qrCode,
-	} = (await req.json()) as Student; // We have to await the request body to get the data
+	const { password, firstName, lastName, email, phone, image, classroom } =
+		(await req.json()) as Student; // We have to await the request body to get the data
 
-	console.log(` \n\n\nUsers Email:${email}`);
+	console.log(` \n\n\nUsers Email:${email}`); 
 	// Create a new student record using Prisma client
-
+	
 	return await prisma.student
 		.create({
 			data: {
@@ -36,7 +28,7 @@ export const POST = async (req: NextRequest) => {
 				phone,
 				image,
 				classroom,
-				qrCode, // Add the qrCode property with a default value
+				qrCode: "6456", // Add the qrCode property with a default value
 			} as Student,
 		})
 		.then((student) => {
