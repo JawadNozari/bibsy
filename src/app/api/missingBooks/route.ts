@@ -1,38 +1,53 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export const GET = async () => {
-	return NextResponse.json({ message: "Hello World" });
+	return await prisma.missingBooks
+		.findMany()
+		.then((response) => {
+			console.log("response", response);
+			return NextResponse.json({ books: response }, { status: 200 });
+		})
+		.catch((error) => {
+			return NextResponse.json({ message: error }, { status: 500 });
+		})
+		.finally(() => {
+			prisma.$disconnect();
+		});
 };
 
 const prisma = new PrismaClient();
+//!! This API does look like BorrowedBooks API
+//!! Looks like fredrik is working on this so I will leave it to him
+export const POST = async () => {
+	// get the userId and userType from the request body
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
-	// try {
-	//   if (req.body.userId !== 0 && req.body.userId !== null) {
-	//     if (req.body.userType === "staff") {
-	//       const response = await prisma.missingBooks.findMany({
-	//         where: {
-	//           staffId: req.body.userId,
-	//         },
-	//       });
-	//       res.status(200).json({ books: response });
-	//     } else {
-	//       const response = await prisma.missingBooks.findMany({
-	//         where: {
-	//           studentId: req.body.userId,
-	//         },
-	//       });
-	//       res.status(200).json({ books: response });
-	//     }
-	//   } else {
-	// const response = await prisma.missingBooks.findMany();
-	// res.status(200).json({ books: response });
-	//   }
-	// } catch (error) {
-	//   console.log(error);
-	//   res.status(404).json({ message: error });
+	// Make sure the user is a staff
+	// if (userType !== "staff") {
+	// 	return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 	// }
-	NextResponse.json({ message: "Convert this" });
+	// // Check if the userId is undefined
+	// if (Object.keys(data).length === 0) {
+	// 	return NextResponse.json(
+	// 		{ message: "Malformed request syntax, Invalid request message framing" },
+	// 		{ status: 400 },
+	// 	);
+	// }
+
+	// Get the borrowed books based on staffId from the database
+	return await prisma.missingBooks
+		.findMany({
+			// where: {
+			// 	missing: true,
+			// },
+		})
+		.then((missing) => {
+			return NextResponse.json(missing, { status: 200 });
+		})
+		.catch((error) => {
+			return NextResponse.json({ message: error }, { status: 500 });
+		})
+		.finally(() => {
+			prisma.$disconnect();
+		});
 };

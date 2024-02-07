@@ -1,30 +1,37 @@
-import { PrismaClient } from "@prisma/client";
-import { NextResponse, NextRequest } from "next/server";
-
-export const GET = async () => {
-	return NextResponse.json({ message: "Hello World" });
-};
+import { PrismaClient, Staff, Student } from "@prisma/client";
+import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+type UserModel = Staff | Student;
+// This way you can use the same function to fetch both staff and student users
+const fetchUsers = async (model: keyof PrismaClient): Promise<UserModel[]> => {
 	try {
-		const staffUsers = await prisma.staff.findMany({
+		const users = await prisma[model as keyof PrismaClient & "staff"].findMany({
 			include: {
 				borrowed: true,
 			},
 		});
-		const studentUsers = await prisma.student.findMany({
-			include: {
-				borrowed: true,
-			},
-		});
-		const data = { staffUsers, studentUsers };
-		prisma.$disconnect();
-		return NextResponse.json(data);
+		return users;
 	} catch (error) {
 		console.error(error);
-		prisma.$disconnect();
-		return NextResponse.json({ error: error });
+		throw error;
 	}
+};
+
+export const GET = async () => {
+	try {
+		const staffUsers = await fetchUsers("staff"); // Fetch staff users
+		const studentUsers = await fetchUsers("student"); // Fetch student users
+		const data = { staffUsers: staffUsers, studentUsers: studentUsers }; // Combine the data
+		return NextResponse.json(data);
+	} catch (error) {
+		return NextResponse.json({ error: error });
+	} finally {
+		await prisma.$disconnect();
+	}
+};
+export const POST = async () => {
+	// Maybe use this to get specific user
+	return NextResponse.json({ message: "This Method is not impelemented yet!" });
 };

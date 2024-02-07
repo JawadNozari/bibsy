@@ -1,20 +1,22 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-export const GET = async () => {
-	return NextResponse.json({ message: "Hello World" });
-};
-
 const prisma = new PrismaClient();
 
+export const GET = async () => {
+	return await prisma.staff
+		.findMany()
+		.then((staff) => {
+			return NextResponse.json(staff, { status: 200 });
+		})
+		.catch((error) => {
+			return NextResponse.json({ error: error }, { status: 500 });
+		})
+		.finally(() => {
+			prisma.$disconnect();
+		});
+};
 export const POST = async () => {
-	try {
-		const allUsers = await prisma.staff.findMany();
-		return NextResponse.json(allUsers);
-	} catch (error) {
-		console.error(error);
-		throw error; // Throw the error to be caught in the catch block below
-	} finally {
-		await prisma.$disconnect();
-	}
+	// Maybe use this to get specific user
+	return NextResponse.json({ message: "This Method is not impelemented YET!" });
 };

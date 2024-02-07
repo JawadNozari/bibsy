@@ -4,7 +4,7 @@
 			"previewLimit": 50,
 			"server": "postgresql.jawad.se",
 			"port": 5432,
-			"askForPassword": true,
+			"askForPassword": false,
 			"driver": "PostgreSQL",
 			"name": "postgress",
 			"group": "server",

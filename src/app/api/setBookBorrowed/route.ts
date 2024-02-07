@@ -1,6 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+//TODO: This code needs cleanup
 import { PrismaClient } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export const GET = async () => {
 	return NextResponse.json({ message: "Hello World" });
@@ -8,7 +8,7 @@ export const GET = async () => {
 
 const prisma = new PrismaClient();
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async () => {
 	const userInvNr = 2131534756;
 	const selectedUser = { userType: "studentUser", id: 4 };
 	const currentStaff = { id: 3 };
