@@ -63,7 +63,7 @@ const Page = () => {
     }
   };
 
-    // Delete token on site exit
+    // Delete token on site exit (currently only in login)
     useEffect(() => {
       if (!remember) {
         const handleBeforeUnload = () => {

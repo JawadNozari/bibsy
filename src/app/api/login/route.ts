@@ -1,28 +1,55 @@
-import { PrismaClient } from "@prisma/client";
-import { NextResponse } from "next/server";
+import { PrismaClient, Staff } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-export const POST = async () => {
-	//TODO Property user does not exist on type PrismaClient right now. We can use staff for now for testing purposes
-	return await prisma.staff
-		.findMany({
-			include: {
-				//TODO Password check ?
-				//TODO Username check ?
-			},
-		})
-		.then((users) => {
-			//TODO Maybe return usertype and a session token ?
-			return NextResponse.json(users, { status: 200 });
-		})
-		.catch((error) => {
-			return NextResponse.json({ message: error }, { status: 500 });
-		})
-		.finally(() => {
-			prisma.$disconnect();
-		});
+//TODO: 1. Student authentication 2. Restrict access without token accordingly 3. Implement 'remember me' feature 4? Password hash
+export const POST = async (req: NextRequest) => {
+  try {
+
+	// Parse from request
+	const body = await req.json();
+
+	// Assign credentials to variables
+    const userInfo = {
+      username: body.userCredentials.username, // ! USERNAME IS EMAIL
+      password: body.userCredentials.password,
+      remember: body.remember
+    };
+
+	// Find user that matches with given credentials
+    return await prisma.staff //* Currently only for staff
+      .findFirst({
+        where: {
+          AND: [
+            { email: userInfo.username },
+            { password: userInfo.password },
+			      { admin: true }
+          ]
+        }
+      }) 
+
+	  // Give token on login (session)
+      .then((user: Staff) => {
+        if (user) {
+          const token = jwt.sign({ user }, "admin", { expiresIn: "1h" });
+          return NextResponse.json({ token }, { status: 200 });
+        } else {
+          return NextResponse.json({ error: "Invalid username or password" }, { status: 401 });
+        }
+      })
+      .catch((error: Error) => {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      })
+      .finally(() => {
+        prisma.$disconnect();
+      });
+  } catch (error) {
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
 };
+
 export const GET = async () => {
-	return NextResponse.json({ message: "This method is not implemented yet" });
+  return NextResponse.json({ message: "This method is not implemented yet" });
 };

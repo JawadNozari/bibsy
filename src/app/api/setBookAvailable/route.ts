@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Book } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
@@ -12,7 +12,7 @@ export const POST = async (req: NextRequest) => {
 	const { bookId, listType }: { bookId: number; listType: string } = request;
 	if (listType === "missing") {
 		// update the book status to available
-		return await prisma.book
+		await prisma.book
 			.update({
 				where: {
 					id: bookId,
@@ -21,86 +21,69 @@ export const POST = async (req: NextRequest) => {
 					available: true,
 				},
 			})
-			.then(async () => {
+			.then(async (book) => {
 				// remove the book from the missing list if it is found
 				await prisma.missingBooks
-					.delete({ where: { id: bookId } })
-					.then((book) => {
+					.deleteMany({ where: { bookId: book.id } })
+					.then((book: []) => {
 						return NextResponse.json({ book: book }, { status: 200 });
 					});
 			})
-			.catch((error) => {
-				return NextResponse.json({ message: error }, { status: 500 });
+			.catch((error: Error) => {
+				return NextResponse.json({ message: error }, { status: 200 });
 			})
 			.finally(() => {
 				prisma.$disconnect();
+				return NextResponse.json(
+					{ message: "Check setBookAvialable for more info" },
+					{ status: 200 },
+				);
 			});
-		// } else {
-		// 	// remove the book from the borrowed list if it is returned
-		// 	await prisma.borrowedBooks.delete({ where: { id: bookId } });
-		// }
-
-		// if (req.body.listType === "missing") {
-		// 	try {
-		// 		const getBook = await prisma.missingBooks.findMany({
-		// 			where: {
-		// 				bookId: req.body.bookId,
-		// 			},
-		// 		});
-		// 		const book = getBook[0];
-		// 		await prisma.missingBooks.delete({
-		// 			where: {
-		// 				id: book.id,
-		// 			},
-		// 		});
-		// 		const response = await prisma.book.update({
-		// 			where: {
-		// 				id: req.body.bookId,
-		// 			},
-		// 			data: {
-		// 				available: true,
-		// 			},
-		// 		});
-		// 		res.status(200).json({ books: response });
-		// 	} catch (error) {
-		// 		console.log(error);
-		// 		res.status(404).json({ message: error });
-		// 	}
-		// } else if (req.body.listType === "borrowed") {
-		// 	try {
-		// 		const getBook = await prisma.borrowedBooks.findMany({
-		// 			where: {
-		// 				bookId: req.body.bookId,
-		// 			},
-		// 		});
-		// 		const book = getBook[0];
-		// 		await prisma.borrowedBooks.delete({
-		// 			where: {
-		// 				id: book.id,
-		// 			},
-		// 		});
-		// 		const response = await prisma.book.update({
-		// 			where: {
-		// 				id: req.body.bookId,
-		// 			},
-		// 			data: {
-		// 				available: true,
-		// 			},
-		// 		});
-		// 		res.status(200).json({ books: response });
-		// 	} catch (error) {
-		// 		console.log(error);
-		// 		res.status(404).json({ message: error });
-		// 	}
-		// } else {
-		// 	res.status(404).json({ message: "Method not allowed" });
-		// }
+		return NextResponse.json("Book has been set to available!", {
+			status: 200,
+		});
 	}
+
+	if (listType === "borrowed") {
+		// update the book status to available
+		console.log("bookId: ", bookId);
+		await prisma.book
+			.update({
+				where: {
+					id: bookId,
+				},
+				data: {
+					available: true,
+				},
+			})
+			.then(async (book: Book) => {
+				// remove the book from the borrowed list if it is found
+				await prisma.borrowedBooks
+					.deleteMany({ where: { bookId: book.id } })
+					.then((book: []) => {
+						return NextResponse.json({ book: book }, { status: 200 });
+					});
+			})
+			.catch((error: Error) => {
+				return NextResponse.json({ message: error }, { status: 200 });
+			})
+			.finally(() => {
+				prisma.$disconnect();
+				return NextResponse.json(
+					{ message: "Check setBookAvialable for more info" },
+					{ status: 200 },
+				);
+			});
+		return NextResponse.json("Book has been set to available!", {
+			status: 200,
+		});
+	}
+
 	console.debug(
 		"\n\n\n We have not any other listType than 'missing' for now. Please check the code. and add the other listType.\n\n\n",
 	);
 	return NextResponse.json(
 		{ message: "Check setBookAvialable for more info" },
-		{ status: 400 },
+		{ status: 200 },
 	);
 };
