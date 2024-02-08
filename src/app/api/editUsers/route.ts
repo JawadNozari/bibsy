@@ -10,7 +10,7 @@ export const GET = async () => {
 
 const prisma = new PrismaClient();
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest) => {
 	try {
 		const formData = await req.formData();
 			console.log(formData);
