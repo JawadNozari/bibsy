@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
+import bcrypt from "bcryptjs";
 
 export default function Page() {
 	const [password, setPassword] = useState("");
@@ -10,19 +11,21 @@ export default function Page() {
 	const [email, setEmail] = useState("");
 	const [image, setImage] = useState("");
 	const [admin, setAdmin] = useState(false);
-	const [qrCode, setQrCode] = useState("");
+	// const [qrCode, setQrCode] = useState("");
+    const [role] = useState("Staff");
 
 	const handleSubmit = (e: React.SyntheticEvent) => {
 		e.preventDefault();
+        const hashedPassword = bcrypt.hashSync(password, 10);
 		axios.post("/api/adminStaffReg", {
-			password: password,
+			password: hashedPassword,
 			firstName: firstName,
 			lastName: lastName,
 			email: email,
 			phone: phone,
 			image: image,
 			admin: Boolean(admin),
-			qrCode: qrCode,
+			qrCode: firstName + lastName + role,
 		});
 	};
 	return (
@@ -43,14 +46,14 @@ export default function Page() {
 				id="LastName"
 				name="LastName"
 			/>
-			<input
-				type="text"
-				value={password}
-				onChange={(e) => setPassword(e.target.value)}
-				placeholder="password"
-				id="password"
-				name="password"
-			/>
+             <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="password"
+                id="password"
+                name="password"
+            />
 			<div>
 				<input
 					type="string"
@@ -76,14 +79,14 @@ export default function Page() {
 					name="admin"
 					id="admin"
 				/>
-				<input
+				{/* <input
 					type="string"
 					value={qrCode}
 					onChange={(e) => setQrCode(e.target.value)}
 					placeholder="qrCode"
 					name="qrCode"
 					id="qrCode"
-				/>
+				/> */}
 				<input
 					type="text"
 					value={email}

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
+import bcrypt from "bcryptjs";
 
 export default function Page() {
 	const [password, setPassword] = useState("");
@@ -10,19 +11,20 @@ export default function Page() {
 	const [email, setEmail] = useState("");
 	const [image, setImage] = useState("");
 	const [classroom, setClassroom] = useState("");
-	const [qrCode, setQrCode] = useState("");
+	// const [qrCode, setQrCode] = useState("");
 
 	const handleSubmit = (e: React.SyntheticEvent) => {
 		e.preventDefault();
+		const hashedPassword = bcrypt.hashSync(password, 10);
 		axios.post("/api/adminCenter", {
-			password: password,
+			password: hashedPassword,
 			firstName: firstName,
 			lastName: lastName,
 			email: email,
 			phone: phone,
 			image: image,
 			classroom: classroom,
-			qrCode: qrCode,
+			qrCode: firstName + lastName + classroom,
 		});
 	};
 	return (
@@ -44,7 +46,7 @@ export default function Page() {
 				name="LastName"
 			/>
 			<input
-				type="text"
+				type="password"
 				value={password}
 				onChange={(e) => setPassword(e.target.value)}
 				placeholder="password"
@@ -76,14 +78,14 @@ export default function Page() {
 					name="classroom"
 					id="classroom"
 				/>
-				<input
+				{/* <input
 					type="string"
 					value={qrCode}
 					onChange={(e) => setQrCode(e.target.value)}
 					placeholder="qrCode"
 					name="qrCode"
 					id="qrCode"
-				/>
+				/> */}
 				<input
 					type="text"
 					value={email}
