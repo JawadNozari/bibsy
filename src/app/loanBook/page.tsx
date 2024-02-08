@@ -238,7 +238,7 @@ export default function Home() {
 						</div> 
 						
 						<div className="mt-10 justify-center flex">
-							<button type="button"className="btn block   m-3  dark:bg-gray-700  btn-active btn-neutral">Laon</button>
+							<button type="submit"className="btn block   m-3  dark:bg-gray-700  btn-active btn-neutral">Laon</button>
 						</div>
 					</form>
 				</div>
