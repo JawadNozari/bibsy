@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
 
 interface User {
@@ -150,6 +151,13 @@ export default function Home() {
 		}
 	};
   
+	const handleSubmit = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        return axios.post("/api/setBookBorrowed", {
+			userId: selectedUser,
+			isbn: isbn,
+        });
+    };
   
 	return (
 	 	<main className="flex min-h-screen items-center justify-around bg-neutral-50 text-black"> {/* flex min-h-screen flex-col items-center justify-between p-24 */}
@@ -176,7 +184,7 @@ export default function Home() {
 					</div>
 				)}
 				<div className="justify-center flex w-[25rem] h-[27rem] bg-neutral-200 rounded-md">
-				    <form className="flex flex-col w-64" autoComplete="off">
+				    <form onSubmit={handleSubmit} className="flex flex-col w-64" autoComplete="off">
 						<div className="flex justify-center mb-10 items-center m-3 border">
 							<h1 className="text-4xl font-bold text-center">Loan Book</h1>
 						</div>
@@ -237,12 +245,13 @@ export default function Home() {
 
 						<div className="mt-5">
   							<label htmlFor="isbn" className="block mb-2 text-lg font-medium text-gray-900 text-center">ISBN</label>
-							<input type="text" id="isbn" value={isbn} onChange={handleISBNChange} className="input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+							<input type="text" name="isbn" id="isbn" value={isbn} onChange={handleISBNChange} className="input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
 						</div> 
 						
 						<div className="mt-10 justify-center flex">
-							<button className="btn block   m-3  dark:bg-gray-700  btn-active btn-neutral">Laon</button>
+							<button type="submit" className="btn block   m-3  dark:bg-gray-700  btn-active btn-neutral">Loan</button>
 						</div>
+
 					</form>
 				</div>
 
