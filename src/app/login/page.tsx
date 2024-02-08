@@ -19,7 +19,7 @@ const Page = () => {
   const [checked, setChecked] = useState<boolean>(false);
 
   // Handling functions
-  const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => { // USERNAME IS EMAIL
+  const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => { // ! USERNAME IS EMAIL !
     setFormData((prevData) => ({ ...prevData, username: e.target.value }));
   };
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -52,8 +52,11 @@ const Page = () => {
       if (response.ok) {
         const responseData = await response.json();
         localStorage.setItem("token", responseData.token);
-        console.log("Login successful:", responseData.token);
-        router.push("/");
+        var decodedToken = JSON.parse(atob(responseData.token.split(".")[1])); // Decode JWT to get user details
+        console.log("Login successful:", decodedToken.user.id);
+        
+        router.push("/protectedPage");
+
       } else {
         const errorData = await response.json();
         console.error("Login failed:", errorData.error);
@@ -62,21 +65,6 @@ const Page = () => {
       console.error("Error during form submission:", error);
     }
   };
-
-    // Delete token on site exit (currently only in login)
-    useEffect(() => {
-      if (!remember) {
-        const handleBeforeUnload = () => {
-          localStorage.removeItem("token");
-        };
-    
-        window.addEventListener("beforeunload", handleBeforeUnload);
-    
-        return () => {
-          window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-      }
-    }, [remember]); 
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark">
