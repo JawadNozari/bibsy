@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
+import axios from "axios";
 
 interface User {
   id: number;
@@ -25,10 +26,10 @@ interface Book {
 	title: string;
 	bookImg: string;
 	author: string;
-	isbn: number;
+	invNr: number;
 	available: boolean;
 	regDate: string; 
-	invNr: number;
+	isbn: number;
 
 }
   
@@ -47,7 +48,7 @@ export default function Home() {
 	const [showList, setShowList] = useState(false); // List hidden by default
 	const [selectedUser, setSelectedUser] = useState<User | null>(null); // Add selected user state
 	const userClickedRef = useRef(false); // Add this ref
-	const [isbn, setIsbn] = useState("");
+	const [invNr, setinvNr] = useState("");
 	const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
 
@@ -101,10 +102,10 @@ export default function Home() {
 	    }
 	};
 
-	const handleISBNChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setIsbn(event.target.value);
+	const handleinvNrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setinvNr(event.target.value);
 	  
-		// Search for a book with the entered ISBN
+		// Search for a book with the entered invNr
 		const book = data2?.books.find((book) => book.invNr.toString() === event.target.value);
 	  
 		// Update the selected book
@@ -146,6 +147,15 @@ export default function Home() {
 			},  500);
 		}
 	};
+
+	const handleSubmit = (e:React.SyntheticEvent) => {
+		e.preventDefault();
+		console.log("Submitted");
+		return axios.post("/api/setBookBorrowed", {
+			user: selectedUser,
+			invNr: invNr,
+		});
+	};
   
   
 	return (
@@ -159,8 +169,8 @@ export default function Home() {
 						</div>
 						<div className="m-10 justify-center items-center flex">
 							{/* <img src={selectedUser.image} alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-20 h-20 rounded-full m-5" />	 */}
-							<Image src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-28 h-28 mask mask-hexagon m-5" />
-						</div>
+{/* 							<Image src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-28 h-28 mask mask-hexagon m-5" />
+ */}						</div>
 						<div className="m-5 ">
 							<p>Name: {selectedUser.firstName} {selectedUser.lastName}</p>
 						</div>
@@ -173,7 +183,7 @@ export default function Home() {
 					</div>
 				)}
 				<div className="justify-center flex w-[25rem] h-[27rem] bg-neutral-200 rounded-md">
-				    <form className="flex flex-col w-64" autoComplete="off">
+				    <form onSubmit={handleSubmit} className="flex flex-col w-64" autoComplete="off">
 						<div className="flex justify-center mb-10 items-center m-3 border">
 							<h1 className="text-4xl font-bold text-center">Loan Book</h1>
 						</div>
@@ -233,8 +243,8 @@ export default function Home() {
 						</div>
 
 						<div className="mt-5">
-  							<label htmlFor="isbn" className="block mb-2 text-lg font-medium text-gray-900 text-center">ISBN</label>
-							<input type="text" id="isbn" value={isbn} onChange={handleISBNChange} className="input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+  							<label htmlFor="invNr" className="block mb-2 text-lg font-medium text-gray-900 text-center">invNr</label>
+							<input type="text" id="invNr" value={invNr} onChange={handleinvNrChange} className="input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
 						</div> 
 						
 						<div className="mt-10 justify-center flex">
@@ -255,8 +265,8 @@ export default function Home() {
 				<div className="ml-20">
  					{selectedBook && (
   						<div className="w-[15rem] h-[20rem] border">
-    					  <Image src={selectedBook.bookImg} alt="book cover" className="w-[15rem] h-[20rem]" />
-     					  <h1 className="text-center mt-5 text-xl">{selectedBook.title}</h1>
+{/*     					  <Image src={selectedBook.bookImg} alt="book cover" className="w-[15rem] h-[20rem]" />
+ */}     					  <h1 className="text-center mt-5 text-xl">{selectedBook.title}</h1>
    						</div>
   					)}
 				</div>
