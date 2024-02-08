@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 
 interface User {
   id: number;
@@ -41,8 +42,6 @@ interface BookApiResponse {
 export default function Home() {
     const [apiData, setApiData] = useState<ApiResponse[]>([]);
 	const [data2, setData2] = useState<BookApiResponse | null>(null);
-    const [students, setStudents] = useState<User[]>([]);
-	const [staff, setStaff] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true); 
 	const [searchQuery, setSearchQuery] = useState(""); // Add search query state
 	const [showList, setShowList] = useState(false); // List hidden by default
@@ -67,8 +66,6 @@ export default function Home() {
 				  const data2: BookApiResponse = await response2.json();
 
 				  // * Set the fetched data to the state
-				  setStaff(data.staffUsers); 
-				  setStudents(data.studentUsers);  
 				  setApiData([data]); 
 				  
 				  // * Set the fetched data to the state
@@ -157,12 +154,12 @@ export default function Home() {
 				{selectedUser && (
 					<div className="w-[25rem] border card-normal  mr-10 h-[30rem] ">
 						<div className=" text-center">
-							<button className="btn m-3 btn-wide btn-active btn-neutral" onClick={() => setSelectedUser(null)}>Close</button> 
+							<button type="button" className="btn m-3 btn-wide btn-active btn-neutral" onClick={() => setSelectedUser(null)}>Close</button> 
 							{/* <h2>Selected User Details</h2> */}
 						</div>
 						<div className="m-10 justify-center items-center flex">
 							{/* <img src={selectedUser.image} alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-20 h-20 rounded-full m-5" />	 */}
-							<img src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-28 h-28 mask mask-hexagon m-5" />
+							<Image src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-28 h-28 mask mask-hexagon m-5" />
 						</div>
 						<div className="m-5 ">
 							<p>Name: {selectedUser.firstName} {selectedUser.lastName}</p>
@@ -205,9 +202,9 @@ export default function Home() {
 												<h1 className="m-1 text-xl text-center border-b border-gray-300 bg-slate-800  p-2 cursor-pointer ">Staff Users:</h1>
 												{filterUsers(apiData.flatMap((data) => data.staffUsers))
 													.map((staff) => (
-										  		 	    <ul className="border-b list-none  border-gray-300 bg-slate-800  p-2 cursor-pointer ">
+										  		 	    <ul className="border-b list-none  border-gray-300 bg-slate-800  p-2 cursor-pointer " key={staff.id}>
 															<li>
-																<button className="m-1" key={staff.id} onClick={() => handleUserClick(staff)}>
+																<button type="button" className="m-1" key={staff.id} onClick={() => handleUserClick(staff)}>
 																	{staff.firstName} {staff.lastName} (Admin)
 																</button>
 															</li>
@@ -219,9 +216,9 @@ export default function Home() {
 												<h1 className="m-1 text-xl text-center border-b border-gray-300  bg-slate-800  p-2 cursor-pointer ">Student Users:</h1>
 												{filterUsers(apiData.flatMap((data) => data.studentUsers))
 					 								.map((student) => (
-														<ul className="border-b list-none border-gray-300 bg-slate-800  p-2 cursor-pointer ">
+														<ul className="border-b list-none border-gray-300 bg-slate-800  p-2 cursor-pointer " key={student.id}>
 															<li>
-																<button className="m-1" key={student.id} onClick={() => handleUserClick(student)}>
+																<button type="button" className="m-1" key={student.id} onClick={() => handleUserClick(student)}>
 																	{student.firstName} {student.lastName} (Student)
 																</button>
 															</li>
@@ -241,7 +238,7 @@ export default function Home() {
 						</div> 
 						
 						<div className="mt-10 justify-center flex">
-							<button className="btn block   m-3  dark:bg-gray-700  btn-active btn-neutral">Laon</button>
+							<button type="button"className="btn block   m-3  dark:bg-gray-700  btn-active btn-neutral">Laon</button>
 						</div>
 					</form>
 				</div>
@@ -258,7 +255,7 @@ export default function Home() {
 				<div className="ml-20">
  					{selectedBook && (
   						<div className="w-[15rem] h-[20rem] border">
-    					  <img src={selectedBook.bookImg} alt="book cover" className="w-[15rem] h-[20rem]" />
+    					  <Image src={selectedBook.bookImg} alt="book cover" className="w-[15rem] h-[20rem]" />
      					  <h1 className="text-center mt-5 text-xl">{selectedBook.title}</h1>
    						</div>
   					)}
