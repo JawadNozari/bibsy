@@ -59,7 +59,7 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 	const theme: { [key: string]: string } = {
 		book: " dark:bg-blue-800 focus:border-blue-800 hover:bg-blue-900",
 		available: " dark:bg-green-600 focus:border-green-600 hover:bg-green-700",
-		missing: " dark:bg-red-600  focus:border-red-600 hover:bg-red-700",
+		missing: " dark:bg-red-600 focus:border-red-600 hover:bg-red-700",
 		borrowed: " dark:bg-yellow-600 focus:border-yellow-600 hover:bg-yellow-700",
 	};
 	// Fetching data
@@ -93,8 +93,8 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 					{/* spaceDiv */}
 				</div>
 			</div>
-			<div className="relative bottom-0 overflow-x-auto sleek-scrollbar shadow-md  size-10/12 rounded-tl-xl">
-				<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+			<div className="relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-700 shadow-md  size-10/12 rounded-t-xl">
+				<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-300">
 					<thead className="text-xs  uppercase bg-gray-50 dark:bg-gray-700 dark:text-white sticky top-0 p-3">
 						<tr>
 							<th colSpan={5}>
@@ -149,7 +149,10 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 							<th scope="col" className="px-6 py-3">
 								Price
 							</th>
-							<th scope="col" className="px-6 py-3">
+							<th
+								scope="col"
+								className="px-6 py-3 flex justify-center items-center w-full h-full"
+							>
 								Action
 							</th>
 						</tr>
@@ -175,7 +178,7 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 								<td className="px-6 py-4">
 									${books.length > 0 ? books[index]?.price : "loading..."}
 								</td>
-								<td className="px-6 py-4">
+								<td className="px-6 py-4 flex justify-center items-center w-full h-full">
 									<a
 										href={books[index]?.id}
 										className="font-medium text-red-600 hover:underline"

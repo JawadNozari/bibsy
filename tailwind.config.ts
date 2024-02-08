@@ -43,6 +43,7 @@ const config: Config = {
 			addUtilities(newUtilities);
 		},
 		require("daisyui"),
+		require("tailwind-scrollbar"),
 	],
 };
 export default config;
