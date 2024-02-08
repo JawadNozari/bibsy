@@ -12,8 +12,8 @@ const prisma = new PrismaClient();
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
 	try {
-		const formData = await req.formData()
-			console.log(formData)
+		const formData = await req.formData();
+			console.log(formData);
 			const file = formData.get("file");
 			const Id = formData.get("id");
 			const userType = formData.get("userType") as string;
@@ -27,13 +27,13 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 			const Admin = formData.get("Admin") as string;
 
 			const admin = Boolean(Admin);
-			const id = Number(Id)
+			const id = Number(Id);
 
 			const buffer = Buffer.from(await (file as File).arrayBuffer());
 			const filename = (file as File).name.replaceAll(" ", "_");
 			const uploadDirectory = path.join(process.cwd(), "public/UploadedImage");
 
-			console.log(filename)
+			console.log(filename);
 			// Create the directory if it doesn't exist
 			await mkdir(uploadDirectory, { recursive: true });
 			await writeFile(path.join(uploadDirectory, filename), buffer);
@@ -70,7 +70,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 				  classroom: studentclass
 				},
 			  });
-			  console.log(stn)
+			  console.log(stn);
 			  prisma.$disconnect();
 			  return NextResponse.json({ message: "Stundent Edited, "});
 			}
