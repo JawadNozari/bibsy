@@ -94,7 +94,10 @@ export const POST = async (req:NextRequest) => {
 			} catch (error) {
 				console.log(error);
 				return NextResponse.json({ message: error },{ status: 500 });
-		}
+			} finally {
+				// Disconnect from the database
+				await prisma.$disconnect();
+			}
 	} 
 	// If the staff member is borrowing a book for a student
 	else if (selectedUser.userType === "studentUser") {
@@ -157,6 +160,9 @@ export const POST = async (req:NextRequest) => {
 		catch (error) {
 			console.log(error);
 			return NextResponse.json({ message: error },{ status: 500 });
+		} finally {
+			// Disconnect from the database
+			await prisma.$disconnect();
 		}
 	}
 };
