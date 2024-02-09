@@ -12,7 +12,6 @@ export default function Page() {
 	const [password, setPassword] = useState<string>("");
 	const [email, setEmail] = useState<string>("");
 	const [phone, setPhone] = useState<string>("");
-	const [qrCode, setQrcode] = useState<string>("");
 	const [studentclass, setClass] = useState<string>("");
     const [message, setMessage] = useState<string | undefined>("");
 	const [gotError, setgotError] = useState<boolean>(false);
@@ -32,7 +31,6 @@ export default function Page() {
 		formData.append("password", password);
 		formData.append("email", email);
 		formData.append("phone", phone);
-		formData.append("qrCode", qrCode);
 		formData.append("studentclass", studentclass);
 		formData.append("Admin", Admin);
         
@@ -123,15 +121,6 @@ export default function Page() {
                 }}                placeholder="phone"
                 name="phone"
                 id="phone"
-            />
-            <input
-                type="text"
-                value={qrCode}
-                onChange={(e) => {
-                    setQrcode(e.target.value);
-                }}                placeholder="qrCode"
-                name="qrCode"
-                id="qrCode"
             />
             <input
                 type="text"
