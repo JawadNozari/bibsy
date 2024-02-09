@@ -1,6 +1,7 @@
 "use client";
-import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
+import Image from "next/image";
+import axios from "axios";
 
 interface User {
   id: number;
@@ -25,10 +26,10 @@ interface Book {
 	title: string;
 	bookImg: string;
 	author: string;
-	isbn: number;
+	invNr: number;
 	available: boolean;
 	regDate: string; 
-	invNr: number;
+	isbn: number;
 
 }
   
@@ -42,14 +43,12 @@ interface BookApiResponse {
 export default function Home() {
     const [apiData, setApiData] = useState<ApiResponse[]>([]);
 	const [data2, setData2] = useState<BookApiResponse | null>(null);
-    const [students, setStudents] = useState<User[]>([]);
-	const [staff, setStaff] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true); 
 	const [searchQuery, setSearchQuery] = useState(""); // Add search query state
 	const [showList, setShowList] = useState(false); // List hidden by default
 	const [selectedUser, setSelectedUser] = useState<User | null>(null); // Add selected user state
 	const userClickedRef = useRef(false); // Add this ref
-	const [isbn, setIsbn] = useState("");
+	const [invNr, setinvNr] = useState("");
 	const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
 
@@ -68,8 +67,6 @@ export default function Home() {
 				  const data2: BookApiResponse = await response2.json();
 
 				  // * Set the fetched data to the state
-				  setStaff(data.staffUsers); 
-				  setStudents(data.studentUsers);  
 				  setApiData([data]); 
 				  
 				  // * Set the fetched data to the state
@@ -98,30 +95,31 @@ export default function Home() {
 	// * Handle search input change
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 	  setSearchQuery(event.target.value);
-	  setShowList(true); // Show list on any search input
+	  setShowList(true); //* Show list on any search input
 
 	    if (event.target.value === "") {
-		 setSelectedUser(null); // Clear selected user on empty search input
+		 setSelectedUser(null); //* Clear selected user on empty search input
 	    }
 	};
 
-	const handleISBNChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setIsbn(event.target.value);
+	const handleinvNrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setinvNr(event.target.value);
 	  
-		// Search for a book with the entered ISBN
+		//* Search for a book with the entered invNr
 		const book = data2?.books.find((book) => book.invNr.toString() === event.target.value);
 	  
-		// Update the selected book
+		//*  Update the selected book
 		setSelectedBook(book || null);
 	};
   
 	// * Filter users based on search query
 	const filterUsers = (users: User[]) => {
+		// * If there is no search query, return all users
 		if (!searchQuery) {
 		   	return users;
 		}
 		
-		// Normalize search query and user names for case-insensitive search
+		// * Normalize search query and user names for case-insensitive search
 		const normalizedQuery = searchQuery.toLowerCase();
 		return users.filter((user) => {
 		    const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
@@ -129,16 +127,16 @@ export default function Home() {
 		});
     };  
      
-	// * Handle user click event
+	//* Handle user click event
 	const handleUserClick = (user: User) => {
-		setSelectedUser(user); // Store selected user on click
-		userClickedRef.current = true; // Set the ref to true on user click
-		setSearchQuery(`${user.firstName} ${user.lastName}`); // Set search query to the user's name
+		setSelectedUser(user); //* Store selected user on click
+		userClickedRef.current = true; // * Set the ref to true on user click
+		setSearchQuery(`${user.firstName} ${user.lastName}`); //*  Set search query to the user's name
 		console.log(selectedUser?.image);
 		console.log(selectedUser);
 	};
  
-	// * Handle focus out event
+	//* Handle focus out event
 	const handleFocusOut = () => {
 
 		if (!searchQuery) {
@@ -146,31 +144,34 @@ export default function Home() {
 				if (!selectedUser) {
 					setShowList(false);
 				}
-				userClickedRef.current = false; // Reset the ref after the timeout´
+				userClickedRef.current = false; //* Reset the ref after the timeout´
 			},  500);
 		}
 	};
+
+	const handleSubmit = (e:React.SyntheticEvent) => {
+		e.preventDefault();
+		console.log("Submitted");
+		return axios.post("/api/setBookBorrowed", {
+			user: selectedUser,
+			invNr: invNr,
+		});
+	};
   
-	const handleSubmit = (e: React.SyntheticEvent) => {
-        e.preventDefault();
-        return axios.post("/api/setBookBorrowed", {
-			userId: selectedUser,
-			isbn: isbn,
-        });
-    };
   
 	return (
-	 	<main className="flex min-h-screen items-center justify-around bg-neutral-50 text-black"> {/* flex min-h-screen flex-col items-center justify-between p-24 */}
+	 	<main className="flex min-h-screen items-center justify-around bg-neutral-50 text-black"> 
 		    <div className="flex  justify">
 				{selectedUser && (
 					<div className="w-[25rem] border card-normal  mr-10 h-[30rem] ">
 						<div className=" text-center">
-							<button className="btn m-3 btn-wide btn-active btn-neutral" onClick={() => setSelectedUser(null)}>Close</button> 
+							<button type="button" className="btn m-3 btn-wide btn-active btn-neutral" onClick={() => setSelectedUser(null)}>Close</button> 
 							{/* <h2>Selected User Details</h2> */}
 						</div>
 						<div className="m-10 justify-center items-center flex">
 							{/* <img src={selectedUser.image} alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-20 h-20 rounded-full m-5" />	 */}
-							<img src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-28 h-28 mask mask-hexagon m-5" />
+							<img src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-20 h-20 rounded-full m-5" />	
+							{/* <Image src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} height={112} width={112} className="w-28 h-28 mask mask-hexagon m-5" /> */}
 						</div>
 						<div className="m-5 ">
 							<p>Name: {selectedUser.firstName} {selectedUser.lastName}</p>
@@ -199,7 +200,7 @@ export default function Home() {
 									onChange={handleSearchChange}
 									onFocus={() => setShowList(!showList)} 
 									onBlur={handleFocusOut}
-									placeholder="Search by name..."
+									placeholder="Search User..."
 									className="rounded-md  input  bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 								/>
 						        
@@ -207,15 +208,15 @@ export default function Home() {
 									{isLoading ? (
 										<p>Loading data...</p>
 										) : (
-										// Conditionally render the list based on showList and searchQuery
+										//*  Conditionally render the list based on showList and searchQuery
 										showList && (
 											<div className=" mt-1 rounded-lg absolute no-scrollbar  overflow-x-auto overflow-scroll text-white w-64 h-64 bg-slate-800">
 												<h1 className="m-1 text-xl text-center border-b border-gray-300 bg-slate-800  p-2 cursor-pointer ">Staff Users:</h1>
 												{filterUsers(apiData.flatMap((data) => data.staffUsers))
 													.map((staff) => (
-										  		 	    <ul className="border-b list-none  border-gray-300 bg-slate-800  p-2 cursor-pointer ">
+										  		 	    <ul className="border-b list-none  border-gray-300 bg-slate-800  p-2 cursor-pointer " key={staff.id}>
 															<li>
-																<button className="m-1" key={staff.id} onClick={() => handleUserClick(staff)}>
+																<button type="button" className="m-1" key={staff.id} onClick={() => handleUserClick(staff)}>
 																	{staff.firstName} {staff.lastName} (Admin)
 																</button>
 															</li>
@@ -227,9 +228,9 @@ export default function Home() {
 												<h1 className="m-1 text-xl text-center border-b border-gray-300  bg-slate-800  p-2 cursor-pointer ">Student Users:</h1>
 												{filterUsers(apiData.flatMap((data) => data.studentUsers))
 					 								.map((student) => (
-														<ul className="border-b list-none border-gray-300 bg-slate-800  p-2 cursor-pointer ">
+														<ul className="border-b list-none border-gray-300 bg-slate-800  p-2 cursor-pointer " key={student.id}>
 															<li>
-																<button className="m-1" key={student.id} onClick={() => handleUserClick(student)}>
+																<button type="button" className="m-1" key={student.id} onClick={() => handleUserClick(student)}>
 																	{student.firstName} {student.lastName} (Student)
 																</button>
 															</li>
@@ -243,15 +244,18 @@ export default function Home() {
 							</div>
 						</div>
 
-						<div className="mt-5">
-  							<label htmlFor="isbn" className="block mb-2 text-lg font-medium text-gray-900 text-center">ISBN</label>
-							<input type="text" name="isbn" id="isbn" value={isbn} onChange={handleISBNChange} className="input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+						<div className="mt-5 ">
+  							<label htmlFor="invNr" className="block mb-2 text-lg font-medium text-gray-900 text-center">invNr</label>
+
+							<div className="flex">
+							   <input type="text" id="invNr" value={invNr} onChange={handleinvNrChange} className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+							   <i className="fa-solid fa-barcode   "><button className=" rounded-r-lg bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" type="button">code</button></i>
+							</div>
 						</div> 
 						
 						<div className="mt-10 justify-center flex">
-							<button type="submit" className="btn block   m-3  dark:bg-gray-700  btn-active btn-neutral">Loan</button>
+							<button type="submit"className="btn block   m-3  dark:bg-gray-700  btn-active btn-neutral">Laon</button>
 						</div>
-
 					</form>
 				</div>
 
@@ -267,7 +271,9 @@ export default function Home() {
 				<div className="ml-20">
  					{selectedBook && (
   						<div className="w-[15rem] h-[20rem] border">
-    					  <img src={selectedBook.bookImg} alt="book cover" className="w-[15rem] h-[20rem]" />
+    					  {/* <Image src={selectedBook.bookImg} alt="book cover" width={64} height={80} className="w-[15rem] h-[20rem]" /> */}
+						  <img src={selectedBook.bookImg} alt="book cover" width={64} height={80} className="w-[15rem] h-[20rem]" /> 
+
      					  <h1 className="text-center mt-5 text-xl">{selectedBook.title}</h1>
    						</div>
   					)}
