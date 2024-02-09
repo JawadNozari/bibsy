@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 //* Export POST method, mainly for setting a book as borrowed
 export const POST = async (req:NextRequest) => {
-
+	console.log("grpae");
 	//* Data from the request (form data)
 	const data = await req.json();
 	// Convert the invNr to a number
@@ -15,8 +15,9 @@ export const POST = async (req:NextRequest) => {
 	const selectedUser = { userType: "", id: data.user.id };
 
 	//* Determine the user type
-	if(Object.hasOwn(data, "admin")) {
+	if(Object.hasOwn(data.user, "admin")) {
 		selectedUser.userType = "staffUser";
+		console.log("userType",selectedUser.userType);
 	} else {
 		selectedUser.userType = "studentUser";
 	}
@@ -53,9 +54,8 @@ export const POST = async (req:NextRequest) => {
 			const loanOut = await prisma.borrowedBooks.create({
 				data: {
 					bookId: updateBook.id,
-					studentId: null,
-					note: `${staff.firstName} ${staff.lastName} has successfully loaned out a book.`,
 					staffId: currentStaff.id,
+					note: `${staff.firstName} ${staff.lastName} id:${staff.id} has successfully loaned out a book.`,	
 				},
 			});
 			// Update the staff member to have the borrowed book, connect the borrowed book to the staff member
@@ -93,7 +93,7 @@ export const POST = async (req:NextRequest) => {
 			//! If there is an error, return the error message
 			} catch (error) {
 				console.log(error);
-				return NextResponse.json({ message: error });
+				return NextResponse.json({ message: error },{ status: 500 });
 		}
 	} 
 	// If the staff member is borrowing a book for a student
@@ -156,7 +156,7 @@ export const POST = async (req:NextRequest) => {
 		//! If there is an error, return the error message
 		catch (error) {
 			console.log(error);
-			return NextResponse.json({ message: error });
+			return NextResponse.json({ message: error },{ status: 500 });
 		}
 	}
 };
