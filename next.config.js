@@ -10,4 +10,8 @@ module.exports = {
 
 		return config;
 	},
+	images: {
+		domains: ['pbs.twimg.com',"www.gravatar.com",]
+	  },
 };
+  

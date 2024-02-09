@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config: Config = {
 	content: [
@@ -26,10 +26,10 @@ const config: Config = {
 					"-ms-overflow-style": "var(--tw-gradient-stops)",
 					"scrollbar-width": "none",
 				},
-			}
-			addUtilities(newUtilities)
+			};
+			addUtilities(newUtilities);
 		},
 		require("daisyui"),
 	],
-}
-export default config
+};
+export default config;
