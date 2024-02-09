@@ -45,7 +45,7 @@ model Book {
   publishers String?
   published  DateTime
   regDate    DateTime        @default(now())
-  isbn       BigInt
+  isbn       String
   invNr      Int             @unique
   price      Int
   available  Boolean         @default(true)
