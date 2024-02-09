@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config: Config = {
 	content: [
@@ -8,6 +8,9 @@ const config: Config = {
 		"./src/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	theme: {
+		fontFamily: {
+			Oxygen: ["Oxygen"],
+		},
 		extend: {
 			backgroundImage: {
 				"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -36,10 +39,10 @@ const config: Config = {
 					"-ms-overflow-style": "var(--tw-gradient-stops)",
 					"scrollbar-width": "none",
 				},
-			}
-			addUtilities(newUtilities)
+			};
+			addUtilities(newUtilities);
 		},
 		require("daisyui"),
 	],
-}
-export default config
+};
+export default config;
