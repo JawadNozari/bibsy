@@ -2,7 +2,13 @@
 // import React from "react";
 // import axios from "axios";
 
+/* 
+! * THIS SHIT DOES NOT WORK!!!!!
+* * Might fix it idk -Fredrik
+*/
+
 const Page = () => {
+
 	return <div>nothing here</div>;
 	// const [users, setUsers] = React.useState<any>([]);
 	// const [searchedUsers, setSearchedUsers] = React.useState<any>([]);
@@ -78,6 +84,5 @@ const Page = () => {
 	// 		</select>
 	// 	</div>
 	// );
-};
-
+}
 export default Page;
