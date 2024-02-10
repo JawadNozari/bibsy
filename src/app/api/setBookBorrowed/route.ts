@@ -14,7 +14,7 @@ export const GET = async () => {
 	const userInvNr = 12318989;
 	const selectedUser = { userType: "studentUser", id: 1 };
 	const currentStaff = { id: 1 };
-}
+};
 
 export const POST = async (req:NextRequest) => {
 	console.log("Grape");
