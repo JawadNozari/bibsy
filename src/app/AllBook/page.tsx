@@ -9,7 +9,7 @@ const Book = () => {
 				height: "100edvh",
 			}}
 		>
-			<BookList />
+			<BookList colorTheme={"book"} />
 		</div>
 	);
 };
