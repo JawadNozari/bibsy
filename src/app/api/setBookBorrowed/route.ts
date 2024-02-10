@@ -1,6 +1,6 @@
 //TODO: This code needs cleanup
 import { PrismaClient } from "@prisma/client";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 /* export const GET = async () => {
 	return NextResponse.json({ message: "Hello World" });
@@ -8,11 +8,23 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export const GET = async () => {
-	console.log("Here");
-	const userInvNr = 12318989;
-	const selectedUser = { userType: "studentUser", id: 1 };
-	const currentStaff = { id: 1 };
+export const POST = async (req:NextRequest) => {
+	console.log("Grape");
+	
+	const data = await req.json();
+	console.log(data);
+	const userInvNr = parseInt(data.invNr);
+	console.log(userInvNr);
+
+	const selectedUser = { userType: "", id: data.user.id };
+
+	if(Object.hasOwn(data, "admin")) {
+		selectedUser.userType = "staffUser";
+	} else {
+		selectedUser.userType = "studentUser";
+	}
+
+	const currentStaff = { id: 3 };
 
 	// if the teacher is borrowing a book for self.
 	if (selectedUser.userType === "staffUser") {
@@ -78,7 +90,7 @@ export const GET = async () => {
 				data: {
 					bookId: updateBook.id,
 					studentId: selectedUser.id,
-					note: "Borrowed by student",
+					note: "Borrowed by student NEW",
 					staffId: currentStaff.id,
 				},
 			});

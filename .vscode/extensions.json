@@ -1,4 +1,19 @@
 {
-	"recommendations": ["aaron-bond.better-comments"],
+	"recommendations": [
+		"aaron-bond.better-comments",
+		"biomejs.biome",
+		"dbaeumer.vscode-eslint",
+		"withfig.fig",
+		"donjayamanne.githistory",
+		"visualstudioexptteam.vscodeintellicode",
+		"visualstudioexptteam.intellicode-api-usage-examples",
+		"aykutsarac.jsoncrack-vscode",
+		"pkief.material-icon-theme",
+		"christian-kohler.path-intellisense",
+		"prisma.prisma",
+		"mtxr.sqltools",
+		"mtxr.sqltools-driver-pg",
+		"bradlc.vscode-tailwindcss"
+	],
 	"unwantedRecommendations": []
 }

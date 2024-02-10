@@ -1,8 +1,18 @@
 import React from "react";
+import BookList from "../Component/BookList";
 
 // Define your component
 const Available = () => {
-	return <div>Available</div>;
+	return (
+		<div
+			className="size-full bg-white"
+			style={{
+				height: "100edvh",
+			}}
+		>
+			<BookList colorTheme={"available"} />
+		</div>
+	);
 };
 
 // Export your component

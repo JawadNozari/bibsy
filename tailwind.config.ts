@@ -5,8 +5,12 @@ const config: Config = {
 		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	theme: {
+		fontFamily: {
+			Oxygen: ["Oxygen"],
+		},
 		extend: {
 			backgroundImage: {
 				"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -21,12 +25,12 @@ const config: Config = {
 			const newUtilities = {
 				".sleek-scrollbar::-webkit-scrollbar": {
 					backgroundColor: "#333333",
-					borderRadius: "10px",
+					borderRadius: "0 10px 0 0",
 					width: "9px",
 				},
 				".sleek-scrollbar::-webkit-scrollbar-thumb": {
 					backgroundColor: "#222222",
-					borderRadius: "10px",
+					borderRadius: "0 10px 10px 0",
 				},
 				".no-scrollbar::-webkit-scrollbar": {
 					backgroundColor: "transparent",
@@ -39,6 +43,7 @@ const config: Config = {
 			addUtilities(newUtilities);
 		},
 		require("daisyui"),
+		require("tailwind-scrollbar"),
 	],
 };
 export default config;
