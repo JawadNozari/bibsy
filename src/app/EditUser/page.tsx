@@ -3,6 +3,8 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function Page() {
+    const [file, setFile] = useState<File | undefined>(undefined);
+	const [id, setId] = useState<string>("");
 	const [userType, setType] = useState<string>("");
 	const [Admin, setAdmin] = useState<string>("");
 	const [first, setFirst] = useState<string>("");
@@ -10,60 +12,75 @@ export default function Page() {
 	const [password, setPassword] = useState<string>("");
 	const [email, setEmail] = useState<string>("");
 	const [phone, setPhone] = useState<string>("");
-	const [qrCode, setQrcode] = useState<string>("");
 	const [studentclass, setClass] = useState<string>("");
-
-	const handleFirstChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setFirst(e.target.value);
-	};
-	const handleLastChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setLast(e.target.value);
-	};
-	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setPassword(e.target.value);
-	};
-	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setEmail(e.target.value);
-	};
-	const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setPhone(e.target.value);
-	};
-	const handleQrcodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setQrcode(e.target.value);
-	};
-	const handleClassChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setClass(e.target.value);
-	};
-	const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setType(e.target.value);
-	};
-	const handleAdminChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setAdmin(e.target.value);
-	};
+    const [message, setMessage] = useState<string | undefined>("");
+	const [gotError, setgotError] = useState<boolean>(false);
 
 
-    const handleSubmit = (e: React.SyntheticEvent) => {
+
+    const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        return axios.post("/api/editUsers", {
-          id: 1,
-          userType: userType,
-          first: first,
-          last: last,
-          password: password,
-          email: email,
-          phone: phone,
-          qrCode: qrCode,
-          studentclass: studentclass,
-          Admin: Admin
-        });
+        const formData = new FormData();
+		if (file) {
+			formData.append("file", file);
+		}
+        formData.append("id", id);
+        formData.append("userType", userType);
+		formData.append("first", first);
+		formData.append("last", last);
+		formData.append("password", password);
+		formData.append("email", email);
+		formData.append("phone", phone);
+		formData.append("studentclass", studentclass);
+		formData.append("Admin", Admin);
+        
+        await axios
+			.post("/api/editUsers", formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			})
+			.then((res) => {
+				setgotError(false);
+				setMessage(res.data.Message);
+			})
+			.catch((err) => {
+				setgotError(true);
+				setMessage(err.message);
+				console.log(err);
+			});
     };
   
-	return (
+	return gotError ? (
+		// Show error message
+		<div>
+			{message}
+		</div>
+	) :  (
         <form onSubmit={handleSubmit} >
+            <div>
+				<input
+					type="file"
+					id="customFile"
+					onChange={(e) => {
+						setFile(e.target.files?.[0]);
+					}}
+				/>
+				<input
+					type="number"
+					id="customId"
+                    placeholder="id"
+					onChange={(e) => {
+						setId(e.target.value);
+					}}
+				/>
+			</div>
             <input
                 type="text"
                 value={first}
-                onChange={handleFirstChange}
+                onChange={(e) => {
+                    setFirst(e.target.value);
+                }}                
                 placeholder="first name"
                 id="first"
                 name="first"
@@ -71,7 +88,9 @@ export default function Page() {
             <input
                 type="text"
                 value={last}
-                onChange={handleLastChange}
+                onChange={(e) => {
+                    setLast(e.target.value);
+                }}
                 placeholder="last name"
                 id="last"
                 name="last"
@@ -79,48 +98,45 @@ export default function Page() {
             <input
                 type="number"
                 value={password}
-                onChange={handlePasswordChange}
-                placeholder="password"
+                onChange={(e) => {
+                    setPassword(e.target.value);
+                }}                placeholder="password"
                 id="password"
                 name="password"
             />
             <input
                 type="email"
                 value={email}
-                onChange={handleEmailChange}
-                placeholder="email"
+                onChange={(e) => {
+                    setEmail(e.target.value);
+                }}                placeholder="email"
                 name="email"
                 id="email"
             />
             <input
                 type="number"
                 value={phone}
-                onChange={handlePhoneChange}
-                placeholder="phone"
+                onChange={(e) => {
+                    setPhone(e.target.value);
+                }}                placeholder="phone"
                 name="phone"
                 id="phone"
             />
             <input
                 type="text"
-                value={qrCode}
-                onChange={handleQrcodeChange}
-                placeholder="qrCode"
-                name="qrCode"
-                id="qrCode"
-            />
-            <input
-                type="text"
                 value={studentclass}
-                onChange={handleClassChange}
-                placeholder="class"
+                onChange={(e) => {
+                    setClass(e.target.value);
+                }}                placeholder="class"
                 name="studentclass"
                 id="studentclass"
             />
             <input
                 type="radio"
                 value="staff"
-                onChange={handleTypeChange}
-                placeholder="staff"
+                onChange={(e) => {
+                    setType(e.target.value);
+                }}                placeholder="staff"
                 name="type"
                 id="staff"
             />
@@ -128,8 +144,9 @@ export default function Page() {
             <input
                 type="radio"
                 value="student"
-                onChange={handleTypeChange}
-                placeholder="Student"
+                onChange={(e) => {
+                    setType(e.target.value);
+                }}                placeholder="Student"
                 name="type"
                 id="Student"
             />
@@ -137,8 +154,9 @@ export default function Page() {
             <input
                 type="checkbox"
                 value={"true"}
-                onChange={handleAdminChange}
-                placeholder="Admin"
+                onChange={(e) => {
+                    setAdmin(e.target.value);
+                }}                placeholder="Admin"
                 name="Admin"
                 id="Admin"
             />
