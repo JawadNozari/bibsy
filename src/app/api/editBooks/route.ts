@@ -35,7 +35,7 @@ export const POST = async (req: NextRequest) => {
 	const title = formData.get("title") as string;
 	const publisher = formData.get("publishers") as string;
 	const published = new Date(formData.get("published") as unknown as string);
-	const isbn = Number(formData.get("isbn") as string);
+	const isbn = formData.get("isbn") as string;
 	const invNr = Number(formData.get("invNr") as string);
 	const price = Number(formData.get("price") as string);
 

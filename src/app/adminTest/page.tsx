@@ -26,6 +26,7 @@ export default function Page() {
 			classroom: classroom,
 			qrCode: firstName + lastName + classroom,
 		});
+
 	};
 	return (
 		<form onSubmit={handleSubmit}>
@@ -55,7 +56,7 @@ export default function Page() {
 			/>
 			<div>
 				<input
-					type="string"
+					type="number"
 					value={phone}
 					onChange={(e) => setPhone(e.target.value)}
 					placeholder="phone"
@@ -63,13 +64,11 @@ export default function Page() {
 					id="phone"
 				/>
 				<input
-					type="text"
-					value={image}
-					onChange={(e) => setImage(e.target.value)}
-					placeholder="image"
-					name="image"
-					id="image"
-				/>
+        			type="file"
+        			onChange={(e) => setImage(e.target.value)}
+        			name="image"
+        			id="image"
+      			/>
 				<input
 					type="text"
 					value={classroom}
