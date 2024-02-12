@@ -1,115 +1,190 @@
+// userlist code
 "use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-// import '../student&user.css';
+import Staff from "./components/Staff";
+import Student from "./components/Student";
+import "../globals.css";
+import { useSpring, animated } from "react-spring"; // Importera react-spring
+
+interface User {
+	id: number;
+	password: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	phone: string;
+	image: string;
+	classroom: string;
+	admin: boolean;
+	qrCode: number;
+}
+
+interface ApiResponse {
+	staffUsers: User[];
+	studentUsers: User[];
+}
 
 export default function Home() {
-	const student = {
-		name: "Bob Bergman",
-		email: "User@ntig.ga.se",
-		class: "T04",
-		phone: "07693434256",
-		image:
-			"https://www.gravatar.com/avatar/2acfb745ecf9d4dccb3364752d17f65f?s=260&d=mp", // Replace with the actual image URL
+	const [apiData, setApiData] = useState<ApiResponse | null>(null);
+	const [selectedUser, setSelectedUser] = useState<User | null>(null);
+	const [userType, setUserType] = useState<string>("all"); // State för att hålla reda på det valda användartyperna
+	const [searchTerm, setSearchTerm] = useState<string>("");
+	const [showUserDetails, setShowUserDetails] = useState(false);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await fetch("/api/getUsers");
+				const data: ApiResponse = await response.json();
+				setApiData(data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	const handleClick = (user: User | null) => {
+		setSelectedUser(user);
+		setShowUserDetails(true);
+		setDetailsAnimation({
+			transform: "translateX(0%)", // Visa användardetaljer
+		});
 	};
 
-	const forLoopList = () => {
-		const list = [];
-		for (let i = 0; i < 100; i++) {
-			list.push(
-				<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-					<th
-						scope="row"
-						className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-					>
-						<Image
-							className="w-10 h-10 rounded-full"
-							src={student.image}
-							width={40}
-							alt="Bob Bergman"
-						/>
-						<div className="ps-3">
-							<div className="text-base font-semibold">{student.name}</div>
-							<div className="font-normal text-gray-500">{student.email}</div>
-						</div>
-					</th>
-					<td className="px-6 py-4">{student.phone}</td>
-					<td className="px-6 py-4">
-						<div className="flex items-center">
-							<div className="h-4 w-0.5"> {student.class}</div>
-						</div>
-					</td>
-					<td className="px-6 py-4">
-						<a
-							href="/"
-							className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-						>
-							Edit user
-						</a>
-					</td>
-				</tr>,
-			);
-		}
-		return list;
+	const handleUserTypeChange = (type: string) => {
+		setUserType(type);
 	};
+
+	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const searchTerm = event.target.value.toLowerCase();
+		setSearchTerm(searchTerm);
+	};
+
+	const [detailsAnimation, setDetailsAnimation] = useSpring(() => ({
+		transform: "translateX(-100%)",
+		config: { mass: 1, tension: 170, friction: 26 },
+	}));
 
 	return (
-		<main className="mainbox justify-between p-4">
-			<div className="studentbox flex-col">
-				{/* Student Detail */}
-				<div className=" items-center h-screen w-full justify-center">
-					<div className="max-w-xs">
-						<div className="studentcard bg-white shadow-xl rounded-lg py-3">
-							<h2 className="text-xl font-bold">Student detail</h2>
-							<div className="photo-wrapper p-2">
-								<Image
-									className="w-32 h-32 rounded-full mx-auto"
-									src={student.image}
-									alt="Bob Bergman"
-									width={40}
-								/>
-							</div>
-							<div className="p-2">
-								<h3 className="text-center text-xl text-gray-900 font-medium leading-8">
-									{student.name}
-								</h3>
-
-								<table className="changetext text-xs my-3">
-									<tbody>
-										<tr>
-											<td className="px-2 py-2 text-gray-500 font-semibold">
-												Email
-											</td>
-											<td className="px-2 py-2">{student.email}</td>
-										</tr>
-										<tr>
-											<td className="px-2 py-2 text-gray-500 font-semibold">
-												Phone
-											</td>
-											<td className="px-2 py-2">{student.phone}</td>
-										</tr>
-										<tr>
-											<td className="px-2 py-2 text-gray-500 font-semibold">
-												Class
-											</td>
-											<td className="px-2 py-2">{student.class}</td>
-										</tr>
-									</tbody>
-								</table>
+		<main className="flex border items-center h-screen justify-around p-4">
+			{showUserDetails && (
+				<animated.div
+					className="bg-white px-4 shadow-xl rounded-lg min-h-content w-80"
+					style={detailsAnimation}
+				>
+					<div className="flex items-center justify-center ">
+						<div className="flex items-center justify-center max-w-xs">
+							<div className="flex flex-col justify-center items-center rounded-lg py-3">
+								<div className="flex items-center justify-center flex-col max-h-screen bg-white py-3">
+									<Image
+										className="w-10 h-10 rounded-full"
+										width={200}
+										height={200}
+										src={`/images/${selectedUser?.image}`} // Uppdaterad sökväg
+										alt={`${selectedUser?.firstName} ${selectedUser?.lastName}`} // Add null check for selectedUser
+									/>
+									<div className="p-2 max-h-screen ">
+										<h3 className="text-center text-3xl  text-gray-900 font-medium leading-8 sticky top-0 text-nowrap">
+											{selectedUser?.firstName} {selectedUser?.lastName}
+										</h3>
+										<div className="text-center my-3">
+											<a
+												className="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
+												href="/"
+											>
+												View more info
+											</a>
+										</div>
+										<table className="text-1xl my-2">
+											{/* Conditionally display details based on user type */}
+											{selectedUser?.classroom ? ( // Check for presence of "classroom" property
+												<tbody>
+													<tr>
+														<td className="px-4 py-1 text-gray-500 font-semibold">
+															Email
+														</td>
+														<td className="px-4 py-1">{selectedUser?.email}</td>
+													</tr>
+													<tr>
+														<td className="px-4 py-1 text-gray-500 font-semibold">
+															Phone
+														</td>
+														<td className="px-4 py-1">{selectedUser?.phone}</td>
+													</tr>
+													<tr>
+														<td className="px-4 py-1 text-gray-500 font-semibold">
+															Class
+														</td>
+														<td className="px-4 py-1">
+															{selectedUser?.classroom}
+														</td>
+													</tr>
+												</tbody>
+											) : (
+												<tbody>
+													<tr>
+														<td className="px-4 py-1 text-gray-500 font-semibold">
+															Email
+														</td>
+														<td className="px-4 py-1">{selectedUser?.email}</td>
+													</tr>
+													<tr>
+														<td className="px-4 py-1 text-gray-500 font-semibold">
+															Phone
+														</td>
+														<td className="px-4 py-1">{selectedUser?.phone}</td>
+													</tr>
+													<tr>
+														<td className="px-4 py-1 text-gray-500 font-semibold">
+															Admin
+														</td>
+														<td className="px-4 py-1">
+															{selectedUser?.admin ? "Yes" : "No"}
+														</td>
+													</tr>
+												</tbody>
+											)}
+										</table>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-
+				</animated.div>
+			)}
 			{/* User List */}
-			<div className="changebox overflow-y-auto relative shadow-md sm:rounded-lg">
-				<div className="flex items-center  sticky top-0 justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
-					<div>
-						<h2 className="text-xl font-bold px-4 py-2">User list</h2>
+
+			<div className="flex flex-col bg-white dark:bg-gray-900 overflow-y-auto max-h-screen w-1/2 h-3/4 shadow-md sm:rounded-lg">
+				<div className="flex items-center justify-between border-b px-4 py-2 bg-white dark:bg-gray-900 dark:border-gray-700">
+					<h2 className="text-3xl font-bold text-nowrap">User List</h2>
+					<div className="dropdown dropdown-end">
+						<div tabIndex={0} role="button" className="btn w-48 capitalize">
+							Select type of users
+						</div>
+						<ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48 top-42">
+							<li>
+								{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+								<button onClick={() => handleUserTypeChange("all")}>
+									All Users
+								</button>
+							</li>
+							<li>
+								{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+								<button onClick={() => handleUserTypeChange("staff")}>
+									Staffs
+								</button>
+							</li>
+							<li>
+								{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+								<button onClick={() => handleUserTypeChange("student")}>
+									Students
+								</button>
+							</li>
+						</ul>
 					</div>
-					<label htmlFor="table-search" className="sr-only">
-						Search
-					</label>
 					<div className="relative">
 						<div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
 							<svg
@@ -121,9 +196,9 @@ export default function Home() {
 							>
 								<path
 									stroke="currentColor"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
 									d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
 								/>
 							</svg>
@@ -133,56 +208,62 @@ export default function Home() {
 							id="table-search-users"
 							className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 							placeholder="Search for users"
+							value={searchTerm}
+							onChange={handleSearch}
 						/>
 					</div>
 				</div>
 
-				<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-					<thead className="text-xs sticky top-[60px] text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-						<tr>
-							<th scope="col" className="px-6 py-3">
-								Name
-							</th>
-							<th scope="col" className="px-6 py-3">
-								Phone
-							</th>
-							<th scope="col" className="px-6 py-3">
-								Class
-							</th>
-							<th scope="col" className="px-6 py-3">
-								Action
-							</th>
-						</tr>
-					</thead>
-					<tbody className="overflow-y-scroll">
-						{/* List of users (you can replace these with your actual data) */}
-						{/* <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <th scope="row" className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                <img className="w-10 h-10 rounded-full" src={student.image} alt="Bob Bergman"/>
-                                <div className="ps-3">
-                                    <div className="text-base font-semibold">{student.name}</div>
-                                    <div className="font-normal text-gray-500">{student.email}</div>
-                                </div>  
-                            </th>
-                            <td className="px-6 py-4">
-                                {student.phone}
-                            </td>
-                            <td className="px-6 py-4">
-                                <div className="flex items-center">
-                                    <div className="h-4 w-0.5"></div> {student.class}
-                                </div>
-                            </td>
-                            <td className="px-6 py-4">
-                                <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
-                            </td> 
-                        </tr> */}
-						{forLoopList()}
-						{/* Repeat similar code for other users */}
-					</tbody>
-				</table>
+				<div className="overflow-x-auto">
+					<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+						{apiData && (
+							<>
+								{userType === "all" && (
+									<>
+										<Staff
+											staffUsers={apiData.staffUsers.filter((user) =>
+												`${user.firstName} ${user.lastName}`
+													.toLowerCase()
+													.includes(searchTerm.toLowerCase()),
+											)}
+											handleClick={handleClick}
+										/>
+
+										<Student
+											studentUsers={apiData.studentUsers.filter((user) =>
+												`${user.firstName} ${user.lastName}`
+													.toLowerCase()
+													.includes(searchTerm.toLowerCase()),
+											)}
+											handleClick={handleClick}
+										/>
+									</>
+								)}
+								{userType === "staff" && (
+									<Staff
+										staffUsers={apiData.staffUsers.filter((user) =>
+											`${user.firstName} ${user.lastName}`
+												.toLowerCase()
+												.includes(searchTerm.toLowerCase()),
+										)}
+										handleClick={handleClick}
+									/>
+								)}
+								{userType === "student" && (
+									<Student
+										studentUsers={apiData.studentUsers.filter((user) =>
+											`${user.firstName} ${user.lastName}`
+												.toLowerCase()
+												.includes(searchTerm.toLowerCase()),
+										)}
+										handleClick={handleClick}
+									/>
+								)}
+							</>
+						)}
+					</table>
+				</div>
 			</div>
 		</main>
 	);
 }
-
-//   npm install react-jsx-runtime om koden säger "JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.ts(7026)"
