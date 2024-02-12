@@ -9,7 +9,7 @@ export const GET = async () => {
 				available: true,
 			},
 		})
-		.then((books: []) => {
+		.then((books) => {
 			// Sorts book by largest id
 			books.sort((a: Book, b: Book) => {
 				return b.id - a.id;
