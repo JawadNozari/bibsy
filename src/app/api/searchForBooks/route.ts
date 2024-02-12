@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
+//* Function that gets all of the missing books from the DB and sends it back
 const getMissingBooks = async (): Promise<missingBooks[]> => {
 	try {
 		return await prisma.missingBooks.findMany();
@@ -17,6 +18,7 @@ const getMissingBooks = async (): Promise<missingBooks[]> => {
 	}
 };
 
+//* Function that gets all of the registered books from the DB and sends them back
 const getBooks = async (bookTitle: string): Promise<Book[]> => {
 	try {
 		return await prisma.book.findMany({
@@ -33,6 +35,7 @@ const getBooks = async (bookTitle: string): Promise<Book[]> => {
 	}
 };
 
+//* Function that gets all of the borrowed books from the DB and sends them all back
 const getBorrowedBooks = async (): Promise<borrowedBooks[]> => {
 	try {
 		return await prisma.borrowedBooks.findMany();
@@ -43,9 +46,10 @@ const getBorrowedBooks = async (): Promise<borrowedBooks[]> => {
 };
 
 //?? I just made the existing code work. But I think you can make it better!!!!
-//TODO Recommendation: separate the code into smaller functions for better readability and maintainability
+//TODO Recomm endation: separate the code into smaller functions for better readability and maintainability
 //TODO Recommendation: instead you can make smaller functions and call them in the main function
 
+//* If the request is POST then run this
 export const POST = async (req: NextRequest) => {
 	const request = await req.json();
 
@@ -144,6 +148,7 @@ export const POST = async (req: NextRequest) => {
 				return NextResponse.json({ books: fetchedBooks }, { status: 200 });
 		}
 	} catch (error) {
+		//* If error, catch and send an error message to the client
 		console.error("Error:", error);
 		return NextResponse.json(
 			{ message: "Internal server error" },
@@ -152,6 +157,7 @@ export const POST = async (req: NextRequest) => {
 	}
 };
 
+//* If the request is GET then send an error message, because this is only POST
 export const GET = async (): Promise<NextResponse> => {
 	return NextResponse.json({ message: "GET Method is not allowed" });
 };
