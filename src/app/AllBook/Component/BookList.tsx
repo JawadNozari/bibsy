@@ -70,6 +70,8 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 		},
 	]);
 
+	const [dropdown, setDropdown] = useState(false);
+
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
 	const theme: { [key: string]: string } = {
@@ -117,6 +119,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 							</a>
 						))}
 					{/* spaceDiv */}
+					<div className="size-1/12" />
 				</div>
 			</div>
 			<div className="relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-700 shadow-md  size-10/12 rounded-t-xl">
@@ -229,7 +232,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 					</tbody>
 				</table>
 			</div>
-			{/* <div
+			<div
 				// dropdown Container
 				className="size-1/12 h-56 flex justify-start flex-col items-start"
 			>
@@ -239,7 +242,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 						// onclick to make button false or true
 						!dropdown ? setDropdown(true) : setDropdown(false);
 					}}
-					className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm  text-center inline-flex items-center justify-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-28 h-14"
+					className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm  text-center inline-flex items-center justify-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-28 h-14 translate-y-5"
 					type="button"
 				>
 					Filter
@@ -251,48 +254,15 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 					className={
 						!dropdown
 							? "hidden"
-							: "inline z-20 bg-white divide-y divide-gray-100 rounded-lg shadow w-28 dark:bg-gray-700"
+							: "z-20 bg-white p-2 rounded-lg shadow w-28 dark:bg-gray-700 translate-y-5 flex justify-around items-center"
 					}
 				>
-					<ul
-						className="py-2 text-sm text-gray-700 dark:text-gray-200"
-						aria-labelledby="dropdownDefaultButton"
-					>
-						<li>
-							<a
-								href="#TEMP"
-								className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-							>
-								Dashboard
-							</a>
-						</li>
-						<li>
-							<a
-								href="#TEMP"
-								className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-							>
-								Settings
-							</a>
-						</li>
-						<li>
-							<a
-								href="#TEMP"
-								className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-							>
-								Earnings
-							</a>
-						</li>
-						<li>
-							<a
-								href="#TEMP"
-								className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-							>
-								Sign out
-							</a>
-						</li>
-					</ul>
+					<input type="checkBox" name="myBooks" id="myBoooks" />
+					<label htmlFor="myBooks" className="text-xs">
+						My books
+					</label>
 				</div>
-			</div> */}
+			</div>
 		</div>
 	);
 }
