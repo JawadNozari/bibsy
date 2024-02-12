@@ -23,7 +23,7 @@ export const POST = async (req: NextRequest) => {
       console.log(book);
       // remove the book from the borrowedBooks list
       await prisma.borrowedBooks
-        .delete({ where: { id: book.id } })
+        .delete({ where: { id: book?.id } })
         .then(async (book) => {
           // add it to the missingBooks list
           await prisma.missingBooks

@@ -87,9 +87,9 @@ const Page = () => {
 									<td className="px-6 py-4">{`${book.author}`}</td>
 									<td className="px-6 py-4">{`${book.publishers}`}</td>
 									<td className="px-6 py-4">{`${book.isbn}`}</td>
-									<td className="px-6 py-4">{`${`${book.regDate.split("T")[0]
-										} ${book.regDate.split("T")[1].split(".")[0]}`}`}</td>
-									<td className="px-6 py-4">{`${book.published.split("T")[0]
+									<td className="px-6 py-4">{`${`${(book.regDate).toString().split("T")[0]
+										} ${(book.regDate).toString().split("T")[1].split(".")[0]}`}`}</td>
+									<td className="px-6 py-4">{`${(book.published).toString().split("T")[0]
 										}`}</td>
 									{book.available ? (
 										<td className="px-6 py-4" style={{ backgroundColor: "lightgreen", color: "black" }}>Yes</td>

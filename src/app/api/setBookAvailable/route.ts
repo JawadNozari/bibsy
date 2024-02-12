@@ -1,4 +1,4 @@
-import { PrismaClient, Book } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
@@ -25,7 +25,7 @@ export const POST = async (req: NextRequest) => {
 				// remove the book from the missing list if it is found
 				await prisma.missingBooks
 					.deleteMany({ where: { bookId: book.id } })
-					.then((book: []) => {
+					.then((book) => {
 						return NextResponse.json({ book: book }, { status: 200 });
 					});
 			})
@@ -56,11 +56,11 @@ export const POST = async (req: NextRequest) => {
 					available: true,
 				},
 			})
-			.then(async (book: Book) => {
+			.then(async (book) => {
 				// remove the book from the borrowed list if it is found
 				await prisma.borrowedBooks
 					.deleteMany({ where: { bookId: book.id } })
-					.then((book: []) => {
+					.then((book) => {
 						return NextResponse.json({ book: book }, { status: 200 });
 					});
 			})

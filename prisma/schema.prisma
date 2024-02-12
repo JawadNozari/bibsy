@@ -70,7 +70,7 @@ model borrowedBooks {
   id        Int      @id @default(autoincrement())
   regDate   DateTime @default(now())
   note      String   @db.VarChar(255)
-  bookId    Int?
+  bookId    Int
   staffId   Int?
   studentId Int?
   Book      Book?    @relation(fields: [bookId], references: [id])

@@ -10,19 +10,24 @@ const checkToken = () => {
     return { exists: false, token: null };
   }
   const decodedToken = JSON.parse(atob(token.split(".")[1]));
+
   return { exists: true, token: decodedToken };
 };
 
 const ProtectedPage = () => {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [decodedToken, setDecodedToken] = useState(null);
+
+  // ! THIS IS JUST TO MAKE LINT WORK
+  //const [decodedToken, setDecodedToken] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     //* Check for token when the page is visited
-    const { exists, token } = checkToken();
+    const { exists } = checkToken(); // ! ADD THIS LATER ON! ", token"
     setLoggedIn(exists);
-    setDecodedToken(token);
+
+    // ! THIS IS JUST TO MAKE LINT WORK
+    //setDecodedToken(token);
 
 
     //* If no token found, redirect to login page
@@ -37,7 +42,7 @@ const ProtectedPage = () => {
         <div>
           <h1>Protected Page Content</h1>
         </div>
-        
+
       ) : (
         <h1>Loading...</h1>
       )}

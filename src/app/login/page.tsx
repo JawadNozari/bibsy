@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import {  useState, ChangeEvent, FormEvent, useEffect } from "react";
+import {  useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { ThemeProvider } from "next-themes";
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
@@ -52,7 +52,7 @@ const Page = () => {
       if (response.ok) {
         const responseData = await response.json();
         localStorage.setItem("token", responseData.token);
-        var decodedToken = JSON.parse(atob(responseData.token.split(".")[1])); // Decode JWT to get user details
+        const decodedToken = JSON.parse(atob(responseData.token.split(".")[1])); // Decode JWT to get user details
         console.log("Login successful:", decodedToken.user.id);
         
         router.push("/protectedPage");

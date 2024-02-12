@@ -1,10 +1,10 @@
-import { Book, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
 	return await prisma.borrowedBooks
 		.findMany()
-		.then((response: []) => {
+		.then((response) => {
 			return NextResponse.json({ books: response }, { status: 200 });
 		})
 		.catch((error: Error) => {
@@ -38,8 +38,8 @@ export const POST = async (req: NextRequest) => {
 	if (Number.isNaN(userId) || userId === undefined) {
 		return await prisma.borrowedBooks
 			.findMany()
-			.then((response: []) => {
-				response.sort((a: Book, b: Book) => {
+			.then((response) => {
+				response.sort((a, b) => {
 					return b.id - a.id;
 				});
 				return NextResponse.json({ books: response }, { status: 200 });
@@ -58,8 +58,8 @@ export const POST = async (req: NextRequest) => {
 				staffId: userId,
 			},
 		})
-		.then((Borrowed: []) => {
-			Borrowed.sort((a: Book, b: Book) => {
+		.then((Borrowed) => {
+			Borrowed.sort((a, b) => {
 				return b.id - a.id;
 			});
 			return NextResponse.json({ books: Borrowed }, { status: 200 });
