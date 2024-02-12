@@ -3,6 +3,11 @@ import BookList from "../Component/BookList";
 
 // Define your component
 const Borrowed = () => {
+	const colorTheme = {
+		theme: "borrowed",
+		fetchLink: "registeredBooks",
+		type: "borrowedBooks",
+	};
 	return (
 		<div
 			className="size-full bg-white"
@@ -10,7 +15,7 @@ const Borrowed = () => {
 				height: "100edvh",
 			}}
 		>
-			<BookList colorTheme={"borrowed"} />
+			<BookList colorTheme={colorTheme} />
 		</div>
 	);
 };

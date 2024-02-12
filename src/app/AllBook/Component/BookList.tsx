@@ -1,18 +1,21 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-// Book interface
+// Interfaces
 interface Book {
-	id: string;
+	id: number;
 	price: number;
 	title: string;
 	author: string;
 	published: string;
 }
-interface Links {
-	key: string;
-	name: string;
-	link: string;
+interface BookState {
+	id: number;
+	regdate: string;
+	note: string;
+	bookId: number;
+	staffId: number;
+	studentId: number;
 }
 interface Links {
 	key: string;
@@ -20,7 +23,11 @@ interface Links {
 	link: string;
 	color: string;
 }
-
+interface Theme {
+	theme: string;
+	fetchLink: string;
+	type?: string;
+}
 interface LinkArray {
 	links: Links[];
 }
@@ -49,13 +56,22 @@ const linkObject: LinkArray = {
 	],
 };
 
-export default function BookList({ colorTheme }: { colorTheme: string }) {
+export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 	// where the fetched data is stored
 	const [books, setBooks] = useState<Array<Book>>([]);
-	// dropdown state
+	const [bookState, setBookState] = useState<Array<BookState>>([
+		{
+			id: 0,
+			regdate: "",
+			note: "",
+			bookId: 0,
+			staffId: 0,
+			studentId: 0,
+		},
+	]);
 
 	// Theme picker
-	//Have spaces so that can split and use in tailwind
+	// Have spaces so that can split and use in tailwind
 	const theme: { [key: string]: string } = {
 		book: " dark:bg-blue-800 focus:border-blue-800 hover:bg-blue-900",
 		available: " dark:bg-green-600 focus:border-green-600 hover:bg-green-700",
@@ -64,11 +80,21 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 	};
 	// Fetching data
 	useEffect(() => {
-		fetch("/api/availableBooks")
+		fetch(`/api/${colorTheme.fetchLink}`)
 			.then((res) => res.json())
 			.then((data) => setBooks(data.books))
 			.catch((error) => console.log(error));
-	}, []);
+	}, [colorTheme.fetchLink]);
+
+	//fetching bookState data if exists
+	useEffect(() => {
+		colorTheme.type
+			? fetch(`/api/${colorTheme.type}`)
+					.then((res) => res.json())
+					.then((data) => setBookState(data.books))
+					.catch((error) => console.log(error))
+			: null;
+	}, [colorTheme.type]);
 
 	// Dropdown class so that works with tailwind
 	return (
@@ -85,7 +111,7 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 							<a
 								key={link.key}
 								href={link.link}
-								className={`h-4/5 transform hover:scale-110 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 hover:${link?.color} transition-colors rounded-t-3xl border-gray-700 border-b-0`}
+								className={`h-4/5 transform hover:scale-100 scale-95 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 hover:${link?.color} transition-colors rounded-t-3xl border-gray-700 border-b-0`}
 							>
 								{link.name}
 							</a>
@@ -127,7 +153,7 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 											type="search"
 											id="default-search"
 											className={`${
-												theme[colorTheme].split(" ")[2]
+												theme[colorTheme.theme].split(" ")[2]
 											} block w-full p-4 ps-10 text-sm text-gray-900 border-gray-400 rounded-lg bg-gray-500  dark:placeholder-gray-300 dark:text-white border-2 outline-none`}
 											placeholder="Search for books..."
 											required
@@ -159,35 +185,47 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 					</thead>
 					<tbody>
 						{/* Map of fetched data which prints out table-row */}
-						{books.map((book, index) => (
-							<tr
-								key={book.id}
-								className={`bg-white border-b ${theme[colorTheme]} dark:border-gray-700`}
-							>
-								<td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/5 overflow-auto">
-									{books.length > 0 ? books[index]?.title : "loading..."}
-								</td>
-								<td className="px-6 py-4">
-									{books.length > 0 ? books[index]?.author : "loading..."}
-								</td>
-								<td className="px-6 py-4">
-									{books.length > 0
-										? books[index]?.published.split("T")[0]
-										: "loading..."}
-								</td>
-								<td className="px-6 py-4">
-									${books.length > 0 ? books[index]?.price : "loading..."}
-								</td>
-								<td className="px-6 py-4 flex justify-center items-center w-full h-full">
-									<a
-										href={books[index]?.id}
-										className="font-medium text-red-600 hover:underline"
+						{bookState.map((state, index) =>
+							books.map((book, index) => {
+								return state.bookId === book.id || !colorTheme.type ? (
+									<tr
+										key={book.id}
+										className={`bg-white border-b ${
+											theme[colorTheme.theme]
+										} dark:border-gray-700`}
 									>
-										Lost
-									</a>
-								</td>
-							</tr>
-						))}
+										<td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/5 overflow-auto">
+											{books.length > 0 ? books[index]?.title : "loading..."}
+										</td>
+										<td className="px-6 py-4">
+											{books.length > 0 ? books[index]?.author : "loading..."}
+										</td>
+										<td className="px-6 py-4">
+											{books.length > 0
+												? books[index]?.published.split("T")[0]
+												: "loading..."}
+										</td>
+										<td className="px-6 py-4">
+											${books.length > 0 ? books[index]?.price : "loading..."}
+										</td>
+										<td className="px-6 py-4 flex justify-center items-center w-full h-full">
+											<a
+												href={`localhost:3000/lost:${books[
+													index
+												]?.id.toString()}`}
+												className={
+													colorTheme.theme === "missing"
+														? "font-bold text-green-500 hover:underline"
+														: "font-bold text-red-500 hover:underline"
+												}
+											>
+												{colorTheme.theme === "missing" ? "Found" : "Lost"}
+											</a>
+										</td>
+									</tr>
+								) : null;
+							}),
+						)}
 					</tbody>
 				</table>
 			</div>

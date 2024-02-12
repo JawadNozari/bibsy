@@ -2,6 +2,10 @@ import React from "react";
 import BookList from "./Component/BookList";
 // Define your component
 const Book = () => {
+	const colorTheme = {
+		theme: "book",
+		fetchLink: "registeredBooks",
+	};
 	return (
 		<div
 			className="size-full"
@@ -9,7 +13,7 @@ const Book = () => {
 				height: "100edvh",
 			}}
 		>
-			<BookList colorTheme={"book"} />
+			<BookList colorTheme={colorTheme} />
 		</div>
 	);
 };
