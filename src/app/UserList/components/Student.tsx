@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-interface StudentListProps {
-    studentUsers: User[];
-    handleClick: (user: User | null) => void;
-    setStudentUsers?: React.Dispatch<React.SetStateAction<User[]>>;
-}
 
 interface User {
     id: number;
@@ -20,8 +15,14 @@ interface User {
     qrCode: number;
 }
 
+interface StudentListProps {
+    studentUsers: User[];
+    handleClick: (user: User | null) => void;
+    setStudentUsers?: React.Dispatch<React.SetStateAction<User[]>>;
+}
+
 const SelectComponent: React.FC = () => {
-    const [selectedClassroom, setSelectedClassroom] = useState<string>('');
+    const [selectedClassroom, setSelectedClassroom] = useState<string>("");
 
     
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -30,8 +31,8 @@ const SelectComponent: React.FC = () => {
     
     const generateClassroomOptions = () => {
         const currentYear = new Date().getFullYear();
-        const specialties = ['TEK', 'EL', 'DES'];
-        const lastYearClassroom = 'TE4';
+        const specialties = ["TEK", "EL", "DES"];
+        const lastYearClassroom = "TE4";
         
         const classroomOptions = specialties.flatMap(specialty =>
             Array.from({ length: 4 }, (_, index) => `${(currentYear - index).toString().slice(-2)}${specialty}`)

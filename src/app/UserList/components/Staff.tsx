@@ -16,6 +16,7 @@ interface User {
 interface StaffListProps {
 	staffUsers: User[];
 	handleClick: (user: User | null) => void;
+
 }
 
 const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
