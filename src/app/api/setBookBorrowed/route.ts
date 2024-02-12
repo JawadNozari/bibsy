@@ -24,7 +24,7 @@ export const POST = async (req:NextRequest) => {
 
 	//* Current staff member, (for now hardcoded)
 	//TODO: Change this to the staff member that is currently logged in
-	const currentStaff = { id: 3 };
+	const currentStaff = { id: 1 };
 	let staff = undefined;
 
 	// Find the staff member that is currently logged in
@@ -37,6 +37,7 @@ export const POST = async (req:NextRequest) => {
 	} catch (error) {
 		return NextResponse.json({ "Error on location the saff member": error });
 	}
+	
 
 	// if the teacher is borrowing a book for self.
 	if (selectedUser.userType === "staffUser") {
@@ -55,7 +56,7 @@ export const POST = async (req:NextRequest) => {
 				data: {
 					bookId: updateBook.id,
 					staffId: currentStaff.id,
-					note: `${staff.firstName} ${staff.lastName} id:${staff.id} has successfully loaned out a book.`,	
+					note: `${staff?.firstName} ${staff?.lastName} id:${staff?.id} has successfully loaned out a book.`,	
 				},
 			});
 			// Update the staff member to have the borrowed book, connect the borrowed book to the staff member
@@ -88,7 +89,7 @@ export const POST = async (req:NextRequest) => {
 			});
 
 			//* Return a response, with the success message
-			return NextResponse.json({ message: `Staff member: ${staff.firstName} ${staff.lastName} has successfully loaned a book.` });
+			return NextResponse.json({ message: `Staff member: ${staff?.firstName} ${staff?.lastName} has successfully loaned a book.` });
 
 			//! If there is an error, return the error message
 			} catch (error) {
@@ -116,7 +117,7 @@ export const POST = async (req:NextRequest) => {
 				data: {
 					bookId: updateBook.id,
 					studentId: selectedUser.id,
-					note: `${staff.firstName} ${staff.lastName} loaned a book to ${data.user.firstName} ${data.user.lastName}.`,
+					note: `${staff?.firstName} ${staff?.lastName} loaned a book to ${data.user.firstName} ${data.user.lastName}.`,
 					staffId: currentStaff.id,
 				},
 			});
@@ -154,7 +155,7 @@ export const POST = async (req:NextRequest) => {
 				},
 			});
 			//* Return a response, with the success message
-			return NextResponse.json({ message: `${staff.firstName} ${staff.lastName} has successfully loaned out a book to ${data.user.firstName} ${data.user.lastName}.` });
+			return NextResponse.json({ message: `${staff?.firstName} ${staff?.lastName} has successfully loaned out a book to ${data.user.firstName} ${data.user.lastName}.` });
 		} 
 		//! If there is an error, return the error message
 		catch (error) {
