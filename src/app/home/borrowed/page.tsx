@@ -1,15 +1,15 @@
 "use client";
 import React from "react";
-import { Book, Student, Staff } from "@prisma/client";
+import { Book, Student, Staff, borrowedBooks } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
 const Page = () => {
   const router = useRouter();
   const [books, setBooks] = React.useState<Book[]>([]);
-  const [borrowedBooks, setBorrowedBooks] = React.useState<Book[]>([]);
-  const [students, setStudents] = React.useState<Array<[]>>([]);
-  const [staff, setStaff] = React.useState<Array<[]>>([]);
+  const [borrowedBooks, setBorrowedBooks] = React.useState<borrowedBooks[]>([]);
+  const [students, setStudents] = React.useState<Student[]>([]);
+  const [staff, setStaff] = React.useState<Staff[]>([]);
 
   React.useEffect(() => {
     const getBooks = async () => {
@@ -17,8 +17,12 @@ const Page = () => {
       if (response.data.books !== null) {
         setBooks(response.data.books);
 
-        const borrowed = await axios("/api/borrowedBooks");
-        setBorrowedBooks(borrowed.data.books);
+        await axios("/api/borrowedBooks").then((res) => {
+          setBorrowedBooks(res.data.books);
+        }).catch((Err: Error) => {
+          console.debug(Err);
+          return [];
+        });
       }
 
       const users = await axios("/api/getUsers");
@@ -38,7 +42,7 @@ const Page = () => {
   const setBookMissing = async (event: React.MouseEvent<HTMLElement>, bookId: number) => {
     event.stopPropagation();
     console.log(borrowedBooks);
-    borrowedBooks.map((borrowedBook: Book) => {
+    borrowedBooks.map((borrowedBook) => {
       if (borrowedBook.bookId === bookId) {
         borrowedBooks.splice(borrowedBooks.indexOf(borrowedBook), 1);
       }
@@ -53,7 +57,7 @@ const Page = () => {
 
   const setBookAvailable = async (event: React.MouseEvent<HTMLElement>, bookId: number) => {
     event.stopPropagation();
-    borrowedBooks.map((borrowedBook: Book) => {
+    borrowedBooks.map((borrowedBook) => {
       if (borrowedBook.bookId === bookId) {
         borrowedBooks.splice(borrowedBooks.indexOf(borrowedBook), 1);
       }
@@ -127,8 +131,8 @@ const Page = () => {
             </tr>
           </thead>
           <tbody>
-            {books.map((book: Book) => {
-              return borrowedBooks.map((borrowedBook: Book) => {
+            {books.map((book) => {
+              return borrowedBooks.map((borrowedBook) => {
                 if (borrowedBook.bookId === book.id) {
                   return (
                     <tr
@@ -148,13 +152,15 @@ const Page = () => {
                       >{`${book.title}`}</th>
                       <td className="px-6 py-4">{`${book.author}`}</td>
                       <td className="px-6 py-4">{`${borrowedBook.note}`}</td>
-                      <td className="px-6 py-4">{`${`${book.regDate.split("T")[0]} ${book.regDate.split("T")[1].split(".")[0]}`
+                      {/* //suggestion: this part needs cleanup */}
+                      <td className="px-6 py-4">{`${`${(book.regDate).toString().split("T")[0]} ${(book.regDate).toString().split("T")[1].split(".")[0]}`
                         }`}</td>
                       <td className="px-6 py-4">{
-                        staff.map((staffMember: Staff) => {
+                        staff.map((staffMember) => {
                           if (staffMember.id === borrowedBook.staffId) {
                             return `${staffMember.firstName} ${staffMember.lastName} | ID: ${staffMember.id}`;
                           }
+                          return `${borrowedBook.staffId}`;
                         })
                       }</td>
                       <td className="px-6 py-4">{
@@ -162,6 +168,7 @@ const Page = () => {
                           if (student.id === borrowedBook.studentId) {
                             return `${student.firstName} ${student.lastName} | ID: ${student.id}`;
                           }
+                          return `${borrowedBook.studentId}`;
                         })
                       }</td>
                       <td className="px-6 py-4">

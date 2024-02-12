@@ -14,6 +14,7 @@ const checkToken = () => {
 
   //* Decode token to be readable
   const decodedToken = JSON.parse(atob(token.split(".")[1]));
+
   return { exists: true, token: decodedToken };
 };
 
@@ -47,7 +48,7 @@ const ProtectedPage = () => {
         <div>
           <h1>Protected Page Content</h1>
         </div>
-        
+
       ) : (
         <h1>Loading...</h1>
       )}

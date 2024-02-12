@@ -1,11 +1,13 @@
 "use client";
 import React from "react";
-import { Staff } from "@prisma/client";
+import { Staff, Student } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
 const Page = () => {
 	const router = useRouter();
+
+	//! WHAT IS THIS??
 	interface Book {
 		bookId: number;
 		note: string;
@@ -19,8 +21,8 @@ const Page = () => {
 
 	const [books, setBooks] = React.useState<Book[]>([]);
 	const [missingBooks, setMissingBooks] = React.useState<Book[]>([]);
-	const [students, setStudents] = React.useState<Array<[]>>([]);
-	const [staff, setStaff] = React.useState<Array<[]>>([]);
+	const [students, setStudents] = React.useState<Student[]>([]);
+	const [staff, setStaff] = React.useState<Staff[]>([]);
 
 	React.useEffect(() => {
 		const getBooks = async () => {
@@ -152,14 +154,14 @@ const Page = () => {
 											<td className="px-6 py-4">{`${`${book.regDate.split("T")[0]
 												} ${book.regDate.split("T")[1].split(".")[0]}`}`}</td>
 											<td className="px-6 py-4">{
-												staff.map((staffMember: Staff) => {
+												staff.map((staffMember) => {
 													if (staffMember.id === missingBook.staffId) {
 														return `${staffMember.firstName} ${staffMember.lastName} | ID: ${staffMember.id}`;
 													}
 												})
 											}</td>
 											<td className="px-6 py-4">{
-												students.map((student: Staff) => {
+												students.map((student) => {
 													if (student.id === missingBook.studentId) {
 														return `${student.firstName} ${student.lastName} | ID: ${student.id}`;
 													}
