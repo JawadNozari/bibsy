@@ -6,10 +6,10 @@ const prisma = new PrismaClient();
 export const GET = async () => {
 	return await prisma.staff
 		.findMany()
-		.then((staff:Staff) => {
+		.then((staff) => { // Remove the type annotation for staff
 			return NextResponse.json(staff, { status: 200 });
 		})
-		.catch((error:Error) => {
+		.catch((error: Error) => {
 			return NextResponse.json({ error: error }, { status: 500 });
 		})
 		.finally(() => {

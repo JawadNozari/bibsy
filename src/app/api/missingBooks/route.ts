@@ -4,7 +4,7 @@ import { NextResponse, NextRequest } from "next/server";
 export const GET = async () => {
 	return await prisma.missingBooks
 		.findMany()
-		.then((response: missingBooks) => {
+		.then((response: missingBooks[]) => { // Update the type of the response parameter
 			console.log("response", response);
 			return NextResponse.json({ books: response }, { status: 200 });
 		})
@@ -39,7 +39,7 @@ export const POST = async (req: NextRequest) => {
 	if (Number.isNaN(userId) || userId === undefined) {
 		return await prisma.missingBooks
 			.findMany()
-			.then((missing: missingBooks) => {
+			.then((missing: missingBooks[]) => { // Update the type of the missing parameter
 				return NextResponse.json({ books: missing }, { status: 200 });
 			})
 			.catch((error: Error) => {
@@ -56,7 +56,7 @@ export const POST = async (req: NextRequest) => {
 				staffId: userId,
 			},
 		})
-		.then((Borrowed: []) => {
+		.then((Borrowed: { id: number; regDate: Date; note: string; bookId: number | null; staffId: number | null; studentId: number | null; }[]) => {
 			return NextResponse.json({ books: Borrowed }, { status: 200 });
 		})
 		.catch((error: Error) => {

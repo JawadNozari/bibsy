@@ -5,9 +5,9 @@ const prisma = new PrismaClient();
 export const GET = async () => {
 	return await prisma.bookHistory
 		.findMany({})
-		.then((response: []) => {
+		.then((response: { id: number; regDate: Date; bookId: number | null; staffId: number | null; studentId: number | null; }[]) => {
 			// Sorts book by largest id
-			response.sort((a: Book, b: Book) => {
+			response.sort((a, b) => {
 				return b.id - a.id;
 			});
 			return NextResponse.json({ books: response }, { status: 200 });

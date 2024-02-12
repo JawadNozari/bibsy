@@ -84,5 +84,5 @@ const Page = () => {
 	// 		</select>
 	// 	</div>
 	// );
-}
+};
 export default Page;

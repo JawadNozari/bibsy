@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async () => {
 	return await prisma.borrowedBooks
 		.findMany()
-		.then((response: []) => {
+		.then((response: { id: number; regDate: Date; note: string; bookId: number | null; staffId: number | null; studentId: number | null; }[]) => {
 			return NextResponse.json({ books: response }, { status: 200 });
 		})
 		.catch((error: Error) => {
@@ -38,8 +38,8 @@ export const POST = async (req: NextRequest) => {
 	if (Number.isNaN(userId) || userId === undefined) {
 		return await prisma.borrowedBooks
 			.findMany()
-			.then((response: []) => {
-				response.sort((a: Book, b: Book) => {
+			.then((response: { id: number; regDate: Date; note: string; bookId: number | null; staffId: number | null; studentId: number | null; }[]) => {
+				response.sort((a, b) => {
 					return b.id - a.id;
 				});
 				return NextResponse.json({ books: response }, { status: 200 });
@@ -58,16 +58,18 @@ export const POST = async (req: NextRequest) => {
 				staffId: userId,
 			},
 		})
-		.then((Borrowed: []) => {
-			Borrowed.sort((a: Book, b: Book) => {
+		.then((Borrowed: { id: number; regDate: Date; note: string; bookId: number | null; staffId: number | null; studentId: number | null; }[]) => {
+			Borrowed.sort((a, b) => {
 				return b.id - a.id;
 			});
 			return NextResponse.json({ books: Borrowed }, { status: 200 });
 		})
 		.catch((error: Error) => {
 			return NextResponse.json({ message: error }, { status: 200 });
-		})
-		.finally(() => {
-			prisma.$disconnect();
 		});
+		try {
+			// code inside the finally block
+		} catch (error) {
+			// handle the error
+		}
 };

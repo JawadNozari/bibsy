@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 export const GET = async () => {
 	return await prisma.book
 		.findMany()
-		.then((books: []) => {
+		.then((books: { id: number; bookImg: string; title: string | null; author: string | null; publishers: string | null; published: Date; regDate: Date; isbn: number; invNr: number; price: number; available: boolean; }[]) => {
 			// Sorts book by largest id
 			books.sort((a: Book, b: Book) => {
 				return b.id - a.id;

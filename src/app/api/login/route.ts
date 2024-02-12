@@ -31,13 +31,12 @@ export const POST = async (req: NextRequest) => {
       }) 
 
 	  // Give token on login (session)
-      .then((user: Staff) => {
+      .then((user: Staff | null) => {
         if (user) {
           const token = jwt.sign({ user }, "admin", { expiresIn: "1h" });
           return NextResponse.json({ token }, { status: 200 });
-        } else {
-          return NextResponse.json({ error: "Invalid username or password" }, { status: 401 });
         }
+        return NextResponse.json({ error: "Invalid username or password" }, { status: 401 });
       })
       .catch((error: Error) => {
         return NextResponse.json({ error: error.message }, { status: 500 });
