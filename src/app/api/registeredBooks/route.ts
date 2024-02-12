@@ -1,17 +1,14 @@
-import { PrismaClient,Book } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-// export const GET = async () => {
-// 	return NextResponse.json({ message: "Hello World" });
-// };
-
+//* If request is GET runs this
 const prisma = new PrismaClient();
 export const GET = async () => {
 	return await prisma.book
 		.findMany()
 		.then((books) => {
-			// Sorts book by largest id
-			books.sort((a: Book, b: Book) => {
+			//* Sorts books by largest id
+			books.sort((a, b) => {
 				return b.id - a.id;
 			});
 			return NextResponse.json({ books: books }, { status: 200 });
@@ -23,9 +20,15 @@ export const GET = async () => {
 			prisma.$disconnect();
 		});
 };
+
+//* If request is POST then find book by invNr then send the book back to the client
 export const POST = async (req: NextRequest) => {
 	const request = await req.json();
+
+	//* Converts the invNr from str to number
 	const invNr: number = parseInt(request.invNr);
+
+	//* Finds the books where the invNr matches the requested 
 	return await prisma.book
 		.findUnique({
 			where: {
