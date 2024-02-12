@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import axios, { AxiosResponse } from "axios";
-import Image from "next/image";
 
 interface VolumeInfo {
 	title: string;
@@ -226,7 +225,7 @@ export default function Home() {
 					<p>Publisher: {publishers}</p>
 					{published && <p>Published Date: {published.toString()}</p>}
 					{bookData?.items?.[0]?.volumeInfo?.imageLinks?.thumbnail && (
-						<Image
+						<img
 							src={bookData.items[0].volumeInfo.imageLinks.thumbnail}
 							alt="Book Cover"
 							className="mt-2"

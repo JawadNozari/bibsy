@@ -17,15 +17,15 @@ export const POST = async (req: NextRequest) => {
 		const filename = (file as File).name.replaceAll(" ", "_");
 
 		// Directory where the file will be uploaded
-		const uploadDirectory = path.join(process.cwd(), "public/UploadedImage");
+		const uploadedBookImage = path.join(process.cwd(), "public/uploadedBookImage");
 
 		// Create the directory if it doesn't exist
-		await mkdir(uploadDirectory, { recursive: true });
+		await mkdir(uploadedBookImage, { recursive: true });
 		// Write the file to the directory
-		await writeFile(path.join(uploadDirectory, filename), buffer);
+		await writeFile(path.join(uploadedBookImage, filename), buffer);
 
 		// Update the book image path
-		bookImgPath = `UploadedImage/${filename}`;
+		bookImgPath = `uploadedBookImage/${filename}`;
 	} else if (!file && formData.get("imageUrl")) {
 		// If no file is received but there is a URL, use the URL as the book cover
 		bookImgPath = formData.get("imageUrl") as string;
