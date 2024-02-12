@@ -41,12 +41,12 @@ const Page = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/login", { // API call to server
+      const response = await fetch("/api/login", { // * API call to server
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({userCredentials: formData, remember: remember}) // Take form data and convert to JSON 
+        body: JSON.stringify({userCredentials: formData, remember: remember}) // * Take form data and convert to JSON 
       });
 
       if (response.ok) {

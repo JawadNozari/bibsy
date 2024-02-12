@@ -25,16 +25,35 @@ export const POST = async (req: NextRequest) => {
         AND: [
           { email: userInfo.username },
           { password: userInfo.password },
-          { admin: true }
         ]
       }
     }).then((staffUser: Staff | null) => {
-      if (staffUser) {
-        const token = jwt.sign({ user: staffUser }, "staff", { expiresIn: "1h" });
+      
+      // * Staff (non-admin)
+      if (staffUser && body.remember) { // Remember me
+
+        const token = jwt.sign({ user: staffUser, role: "Staff" }, "staff", { expiresIn: "7d" });
         return new NextResponse(JSON.stringify({ token }), { status: 200 });
+
+      } if (staffUser && !body.remember) { // Do not remember me
+
+        const token = jwt.sign({ user: staffUser, role: "Staff" }, "staff");
+        return new NextResponse(JSON.stringify({ token }), { status: 200 });
+
+      // * Staff (admin)
+      } if (staffUser && staffUser.admin == true && body.remember) { // Remember me
+
+        const token = jwt.sign({ user: staffUser, role: "Admin" }, "staff", { expiresIn: "7d" });
+        return new NextResponse(JSON.stringify({ token }), { status: 200 });
+
+      } if (staffUser && staffUser.admin && !body.remember) { // Do not remember me
+
+        const token = jwt.sign({ user: staffUser, role: "Admin" }, "staff");
+        return new NextResponse(JSON.stringify({ token }), { status: 200 });
+
       } else {
 
-        // * If not found in staff, check in student
+        // * If not found in staff, check in student * //
         
         /* This works since you cannot create duplicate/identical (same email/id) 
         accounts with different roles, therefore conflicts will not appear. */
@@ -47,9 +66,18 @@ export const POST = async (req: NextRequest) => {
             ]
           }
         }).then((studentUser: Student | null) => {
-          if (studentUser) {
-            const token = jwt.sign({ user: studentUser }, "student", { expiresIn: "1h" });
+
+          // * Student
+          if (studentUser && body.remember) { // Remember me
+
+            const token = jwt.sign({ user: studentUser, role: "Student" }, "student", { expiresIn: "7d" });
             return new NextResponse(JSON.stringify({ token }), { status: 200 });
+
+          } if (studentUser && !body.remember) { // Do not remember me
+
+            const token = jwt.sign({ user: studentUser, role: "Student" }, "student");
+            return new NextResponse(JSON.stringify({ token }), { status: 200 });
+
           } else {
             return new NextResponse(JSON.stringify({ error: "Invalid username or password" }), { status: 401 });
           }
