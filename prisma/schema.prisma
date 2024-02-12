@@ -73,7 +73,7 @@ model borrowedBooks {
   bookId    Int
   staffId   Int?
   studentId Int?
-  Book      Book?    @relation(fields: [bookId], references: [id])
+  Book      Book     @relation(fields: [bookId], references: [id])
   Staff     Staff?   @relation(fields: [staffId], references: [id])
   Student   Student? @relation(fields: [studentId], references: [id])
 }
