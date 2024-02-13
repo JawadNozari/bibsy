@@ -1,110 +1,163 @@
-import { Book, PrismaClient } from "@prisma/client";
+import {
+	missingBooks,
+	Book,
+	PrismaClient,
+	borrowedBooks,
+} from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
-export const GET = async () => {
-	return NextResponse.json({ message: "Hello World" });
-};
 
 const prisma = new PrismaClient();
 
-const getMissingBooks = async () => {
-	return await prisma.missingBooks
-		.findMany()
-		.then((missing: []) => {
-			return missing;
-		})
-		.catch((error: Error) => {
-			return error;
-		});
+//* Function that gets all of the missing books from the DB and sends it back
+const getMissingBooks = async (): Promise<missingBooks[]> => {
+	try {
+		return await prisma.missingBooks.findMany();
+	} catch (error) {
+		console.error("Error fetching missing books:", error);
+		throw error;
+	}
 };
 
-const getBooks = async (bookTitle: string) => {
-	return await prisma.book
-		.findMany({
+//* Function that gets all of the registered books from the DB and sends them back
+const getBooks = async (bookTitle: string): Promise<Book[]> => {
+	try {
+		return await prisma.book.findMany({
 			where: {
 				title: {
 					contains: bookTitle,
 					mode: "insensitive",
 				},
 			},
-		})
-		.then((books: []) => {
-			return books;
-		})
-		.catch((error: Error) => {
-			return error;
 		});
+	} catch (error) {
+		console.error("Error fetching books:", error);
+		throw error;
+	}
 };
 
-const getBorrowedBooks = async () => {
-	return await prisma.borrowedBooks
-		.findMany()
-		.then((borrowed: []) => {
-			return borrowed;
-		})
-		.catch((error: Error) => {
-			return error;
-		});
+//* Function that gets all of the borrowed books from the DB and sends them all back
+const getBorrowedBooks = async (): Promise<borrowedBooks[]> => {
+	try {
+		return await prisma.borrowedBooks.findMany();
+	} catch (error) {
+		console.error("Error fetching borrowed books:", error);
+		throw error;
+	}
 };
 
 //?? I just made the existing code work. But I think you can make it better!!!!
-//TODO Recommendation: separate the code into smaller functions for better readability and maintainability
-//TODO Recommendation: We don't need to use the a lot of if statements
+//TODO Recomm endation: separate the code into smaller functions for better readability and maintainability
 //TODO Recommendation: instead you can make smaller functions and call them in the main function
-//TODO Recommendation: You can use a switch statement to handle the different list types
 
+//* If the request is POST then run this
 export const POST = async (req: NextRequest) => {
 	const request = await req.json();
-	const missingBooks: Array<[]> = [];
-	const fetchedBooks: Array<[]> = [];
-	const queriedBooks: Array<[]> = [];
-	const borrowedBooks: Array<[]> = [];
+
+	//* Declares the needed arrays
+	const missingBooks: missingBooks[] = [];
+	const fetchedBooks: Book[] = [];
+	let queriedBooks: Book[] = [];
+	const borrowedBooks: borrowedBooks[] = [];
+
+	//* Declares the inputted values
 	const listType = request.listType;
 	const bookTitle = request.bookTitle;
 
-	fetchedBooks.push(await getBooks(bookTitle));
-
-	if (listType === "missing") {
-		missingBooks.push(await getMissingBooks());
-		fetchedBooks[0].map((book: Book) => {
-			missingBooks[0].map((missingBook: Book) => {
-				if (book.id === missingBook.bookId) {
-					queriedBooks.push(book);
-				}
-			});
-		});
-		queriedBooks.sort((a: Book, b: Book) => {
-			return b.id - a.id;
-		});
-		return NextResponse.json({ books: queriedBooks }, { status: 200 });
-	}
-
-	if (listType === "borrowed") {
-		borrowedBooks.push(await getBorrowedBooks());
-		fetchedBooks[0].map((book: Book) => {
-			borrowedBooks[0].map((borrowedBook: Book) => {
-				if (book.id === borrowedBook.bookId) {
-					queriedBooks.push(book);
-				}
-			});
-		});
-		queriedBooks.sort((a: Book, b: Book) => {
-			return b.id - a.id;
-		});
-		return NextResponse.json({ books: queriedBooks }, { status: 200 });
-	}
-	if (listType === "available") {
-		fetchedBooks[0].sort((a: Book, b: Book) => {
-			return b.id - a.id;
-		});
+	//* Checks if the listType exist
+	if (!listType) {
 		return NextResponse.json(
-			fetchedBooks[0].filter((book: Book) => book.available === true),
-			{ status: 200 },
+			{ message: "Missing one or more requirements" },
+			{ status: 400 },
 		);
 	}
-	// if listType is not available, missing, or borrowed
-	fetchedBooks[0].sort((a: Book, b: Book) => {
-		return b.id - a.id;
-	});
-	return NextResponse.json({ books: fetchedBooks[0] }, { status: 200 });
+
+	//* Fetch all registered books
+	try {
+		const books = await getBooks(bookTitle);
+		books.map((book) => {
+			fetchedBooks.push(book);
+		});
+	} catch (error) {
+		console.error(error);
+		fetchedBooks.push();
+	}
+
+	//* Switch that runs functions depending on value
+	try {
+		switch (listType) {
+			case "missing":
+				try {
+					const missing = await getMissingBooks();
+
+					missing.map((book) => {
+						missingBooks.push(book);
+					});
+				} catch (error) {
+					console.log(error);
+				}
+
+				//* Filters through the array and compares id's, if matching add to queriedBooks
+				queriedBooks = fetchedBooks.filter((book: Book) =>
+					missingBooks.some((missingBook) => book.id === missingBook.bookId),
+				);
+
+				//* Sorts the array by largest id
+				queriedBooks.sort((a, b) => {
+					return b.id - a.id;
+				});
+				return NextResponse.json({ books: queriedBooks }, { status: 200 });
+
+			case "borrowed":
+				try {
+					const borrowed = await getBorrowedBooks();
+					borrowed.map((book) => {
+						borrowedBooks.push(book);
+					});
+				} catch (error) {
+					console.log(error);
+				}
+
+				//* Filters through the array and compares id's, if matching add to queriedBooks
+				queriedBooks = fetchedBooks.filter((book: Book) =>
+					borrowedBooks.some((borrowedBook) => book.id === borrowedBook.bookId),
+				);
+
+				//* Sorts the array by largest ID
+				queriedBooks.sort((a, b) => {
+					return b.id - a.id;
+				});
+				return NextResponse.json({ books: queriedBooks }, { status: 200 });
+
+			case "available":
+				//* Sorts by largest ID
+				fetchedBooks.sort((a, b) => {
+					return b.id - a.id;
+				});
+
+				//* Returns the books that are available
+				return NextResponse.json(
+					fetchedBooks.filter((book) => book.available === true),
+					{ status: 200 },
+				);
+
+			default:
+				//* Sorts by largest ID
+				fetchedBooks.sort((a, b) => {
+					return b.id - a.id;
+				});
+				return NextResponse.json({ books: fetchedBooks }, { status: 200 });
+		}
+	} catch (error) {
+		//* If error, catch and send an error message to the client
+		console.error("Error:", error);
+		return NextResponse.json(
+			{ message: "Internal server error" },
+			{ status: 500 },
+		);
+	}
+};
+
+//* If the request is GET then send an error message, because this is only POST
+export const GET = async (): Promise<NextResponse> => {
+	return NextResponse.json({ message: "GET Method is not allowed" });
 };
