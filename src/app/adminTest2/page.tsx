@@ -9,19 +9,19 @@ export default function Page() {
 	const [phone, setPhone] = useState("");
 	const [email, setEmail] = useState("");
 	const [image, setImage] = useState("");
-	const [classroom, setClassroom] = useState("");
+	const [admin, setAdmin] = useState(false);
 	const [qrCode, setQrCode] = useState("");
 
 	const handleSubmit = (e: React.SyntheticEvent) => {
 		e.preventDefault();
-		axios.post("/api/adminCenter", {
+		axios.post("/api/adminStaffReg", {
 			password: password,
 			firstName: firstName,
 			lastName: lastName,
 			email: email,
 			phone: phone,
 			image: image,
-			classroom: classroom,
+			admin: Boolean(admin),
 			qrCode: qrCode,
 		});
 	};
@@ -69,12 +69,12 @@ export default function Page() {
 					id="image"
 				/>
 				<input
-					type="text"
-					value={classroom}
-					onChange={(e) => setClassroom(e.target.value)}
-					placeholder="Class"
-					name="classroom"
-					id="classroom"
+					type="checkbox"
+					checked={admin}
+					onChange={(e) => setAdmin(e.target.checked)}
+					placeholder="admin"
+					name="admin"
+					id="admin"
 				/>
 				<input
 					type="string"
