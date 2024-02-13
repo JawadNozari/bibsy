@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
-import { writeFile, mkdir } from "fs/promises";
-import { PrismaClient, Book } from "@prisma/client";
+//import { writeFile, mkdir } from "fs/promises"; //! This was not used, lint error
+//import { PrismaClient, Book } from "@prisma/client"; //! This was not used, lint error
 import axios from "axios";
 import fs from "fs";
 import { promisify } from "util";
@@ -34,7 +34,8 @@ async function downloader(
 	const uploadedBookImage = path.join(
 		process.cwd(),
 		"public/uploadedBookImage",
-	);
+	); //! This was not used, lint error
+	console.log(uploadedBookImage);
 	// let buffer;
 
 	console.log(url);
@@ -43,8 +44,10 @@ async function downloader(
 	});
 
 	// Determine the file extension based on the content type or add .png by default
-	const contentType = imageBuffer.headers["content-type"];
-    const fileExtension = 'png';
+	const contentType = imageBuffer.headers["content-type"]; //! This was not used, lint error
+	console.log(contentType);
+
+	const fileExtension = "png";
 
 	const filePath = `public/uploadedBookImage/${filename}.${fileExtension}`;
 

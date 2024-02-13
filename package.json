@@ -32,7 +32,7 @@
 		"react-query": "^3.39.3"
 	},
 	"prisma": {
-		"seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"	
+		"seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.5.3",
