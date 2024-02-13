@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-import Image from "next/image";
+import React, { useState } from "react"; // Importera React och useState-hook från React-biblioteket
+import Image from "next/image"; // Importera Image-komponenten från Next.js-biblioteket för att visa bilder
+import StaffEditModal from "./StaffEditModal"; // Importera StaffEditModal-komponenten från en annan fil
+
 interface User {
+	// Definierar en interface för en användare
 	id: number;
 	password: string;
 	firstName: string;
@@ -13,22 +16,28 @@ interface User {
 	qrCode: number;
 }
 
+// Definierar en interface för egenskaper som StaffList-komponenten förväntar sig ta emot
 interface StaffListProps {
-	staffUsers: User[];
-	handleClick: (user: User | null) => void;
-
+	staffUsers: User[]; // En array av användare
+	handleClick: (user: User | null) => void; // En funktion för att hantera klick på användare
 }
 
+// Definierar en funktionell komponent StaffList som tar emot egenskaper definierade av StaffListProps
 const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
-	const [showModal, setShowModal] = useState(false);
-	const [selectedUser, setSelectedUser] = useState<User | null>(null);
-	const [editedUser, setEditedUser] = useState<User | null>(null);
-	const [editedFirstName, setEditedFirstName] = useState("");
-	const [editedLastName, setEditedLastName] = useState("");
-	const [editedEmail, setEditedEmail] = useState("");
-	const [editedPhone, setEditedPhone] = useState("");
-	const [editedAdmin, setEditedAdmin] = useState("false"); // Default value for admin radio button
+	// State-hooks
+	const [showModal, setShowModal] = useState(false); // Visar eller döljer modalen för att redigera användare
+	const [selectedUser, setSelectedUser] = useState<User | null>(null); // Den användare som är vald för redigering
+	const [editedUser, setEditedUser] = useState<User | null>(null); // Den användare som redigeras
+	const [editedFirstName, setEditedFirstName] = useState(""); // Det redigerade förnamnet
+	const [editedLastName, setEditedLastName] = useState(""); // Det redigerade efternamnet
+	const [editedEmail, setEditedEmail] = useState(""); // Den redigerade e-postadressen
+	const [editedPhone, setEditedPhone] = useState(""); // Det redigerade telefonnumret
+	const [editedAdmin, setEditedAdmin] = useState("false"); // Boolean-värdet för om användaren är administratör
+	const [selectedImage, setSelectedImage] = useState<File | null>(null); // Den valda bilden för användaren
+	const [imagePreview, setImagePreview] = useState<string | null>(null); // Förhandsgranskning av bilden
+	const [showFullImage, setShowFullImage] = useState(false); // Visar hela bilden
 
+	// Öppnar redigeringsmodalen för en specifik användare
 	const openModal = (user: User) => {
 		setSelectedUser(user);
 		setEditedUser(user);
@@ -36,14 +45,17 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 		setEditedLastName(user.lastName);
 		setEditedEmail(user.email);
 		setEditedPhone(user.phone);
-		setEditedAdmin(String(user.admin)); // Convert boolean to string for radio button
-		setShowModal(true);
+		setEditedAdmin(String(user.admin)); // Konvertera boolean-värdet till en sträng för radioknapp
+		setImagePreview(user.image); // Visa förhandsgranskning av bilden när modalen öppnas
+		setShowModal(true); // Visa modalen
 	};
 
+	// Stänger modalen
 	const closeModal = () => {
-		setShowModal(false);
+		setShowModal(false); // Döljer modalen
 	};
 
+	// Hanterar redigeringen av en användare
 	const handleEditUser = () => {
 		if (editedUser) {
 			const updatedUsers = [...staffUsers];
@@ -56,15 +68,17 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					lastName: editedLastName,
 					email: editedEmail,
 					phone: editedPhone,
-					admin: editedAdmin === "true", // Convert string to boolean
+					admin: editedAdmin === "true", // Konvertera strängen till boolean
+					image: selectedImage ? selectedImage.name : editedUser.image, // Uppdatera bilden om en ny är vald
 				};
 			}
 
-			console.log("Updated user information:", updatedUsers[index]);
-			closeModal();
+			console.log("Updated user information:", updatedUsers[index]); // Skriv ut uppdaterad användarinformation
+			closeModal(); // Stänger modalen
 		}
 	};
 
+	// Hanterar ändringar i inputfältet
 	const handleInputChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
 		field: string,
@@ -86,49 +100,50 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 			case "admin":
 				setEditedAdmin(value);
 				break;
+			case "image":
+				// Uppdaterar bildstatet när en ny bild väljs
+				if (event.target.files?.[0]) {
+					const selected = event.target.files[0];
+					setSelectedImage(selected);
+					const reader = new FileReader();
+					reader.onload = () => {
+						if (typeof reader.result === "string") {
+							setImagePreview(reader.result);
+						}
+					};
+					reader.readAsDataURL(selected);
+				}
+				break;
 			default:
 				break;
 		}
+		// Uppdaterar editedUser-state
 		setEditedUser((prevUser: User | null) => ({
 			...prevUser,
 			firstName: editedFirstName,
 			lastName: editedLastName,
 			email: editedEmail,
 			phone: editedPhone,
-			classroom: editedAdmin,
+			classroom: editedAdmin, // Antagande: Du vill uppdatera classroom också
 			id: editedUser?.id || 0,
 			password: editedUser?.password || "",
-			image: editedUser?.image || "",
 			admin: editedUser?.admin || false,
 			qrCode: editedUser?.qrCode || 0,
+			image: selectedImage ? selectedImage.name : editedUser?.image || "", // Tilldela en tom sträng om 'editedUser?.image' är undefined
 		}));
 	};
 
+	// Renderar JSX-kod för StaffList-komponenten
 	return (
 		<>
+			{/* Renderar en tabell med användare */}
 			<thead>
 				<tr>
 					<th colSpan={4} className="text-lg font-bold px-6 py-3">
 						Staff Users:
-						{/* <hr className="mt-4" /> */}
 					</th>
 				</tr>
 			</thead>
-			<tr className="text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-				<th scope="col" className="px-6 py-3">
-					Name
-				</th>
-				<th scope="col" className="px-6 py-3">
-					Phone
-				</th>
-				<th scope="col" className="px-6 py-3">
-					Admin
-				</th>
-				<th scope="col" className="px-6 py-3">
-					Action
-				</th>
-			</tr>
-
 			{staffUsers?.map((user) => (
 				<tbody key={user.id}>
 					<tr
@@ -142,6 +157,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 							}
 						}}
 					>
+						{/* Renderar användarinformation */}
 						<th
 							scope="row"
 							className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -150,7 +166,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 								className="w-10 h-10 rounded-full"
 								width={10}
 								height={10}
-								src={`/image/${user.image}`} // Bygg upp den fullständiga sökvägen
+								src={`/image/${user.image}`}
 								alt={`${user.firstName} ${user.lastName}`}
 							/>
 							<div className="ps-3">
@@ -165,6 +181,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 							</div>
 						</td>
 						<td className="px-6 py-4">
+							{/* Knapp för att öppna redigeringsmodalen */}
 							<button
 								type="button"
 								onClick={(e) => {
@@ -179,156 +196,26 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					</tr>
 				</tbody>
 			))}
+			{/* Visar redigeringsmodalen om en användare är vald */}
 			{selectedUser && (
-				<div
-					className={`fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 ${
-						showModal ? "" : "hidden"
-					}`}
-				>
-					<div className="bg-white p-6 md:p-8 w-full max-w-md mx-auto rounded-lg shadow-lg z-50">
-						<div className="flex items-center justify-between border-b">
-							<h2 className="text-lg font-semibold text-gray-900">
-								Edit {`${selectedUser.firstName} ${selectedUser.lastName}`}
-							</h2>
-							<button
-								type="submit"
-								onClick={closeModal}
-								className="text-gray-500 hover:text-gray-700 focus:outline-none"
-							>
-								<svg
-									className="w-6 h-6"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<title>Close</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M6 18L18 6M6 6l12 12"
-									/>
-								</svg>
-							</button>
-						</div>
-						<div className="mt-4">
-							<form>
-								<div className="mb-4">
-									<label
-										htmlFor="firstName"
-										className="block text-sm font-medium text-gray-700"
-									>
-										First Name
-									</label>
-									<input
-										type="text"
-										id="firstName"
-										className="mt-1 p-1 border rounded-md"
-										value={editedFirstName}
-										onChange={(e) => handleInputChange(e, "firstName")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="lastName"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Last Name
-									</label>
-									<input
-										type="text"
-										id="lastName"
-										className="mt-1 p-1 border rounded-md"
-										value={editedLastName}
-										onChange={(e) => handleInputChange(e, "lastName")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="email"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Email
-									</label>
-									<input
-										type="email"
-										id="email"
-										className="mt-1 p-1 border rounded-md"
-										value={editedEmail}
-										onChange={(e) => handleInputChange(e, "email")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="phone"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Phone
-									</label>
-									<input
-										type="text"
-										id="phone"
-										className="mt-1 p-1 border rounded-md"
-										value={editedPhone}
-										onChange={(e) => handleInputChange(e, "phone")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="admin"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Admin
-									</label>
-									<div className="flex items-center mt-2">
-										<input
-											type="radio"
-											id="admin-yes"
-											name="admin"
-											value="true"
-											checked={editedAdmin === "true"}
-											onChange={(e) => handleInputChange(e, "admin")}
-											className="mr-1"
-										/>
-										<label htmlFor="admin-yes" className="mr-4">
-											Yes
-										</label>
-										<input
-											type="radio"
-											id="admin-no"
-											name="admin"
-											value="false"
-											checked={editedAdmin === "false"}
-											onChange={(e) => handleInputChange(e, "admin")}
-											className="mr-1"
-										/>
-										<label htmlFor="admin-no">No</label>
-									</div>
-								</div>
-							</form>
-						</div>
-						<div className="mt-6 flex justify-end">
-							<button
-								type="submit"
-								onClick={handleEditUser}
-								className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
-							>
-								Confirm
-							</button>
-							<button
-								type="submit"
-								onClick={closeModal}
-								className="ml-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none"
-							>
-								Cancel
-							</button>
-						</div>
-					</div>
-				</div>
+				<StaffEditModal
+					showModal={showModal}
+					selectedUser={selectedUser}
+					editedFirstName={editedFirstName}
+					editedLastName={editedLastName}
+					editedEmail={editedEmail}
+					editedPhone={editedPhone}
+					editedAdmin={editedAdmin}
+					imagePreview={imagePreview}
+					showFullImage={showFullImage}
+					handleInputChange={handleInputChange}
+					handleEditUser={handleEditUser}
+					closeModal={closeModal}
+					setShowFullImage={setShowFullImage} // Lägg till den saknade egenskapen
+				/>
 			)}
 		</>
 	);
 };
 
-export default StaffList;
+export default StaffList; // Exporterar StaffList-komponenten
