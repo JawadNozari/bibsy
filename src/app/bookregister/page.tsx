@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import Image from "next/image";
+import { Book } from "@prisma/client";
 
 interface VolumeInfo {
 	title: string;
@@ -18,21 +19,17 @@ interface BookData {
 		volumeInfo: VolumeInfo;
 	}[];
 }
-
 export default function Home() {
 	// variables for form fields and book data
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [imageUrl, setImageUrl] = useState<string>("");
-
-	const [isbn, setIsbn] = useState<string>("");
+	const [isbn, setIsbn] = useState("");
 	const [invNr, setInvNr] = useState<number>(0);
 	const [price, setPrice] = useState<number>(0);
-
 	const [title, setTitle] = useState<string>("");
 	const [author, setAuthor] = useState<string>("");
 	const [publishers, setPublishers] = useState<string>("");
-	const [published, setPublished] = useState<Date>();
-
+	const [published, setPublished] = useState<Date>(new Date());
 	// variables for book search result and error handling
 	const [bookData, setBookData] = useState<BookData | null>(null);
 	const [message, setMessage] = useState<string | undefined>("");
@@ -58,7 +55,6 @@ export default function Home() {
 				setPublished(new Date(bookVolumeInfo.publishedDate));
 
 				setImageUrl(bookVolumeInfo.imageLinks.thumbnail || "");
-
 				// Set book data
 				setBookData(bookinfo.data);
 			}
@@ -71,28 +67,43 @@ export default function Home() {
 	// Function to handle form submission
 	const formSubmit = async () => {
 		const formData = new FormData();
-		if (file) {
-			formData.append("file", file);
+		let imagePath = "";
+		if (file !== undefined) {
+			formData.append("file", file || undefined);
+			imagePath = await axios
+				.post("/api/fileDownloader", formData, {
+					headers: { "Content-Type": "multipart/form-data" },
+				})
+				.then((res) => {
+					return res.data.path;
+				});
+		}
+		if (imageUrl) {
+			const userData = { filename: isbn, url: imageUrl };
+			imagePath = await axios
+				.post("/api/fileDownloader", userData)
+				.then((res) => {
+					return res.data.path;
+				});
 		}
 
-		formData.append("imageUrl", imageUrl);
-
-		// Additional form fields
-		formData.append("title", title);
-		formData.append("author", author);
-		formData.append("publishers", publishers);
-		formData.append("published", String(published));
-		formData.append("isbn", isbn);
-		formData.append("invNr", String(invNr));
-		formData.append("price", String(price));
+		const userData: Book = {
+			bookImg: imagePath,
+			title: title,
+			author: author,
+			publishers: publishers,
+			published: published,
+			isbn: isbn,
+			invNr: invNr,
+			price: price,
+			available: true,
+			id: 0,
+			regDate: new Date(),
+		};
 
 		// Post form data to backend
 		await axios
-			.post("/api/bookReg", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			})
+			.post("/api/bookReg", userData)
 			.then((res) => {
 				setGotError(false);
 				setMessage(res.data.Message);
@@ -100,7 +111,6 @@ export default function Home() {
 			.catch((err) => {
 				setGotError(true);
 				setMessage(err.message);
-				console.error(err);
 			});
 	};
 
@@ -230,6 +240,8 @@ export default function Home() {
 							src={bookData.items[0].volumeInfo.imageLinks.thumbnail}
 							alt="Book Cover"
 							className="mt-2"
+							width={100}
+							height={150}
 						/>
 					)}
 				</div>
