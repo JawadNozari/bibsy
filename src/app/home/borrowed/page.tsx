@@ -11,6 +11,7 @@ const Page = () => {
   const [students, setStudents] = React.useState<Student[]>([]);
   const [staff, setStaff] = React.useState<Staff[]>([]);
 
+  //* Gets all of the registered books and all of the borrowed books
   React.useEffect(() => {
     const getBooks = async () => {
       const response = await axios("/api/registeredBooks");
@@ -32,6 +33,8 @@ const Page = () => {
     getBooks();
   }, []);
 
+  //* On UserId search get all borrowed books by user's ID
+  //! THIS IS SUPPOSED TO BE A BUTTON, BUT CANT WITHOUT SESSION
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const userId = (event.currentTarget[0] as HTMLInputElement).value as unknown as number;
@@ -39,6 +42,7 @@ const Page = () => {
     setBorrowedBooks(response.data.books);
   };
 
+  //* On missing button press, set the book to missing and remove it from the array and db
   const setBookMissing = async (event: React.MouseEvent<HTMLElement>, bookId: number) => {
     event.stopPropagation();
     console.log(borrowedBooks);
@@ -55,6 +59,7 @@ const Page = () => {
     console.log(response.data);
   };
 
+  //* On return button press, set the book to available and remove it from the array and db
   const setBookAvailable = async (event: React.MouseEvent<HTMLElement>, bookId: number) => {
     event.stopPropagation();
     borrowedBooks.map((borrowedBook) => {
@@ -72,6 +77,7 @@ const Page = () => {
     console.log(response.data);
   };
 
+  //* On book title search, get all books that have a related title and add them to the list
   const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const bookTitle = (event.currentTarget[0] as HTMLFormElement).value;
@@ -82,6 +88,81 @@ const Page = () => {
     setBooks(response.data.books);
   };
 
+  //* loops through all of the books and checks if they are borrowed, then renders the TSX
+  const runThroughBooks = () => {
+    return (
+      books.map((book) => {
+        return borrowedBooks.map((borrowedBook) => {
+          if (borrowedBook.bookId === book.id) {
+            return (
+              <tr
+                className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
+                key={book.invNr}
+                onClick={() =>
+                  router.push(`/home/bookDetails/${book.invNr}`)
+                }
+                onKeyDown={() =>
+                  router.push(`/home/bookDetails/${book.invNr}`)
+                }
+                style={{ zIndex: 1 }}
+              >
+                <th
+                  scope="row"
+                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                >{`${book.title}`}</th>
+                <td className="px-6 py-4">{`${book.author}`}</td>
+                <td className="px-6 py-4">{`${borrowedBook.note}`}</td>
+                {/* //suggestion: this part needs cleanup */}
+                <td className="px-6 py-4">{
+                  `${`${(book.regDate).toString().split("T")[0]} ${(book.regDate).toString().split("T")[1].split(".")[0]}`}`}
+                </td>
+
+                {/* //* Loop through staff and users to fetch names by their ID's  */}
+                <td className="px-6 py-4">{
+                  staff.map((staffMember) => {
+                    if (staffMember.id === borrowedBook.staffId) {
+                      return `${staffMember.firstName} ${staffMember.lastName} | ID: ${staffMember.id}`;
+                    }
+                    return `${borrowedBook.staffId}`;
+                  })
+                }</td>
+                <td className="px-6 py-4">{
+                  students.map((student: Student) => {
+                    if (student.id === borrowedBook.studentId) {
+                      return `${student.firstName} ${student.lastName} | ID: ${student.id}`;
+                    }
+                    return `${borrowedBook.studentId}`;
+                  })
+                }</td>
+                <td className="px-6 py-4">
+                  <button
+                    type="button"
+                    onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setBookMissing(e, borrowedBook.bookId)}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    style={{ zIndex: 2 }}
+                  >
+                    MISSING
+                  </button>
+                </td>
+                <td className="px-6 py-4">
+                  <button
+                    type="button"
+                    onClick={(e) => setBookAvailable(e, borrowedBook.bookId)}
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                  >
+                    RETURNED
+                  </button>
+                </td>
+              </tr>
+            );
+          }
+          return null;
+        });
+      })
+    );
+  };
+
+  //* Renders the TSX
   return (
     <div className="flex min-h-screen flex-col items-center justify-between  p-24 bg-neutral-50">
       <div className=" overflow-x-auto shadow-md sm:rounded-lg overflow-scroll w-4/5 h-[38rem] dark:bg-gray-600">
@@ -131,71 +212,7 @@ const Page = () => {
             </tr>
           </thead>
           <tbody>
-            {books.map((book) => {
-              return borrowedBooks.map((borrowedBook) => {
-                if (borrowedBook.bookId === book.id) {
-                  return (
-                    <tr
-                      className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
-                      key={book.invNr}
-                      onClick={() =>
-                        router.push(`/home/bookDetails/${book.invNr}`)
-                      }
-                      onKeyDown={() =>
-                        router.push(`/home/bookDetails/${book.invNr}`)
-                      }
-                      style={{ zIndex: 1 }}
-                    >
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                      >{`${book.title}`}</th>
-                      <td className="px-6 py-4">{`${book.author}`}</td>
-                      <td className="px-6 py-4">{`${borrowedBook.note}`}</td>
-                      {/* //suggestion: this part needs cleanup */}
-                      <td className="px-6 py-4">{`${`${(book.regDate).toString().split("T")[0]} ${(book.regDate).toString().split("T")[1].split(".")[0]}`
-                        }`}</td>
-                      <td className="px-6 py-4">{
-                        staff.map((staffMember) => {
-                          if (staffMember.id === borrowedBook.staffId) {
-                            return `${staffMember.firstName} ${staffMember.lastName} | ID: ${staffMember.id}`;
-                          }
-                          return `${borrowedBook.staffId}`;
-                        })
-                      }</td>
-                      <td className="px-6 py-4">{
-                        students.map((student: Student) => {
-                          if (student.id === borrowedBook.studentId) {
-                            return `${student.firstName} ${student.lastName} | ID: ${student.id}`;
-                          }
-                          return `${borrowedBook.studentId}`;
-                        })
-                      }</td>
-                      <td className="px-6 py-4">
-                        <button
-                          type="button"
-                          onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setBookMissing(e, borrowedBook.bookId)}
-                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                          style={{ zIndex: 2 }}
-                        >
-                          MISSING
-                        </button>
-                      </td>
-                      <td className="px-6 py-4">
-                        <button
-                          type="button"
-                          onClick={(e) => setBookAvailable(e, borrowedBook.bookId)}
-                          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                        >
-                          RETURNED
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                }
-                return null;
-              });
-            })}
+            {runThroughBooks()}
           </tbody>
         </table>
       </div>
