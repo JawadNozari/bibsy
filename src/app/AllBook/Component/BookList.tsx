@@ -1,18 +1,22 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { FilterButton } from "./filterButton";
 
-// Book interface
+// Interfaces
 interface Book {
-	id: string;
+	id: number;
 	price: number;
 	title: string;
 	author: string;
 	published: string;
 }
-interface Links {
-	key: string;
-	name: string;
-	link: string;
+interface BookState {
+	id: number;
+	regdate: string;
+	note: string;
+	bookId: number;
+	staffId: number;
+	studentId: number;
 }
 interface Links {
 	key: string;
@@ -20,7 +24,12 @@ interface Links {
 	link: string;
 	color: string;
 }
-
+interface Theme {
+	theme: string;
+	fetchLink: string;
+	type?: string;
+	lostFound?: string;
+}
 interface LinkArray {
 	links: Links[];
 }
@@ -49,13 +58,23 @@ const linkObject: LinkArray = {
 	],
 };
 
-export default function BookList({ colorTheme }: { colorTheme: string }) {
+export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 	// where the fetched data is stored
 	const [books, setBooks] = useState<Array<Book>>([]);
-	// dropdown state
+	const [bookState, setBookState] = useState<Array<BookState>>([
+		{
+			id: 0,
+			regdate: "",
+			note: "",
+			bookId: 0,
+			staffId: 0,
+			studentId: 0,
+		},
+	]);
+	const lostFound = colorTheme.lostFound;
 
 	// Theme picker
-	//Have spaces so that can split and use in tailwind
+	// Have spaces so that can split and use in tailwind
 	const theme: { [key: string]: string } = {
 		book: " dark:bg-blue-800 focus:border-blue-800 hover:bg-blue-900",
 		available: " dark:bg-green-600 focus:border-green-600 hover:bg-green-700",
@@ -64,11 +83,21 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 	};
 	// Fetching data
 	useEffect(() => {
-		fetch("/api/availableBooks")
+		fetch(`/api/${colorTheme.fetchLink}`)
 			.then((res) => res.json())
 			.then((data) => setBooks(data.books))
 			.catch((error) => console.log(error));
-	}, []);
+	}, [colorTheme.fetchLink]);
+
+	//fetching bookState data if exists
+	useEffect(() => {
+		colorTheme.type
+			? fetch(`/api/${colorTheme.type}`)
+					.then((res) => res.json())
+					.then((data) => setBookState(data.books))
+					.catch((error) => console.log(error))
+			: null;
+	}, [colorTheme.type]);
 
 	// Dropdown class so that works with tailwind
 	return (
@@ -85,17 +114,22 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 							<a
 								key={link.key}
 								href={link.link}
-								className={`h-4/5 transform hover:scale-110 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 hover:${link?.color} transition-colors rounded-t-3xl border-gray-700 border-b-0`}
+								className={`h-4/5 transform hover:scale-100 scale-95 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 transition-colors rounded-t-3xl border-gray-700 border-b-0`}
 							>
 								{link.name}
 							</a>
 						))}
 					{/* spaceDiv */}
+					<div className="size-1/12" />
 				</div>
 			</div>
-			<div className="relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-700 shadow-md  size-10/12 rounded-t-xl">
+			<div
+				className={
+					"relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 shadow-md  size-10/12 rounded-t-xl bg-gray-800"
+				}
+			>
 				<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-300">
-					<thead className="text-xs  uppercase bg-gray-50 dark:bg-gray-700 dark:text-white sticky top-0 p-3">
+					<thead className="text-xs  uppercase bg-gray-50 dark:bg-gray-700 dark:text-white sticky top-0 p-3 z-10">
 						<tr>
 							<th colSpan={5}>
 								<form className="p-4">
@@ -127,7 +161,7 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 											type="search"
 											id="default-search"
 											className={`${
-												theme[colorTheme].split(" ")[2]
+												theme[colorTheme.theme].split(" ")[2]
 											} block w-full p-4 ps-10 text-sm text-gray-900 border-gray-400 rounded-lg bg-gray-500  dark:placeholder-gray-300 dark:text-white border-2 outline-none`}
 											placeholder="Search for books..."
 											required
@@ -149,112 +183,81 @@ export default function BookList({ colorTheme }: { colorTheme: string }) {
 							<th scope="col" className="px-6 py-3">
 								Price
 							</th>
+
 							<th
 								scope="col"
 								className="px-6 py-3 flex justify-center items-center w-full h-full"
 							>
-								Action
+								{colorTheme.theme !== "book" ? "Action" : null}
 							</th>
 						</tr>
 					</thead>
 					<tbody>
 						{/* Map of fetched data which prints out table-row */}
-						{books.map((book, index) => (
-							<tr
-								key={book.id}
-								className={`bg-white border-b ${theme[colorTheme]} dark:border-gray-700`}
-							>
-								<td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/5 overflow-auto">
-									{books.length > 0 ? books[index]?.title : "loading..."}
-								</td>
-								<td className="px-6 py-4">
-									{books.length > 0 ? books[index]?.author : "loading..."}
-								</td>
-								<td className="px-6 py-4">
-									{books.length > 0
-										? books[index]?.published.split("T")[0]
-										: "loading..."}
-								</td>
-								<td className="px-6 py-4">
-									${books.length > 0 ? books[index]?.price : "loading..."}
-								</td>
-								<td className="px-6 py-4 flex justify-center items-center w-full h-full">
-									<a
-										href={books[index]?.id}
-										className="font-medium text-red-600 hover:underline"
+						{bookState.map((state, index) =>
+							books.map((book, index) => {
+								return state.bookId === book.id || !colorTheme.type ? (
+									<tr
+										key={book.id}
+										className={`bg-white border-b ${
+											theme[colorTheme.theme]
+										} dark:border-gray-700`}
 									>
-										Lost
-									</a>
-								</td>
-							</tr>
-						))}
+										<td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/5 overflow-auto">
+											{books.length > 0 ? books[index]?.title : "loading..."}
+										</td>
+										<td className="px-6 py-4">
+											{books.length > 0 ? books[index]?.author : "loading..."}
+										</td>
+										<td className="px-6 py-4">
+											{books.length > 0
+												? books[index]?.published.split("T")[0]
+												: "loading..."}
+										</td>
+										<td className="px-6 py-4">
+											${books.length > 0 ? books[index]?.price : "loading..."}
+										</td>
+										<td className="px-6 py-4 flex justify-center items-center w-full h-full">
+											{lostFound ? (
+												<a
+													href={`/lost:${books[index]?.id.toString()}`}
+													className={
+														colorTheme.theme === "available"
+															? "trasnform font-bold bg-gray-700 p-2 text-yellow-600 rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
+															: colorTheme.theme === "missing"
+															  ? "font-bold bg-gray-700 p-2 text-green-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
+															  : "font-bold bg-gray-700 p-2 text-red-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
+													}
+												>
+													{`${lostFound?.split(" ")[0]}`}
+												</a>
+											) : null}
+											{lostFound?.split(" ")[1] ? (
+												<div className="m mx-2" />
+											) : null}
+											{lostFound?.split(" ")[1] ? (
+												<a
+													href={`localhost:3000/lost:${books[
+														index
+													]?.id.toString()}`}
+													className={
+														colorTheme.theme !== "missing"
+															? "font-bold bg-gray-700 p-2 text-green-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
+															: "font-bold text-red-500 hover:underline"
+													}
+												>
+													{`${lostFound?.split(" ")[1]}`}
+												</a>
+											) : null}
+										</td>
+									</tr>
+								) : null;
+							}),
+						)}
 					</tbody>
 				</table>
 			</div>
-			{/* <div
-				// dropdown Container
-				className="size-1/12 h-56 flex justify-start flex-col items-start"
-			>
-				<button
-					id="dropdownDefaultButton"
-					onClick={() => {
-						// onclick to make button false or true
-						!dropdown ? setDropdown(true) : setDropdown(false);
-					}}
-					className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm  text-center inline-flex items-center justify-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-28 h-14"
-					type="button"
-				>
-					Filter
-				</button>
-
-				<div
-					id="dropdown"
-					// dropdown if false then hidden else block
-					className={
-						!dropdown
-							? "hidden"
-							: "inline z-20 bg-white divide-y divide-gray-100 rounded-lg shadow w-28 dark:bg-gray-700"
-					}
-				>
-					<ul
-						className="py-2 text-sm text-gray-700 dark:text-gray-200"
-						aria-labelledby="dropdownDefaultButton"
-					>
-						<li>
-							<a
-								href="#TEMP"
-								className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-							>
-								Dashboard
-							</a>
-						</li>
-						<li>
-							<a
-								href="#TEMP"
-								className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-							>
-								Settings
-							</a>
-						</li>
-						<li>
-							<a
-								href="#TEMP"
-								className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-							>
-								Earnings
-							</a>
-						</li>
-						<li>
-							<a
-								href="#TEMP"
-								className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-							>
-								Sign out
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div> */}
+			<FilterButton />
 		</div>
 	);
 }

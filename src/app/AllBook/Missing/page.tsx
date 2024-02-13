@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import BookList from "../Component/BookList";
 
 // Define your component
 const Missing = () => {
+	const colorTheme = {
+		theme: "missing",
+		fetchLink: "registeredBooks",
+		type: "missingBooks",
+		lostFound: "Found",
+	};
 	return (
 		<div
 			className="size-full bg-white"
@@ -10,7 +16,7 @@ const Missing = () => {
 				height: "100edvh",
 			}}
 		>
-			<BookList colorTheme={"missing"} />
+			<BookList colorTheme={colorTheme} />
 		</div>
 	);
 };

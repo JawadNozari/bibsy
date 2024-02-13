@@ -3,6 +3,11 @@ import BookList from "../Component/BookList";
 
 // Define your component
 const Available = () => {
+	const colorTheme = {
+		theme: "available",
+		fetchLink: "availableBooks",
+		lostFound: "Borrow",
+	};
 	return (
 		<div
 			className="size-full bg-white"
@@ -10,7 +15,7 @@ const Available = () => {
 				height: "100edvh",
 			}}
 		>
-			<BookList colorTheme={"available"} />
+			<BookList colorTheme={colorTheme} />
 		</div>
 	);
 };
