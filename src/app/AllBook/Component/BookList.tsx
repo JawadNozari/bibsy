@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { FilterButton } from "./filterButton";
 
 // Interfaces
 interface Book {
@@ -27,6 +28,7 @@ interface Theme {
 	theme: string;
 	fetchLink: string;
 	type?: string;
+	lostFound?: string;
 }
 interface LinkArray {
 	links: Links[];
@@ -69,8 +71,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 			studentId: 0,
 		},
 	]);
-
-	const [dropdown, setDropdown] = useState(false);
+	const lostFound = colorTheme.lostFound;
 
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
@@ -113,7 +114,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 							<a
 								key={link.key}
 								href={link.link}
-								className={`h-4/5 transform hover:scale-100 scale-95 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 hover:${link?.color} transition-colors rounded-t-3xl border-gray-700 border-b-0`}
+								className={`h-4/5 transform hover:scale-100 scale-95 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 transition-colors rounded-t-3xl border-gray-700 border-b-0`}
 							>
 								{link.name}
 							</a>
@@ -122,9 +123,13 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 					<div className="size-1/12" />
 				</div>
 			</div>
-			<div className="relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-700 shadow-md  size-10/12 rounded-t-xl">
+			<div
+				className={
+					"relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 shadow-md  size-10/12 rounded-t-xl bg-gray-800"
+				}
+			>
 				<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-300">
-					<thead className="text-xs  uppercase bg-gray-50 dark:bg-gray-700 dark:text-white sticky top-0 p-3">
+					<thead className="text-xs  uppercase bg-gray-50 dark:bg-gray-700 dark:text-white sticky top-0 p-3 z-10">
 						<tr>
 							<th colSpan={5}>
 								<form className="p-4">
@@ -178,11 +183,12 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 							<th scope="col" className="px-6 py-3">
 								Price
 							</th>
+
 							<th
 								scope="col"
 								className="px-6 py-3 flex justify-center items-center w-full h-full"
 							>
-								Action
+								{colorTheme.theme !== "book" ? "Action" : null}
 							</th>
 						</tr>
 					</thead>
@@ -212,18 +218,37 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 											${books.length > 0 ? books[index]?.price : "loading..."}
 										</td>
 										<td className="px-6 py-4 flex justify-center items-center w-full h-full">
-											<a
-												href={`localhost:3000/lost:${books[
-													index
-												]?.id.toString()}`}
-												className={
-													colorTheme.theme === "missing"
-														? "font-bold text-green-500 hover:underline"
-														: "font-bold text-red-500 hover:underline"
-												}
-											>
-												{colorTheme.theme === "missing" ? "Found" : "Lost"}
-											</a>
+											{lostFound ? (
+												<a
+													href={`/lost:${books[index]?.id.toString()}`}
+													className={
+														colorTheme.theme === "available"
+															? "trasnform font-bold bg-gray-700 p-2 text-yellow-600 rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
+															: colorTheme.theme === "missing"
+															  ? "font-bold bg-gray-700 p-2 text-green-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
+															  : "font-bold bg-gray-700 p-2 text-red-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
+													}
+												>
+													{`${lostFound?.split(" ")[0]}`}
+												</a>
+											) : null}
+											{lostFound?.split(" ")[1] ? (
+												<div className="m mx-2" />
+											) : null}
+											{lostFound?.split(" ")[1] ? (
+												<a
+													href={`localhost:3000/lost:${books[
+														index
+													]?.id.toString()}`}
+													className={
+														colorTheme.theme !== "missing"
+															? "font-bold bg-gray-700 p-2 text-green-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
+															: "font-bold text-red-500 hover:underline"
+													}
+												>
+													{`${lostFound?.split(" ")[1]}`}
+												</a>
+											) : null}
 										</td>
 									</tr>
 								) : null;
@@ -232,37 +257,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 					</tbody>
 				</table>
 			</div>
-			<div
-				// dropdown Container
-				className="size-1/12 h-56 flex justify-start flex-col items-start"
-			>
-				<button
-					id="dropdownDefaultButton"
-					onClick={() => {
-						// onclick to make button false or true
-						!dropdown ? setDropdown(true) : setDropdown(false);
-					}}
-					className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm  text-center inline-flex items-center justify-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-28 h-14 translate-y-5"
-					type="button"
-				>
-					Filter
-				</button>
-
-				<div
-					id="dropdown"
-					// dropdown if false then hidden else block
-					className={
-						!dropdown
-							? "hidden"
-							: "z-20 bg-white p-2 rounded-lg shadow w-28 dark:bg-gray-700 translate-y-5 flex justify-around items-center"
-					}
-				>
-					<input type="checkBox" name="myBooks" id="myBoooks" />
-					<label htmlFor="myBooks" className="text-xs">
-						My books
-					</label>
-				</div>
-			</div>
+			<FilterButton />
 		</div>
 	);
 }

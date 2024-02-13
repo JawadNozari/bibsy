@@ -7,6 +7,7 @@ const Missing = () => {
 		theme: "missing",
 		fetchLink: "registeredBooks",
 		type: "missingBooks",
+		lostFound: "Found",
 	};
 	return (
 		<div

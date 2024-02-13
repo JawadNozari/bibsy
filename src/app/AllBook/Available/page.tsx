@@ -6,6 +6,7 @@ const Available = () => {
 	const colorTheme = {
 		theme: "available",
 		fetchLink: "availableBooks",
+		lostFound: "Borrow",
 	};
 	return (
 		<div
