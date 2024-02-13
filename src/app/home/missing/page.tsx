@@ -24,6 +24,7 @@ const Page = () => {
 	const [students, setStudents] = React.useState<Student[]>([]);
 	const [staff, setStaff] = React.useState<Staff[]>([]);
 
+	//* Gets all of the books and sets the state for each type of book (registered, missing) and all of the users
 	React.useEffect(() => {
 		const getBooks = async () => {
 			const response = await axios("/api/registeredBooks");
@@ -44,6 +45,7 @@ const Page = () => {
 		getBooks();
 	}, []);
 
+	//* On userID submit, gets the missing books for the user and sets the state
 	const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		let userId = (event.currentTarget[0] as HTMLInputElement)
@@ -56,6 +58,7 @@ const Page = () => {
 		setMissingBooks(response.data.books);
 	};
 
+	//* On bookTitle submit, gets the books with the title and sets the state
 	const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const bookTitle = (event.currentTarget[0] as HTMLInputElement).value;
@@ -66,6 +69,7 @@ const Page = () => {
 		setBooks(response.data.books);
 	};
 
+	//* Sets the book as available and removes it from the missing books list
 	const setBookAvailable = async (event: React.MouseEvent<HTMLElement>, bookId: number) => {
 		event.stopPropagation();
 		missingBooks.map((missingBook: Book) => {
@@ -82,6 +86,63 @@ const Page = () => {
 		console.log(response.data);
 	};
 
+	//* Runs through the books and missing books and returns the JSX for the table
+	const runThroughBooks = () => {
+		return (
+			books.map((book: Book) => {
+				return missingBooks.map((missingBook: Book) => {
+					if (missingBook.bookId === book.id) {
+						return (
+							<tr
+								className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
+								key={book.id}
+								onClick={() =>
+									router.push(`/home/bookDetails/${book.id}`)
+								}
+								onKeyUp={() => { }}
+								onKeyDown={() => { }}
+							>
+								<th
+									scope="row"
+									className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+								>{`${book.title}`}</th>
+								<td className="px-6 py-4">{`${book.author}`}</td>
+								<td className="px-6 py-4">{`${missingBook.note}`}</td>
+								<td className="px-6 py-4">{`${`${book.regDate.split("T")[0]
+									} ${book.regDate.split("T")[1].split(".")[0]}`}`}</td>
+								<td className="px-6 py-4">{
+									staff.map((staffMember) => {
+										if (staffMember.id === missingBook.staffId) {
+											return `${staffMember.firstName} ${staffMember.lastName} | ID: ${staffMember.id}`;
+										}
+									})
+								}</td>
+								<td className="px-6 py-4">{
+									students.map((student) => {
+										if (student.id === missingBook.studentId) {
+											return `${student.firstName} ${student.lastName} | ID: ${student.id}`;
+										}
+									})
+								}</td><td className="px-6 py-4">
+									<button
+										type="button"
+										onClick={(e) => setBookAvailable(e, missingBook.bookId)}
+										className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+									>
+										RETURNED
+									</button>
+								</td>
+							</tr>
+						);
+					}
+					return null;
+				});
+			})
+		);
+	};
+
+
+	//* Returns the JSX for the page with the missing books and buttons to navigate to different pages
 	return (
 		<div className="flex min-h-screen flex-col items-center justify-between p-24 bg-neutral-50">
 			<div className=" overflow-x-auto shadow-md sm:rounded-lg overflow-scroll w-4/5 h-[38rem] dark:bg-gray-600">
@@ -132,55 +193,7 @@ const Page = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{books.map((book: Book) => {
-							return missingBooks.map((missingBook: Book) => {
-								if (missingBook.bookId === book.id) {
-									return (
-										<tr
-											className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
-											key={book.id}
-											onClick={() =>
-												router.push(`/home/bookDetails/${book.id}`)
-											}
-											onKeyUp={() => { }}
-											onKeyDown={() => { }}
-										>
-											<th
-												scope="row"
-												className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-											>{`${book.title}`}</th>
-											<td className="px-6 py-4">{`${book.author}`}</td>
-											<td className="px-6 py-4">{`${missingBook.note}`}</td>
-											<td className="px-6 py-4">{`${`${book.regDate.split("T")[0]
-												} ${book.regDate.split("T")[1].split(".")[0]}`}`}</td>
-											<td className="px-6 py-4">{
-												staff.map((staffMember) => {
-													if (staffMember.id === missingBook.staffId) {
-														return `${staffMember.firstName} ${staffMember.lastName} | ID: ${staffMember.id}`;
-													}
-												})
-											}</td>
-											<td className="px-6 py-4">{
-												students.map((student) => {
-													if (student.id === missingBook.studentId) {
-														return `${student.firstName} ${student.lastName} | ID: ${student.id}`;
-													}
-												})
-											}</td><td className="px-6 py-4">
-												<button
-													type="button"
-													onClick={(e) => setBookAvailable(e, missingBook.bookId)}
-													className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-												>
-													RETURNED
-												</button>
-											</td>
-										</tr>
-									);
-								}
-								return null;
-							});
-						})}
+						{runThroughBooks()}
 					</tbody>
 				</table>
 			</div>

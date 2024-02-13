@@ -10,10 +10,9 @@ const Page = () => {
 	const [borrowedBooks, setBorrowedBooks] = React.useState(0);
 	const [missingBooks, setMissingBooks] = React.useState(0);
 
+	//* Gets all of the books and sets the state for each type of book (available, borrowed, missing)
 	useEffect(() => {
 		const getBooks = async () => {
-			console.log("useEffect");
-			// Devide by 2 because the code gets ran twice because react
 			const available = await axios.get("/api/registeredBooks");
 			setAvailableBooks(available.data.books?.length);
 
@@ -23,11 +22,13 @@ const Page = () => {
 			const missing = await axios.get("/api/missingBooks");
 			setMissingBooks(missing.data.books?.length);
 
+			//* Sets the total number of books by adding the number of available, borrowed, and missing books
 			setTotalBooks(availableBooks + borrowedBooks + missingBooks);
 		};
 		getBooks();
 	}, [availableBooks, borrowedBooks, missingBooks]);
 
+	//* Returns the JSX for the page with the number of books available, borrowed, and missing and buttons to navigate to different pages
 	return (
 		<div>
 			<div>{availableBooks} books available to borrow</div>
