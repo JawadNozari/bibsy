@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FilterButton } from "./filterButton";
+import axios from "axios";
 
 // Interfaces
 interface Book {
@@ -101,6 +102,40 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 			: null;
 	}, [colorTheme.type]);
 
+	//* On missing button press, set the book to missing and remove it from the array and db
+	 const setBookMissing = async (event: React.MouseEvent<HTMLElement>, bookId: number) => {
+		event.stopPropagation();
+		bookState.map((borrowedBook) => {
+		  if (borrowedBook.bookId === bookId) {
+			bookState.splice(bookState.indexOf(borrowedBook), 1);
+		  }
+		});
+		//setBookState(bookState); // Dont know if this works?
+	
+		const response = await axios.post("/api/setBookMissing", {
+		  bookId,
+		});
+		console.log(response.data);
+	  };
+	
+	  //* On return button press, set the book to available and remove it from the array and db
+	  const setBookAvailable = async (event: React.MouseEvent<HTMLElement>, bookId: number, listType: string) => {
+		event.stopPropagation();
+		bookState.map((borrowedBook) => {
+		  if (borrowedBook.bookId === bookId) {
+			bookState.splice(bookState.indexOf(borrowedBook), 1);
+		  }
+		});
+		//setBookState(bookState); // Dont know if this works?
+	
+		const response = await axios.post("/api/setBookAvailable", {
+		  bookId,
+		  userType: "student",
+		  listType,
+		});
+		console.log(response.data);
+	  };
+
 	// Dropdown class so that works with tailwind
 	return (
 		// TableTemplate edited
@@ -159,6 +194,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 												/>
 											</svg>
 										</div>
+										{/* Search input */}
 										<input
 											type="search"
 											id="default-search"
@@ -222,12 +258,14 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 										{/*Ternary if available adds link to borrow else if book add corresponding availability else, add buttuns for post */}
 										<td className="px-6 py-4 flex justify-center items-center w-full h-full">
 											{colorTheme.theme === "available" ? (
+												// borrow button
 												<a
 													href={`/loanBook?invNr=${book.invNr}`}
 													className="transform p-2 bg-gray-700 rounded-xl text-yellow-600 font-bold hover:scale-110 transition-transform"
 												>
 													Borrow
 												</a>
+												// availability
 											) : colorTheme.theme === "book" ? (
 												book.available ? (
 													"Avaliable"
@@ -236,24 +274,30 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 												)
 											) : lostFound?.split(" ")[1] ? (
 												<div className="flex">
+													{/* lost button borrow tab */}
 													<button
 														type="submit"
 														className="transform p-2 bg-gray-700 rounded-xl text-red-500 font-bold hover:scale-110 transition-transform"
+														onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setBookMissing(e, state.bookId)}
 													>
 														{lostFound.split(" ")[0]}
 													</button>
 													<div className="w-2" />
+													{/* return button borrow tab */}
 													<button
 														type="submit"
 														className="transform p-2 bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
+														onClick={(e) => setBookAvailable(e, state.bookId, "borrowed")}
 													>
 														{lostFound.split(" ")[1]}
 													</button>
 												</div>
 											) : (
+												// found button missing tab
 												<button
 													type="submit"
 													className="transform p-2 bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
+													onClick={(e) => setBookAvailable(e, state.bookId, "missing")}
 												>
 													{lostFound}
 												</button>
@@ -266,6 +310,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 					</tbody>
 				</table>
 			</div>
+			{/* Filter button */}
 			<FilterButton />
 		</div>
 	);
