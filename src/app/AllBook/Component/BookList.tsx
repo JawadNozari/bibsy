@@ -1,6 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { FilterButton } from "./filterButton";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 // Interfaces
 interface Book {
@@ -9,6 +11,8 @@ interface Book {
 	title: string;
 	author: string;
 	published: string;
+	available: boolean;
+	invNr: number;
 }
 interface BookState {
 	id: number;
@@ -60,6 +64,8 @@ const linkObject: LinkArray = {
 
 export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 	// where the fetched data is stored
+	const { refresh } = useRouter();
+
 	const [books, setBooks] = useState<Array<Book>>([]);
 	const [bookState, setBookState] = useState<Array<BookState>>([
 		{
@@ -99,7 +105,48 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 			: null;
 	}, [colorTheme.type]);
 
-	// Dropdown class so that works with tailwind
+	//* On missing button press, set the book to missing and remove it from the array and db
+	const setBookMissing = async (
+		event: React.MouseEvent<HTMLElement>,
+		bookId: number,
+	) => {
+		event.stopPropagation();
+		bookState.map((borrowedBook) => {
+			if (borrowedBook.bookId === bookId) {
+				bookState.splice(bookState.indexOf(borrowedBook), 1);
+			}
+		});
+		//setBookState(bookState); // Dont know if this works?
+
+		const response = await axios.post("/api/setBookMissing", {
+			bookId,
+		});
+		console.log(response.data);
+	};
+
+	//* On return button press, set the book to available and remove it from the array and db
+	const setBookAvailable = async (
+		event: React.MouseEvent<HTMLElement>,
+		bookId: number,
+		listType: string,
+	) => {
+		event.stopPropagation();
+		bookState.map((borrowedBook) => {
+			if (borrowedBook.bookId === bookId) {
+				bookState.splice(bookState.indexOf(borrowedBook), 1);
+			}
+		});
+
+		//setBookState(bookState);
+
+		const response = await axios.post("/api/setBookAvailable", {
+			bookId,
+			userType: "student",
+			listType,
+		});
+		console.log(response.data);
+	};
+
 	return (
 		// TableTemplate edited
 		<div className="size-9/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap ">
@@ -157,6 +204,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 												/>
 											</svg>
 										</div>
+										{/* Search input */}
 										<input
 											type="search"
 											id="default-search"
@@ -188,7 +236,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 								scope="col"
 								className="px-6 py-3 flex justify-center items-center w-full h-full"
 							>
-								{colorTheme.theme !== "book" ? "Action" : null}
+								{colorTheme.theme !== "book" ? "Action" : "Availability"}
 							</th>
 						</tr>
 					</thead>
@@ -217,38 +265,71 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 										<td className="px-6 py-4">
 											${books.length > 0 ? books[index]?.price : "loading..."}
 										</td>
+										{/*Ternary if available adds link to borrow else if book add corresponding availability else, add buttuns for post */}
 										<td className="px-6 py-4 flex justify-center items-center w-full h-full">
-											{lostFound ? (
+											{colorTheme.theme === "available" ? (
+												// borrow button
 												<a
-													href={`/lost:${books[index]?.id.toString()}`}
-													className={
-														colorTheme.theme === "available"
-															? "trasnform font-bold bg-gray-700 p-2 text-yellow-600 rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
-															: colorTheme.theme === "missing"
-															  ? "font-bold bg-gray-700 p-2 text-green-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
-															  : "font-bold bg-gray-700 p-2 text-red-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
-													}
+													href={`/loanBook?invNr=${book.invNr}`}
+													className="transform p-2 bg-gray-700 rounded-xl text-yellow-600 font-bold hover:scale-110 transition-transform"
 												>
-													{`${lostFound?.split(" ")[0]}`}
+													Borrow
 												</a>
-											) : null}
-											{lostFound?.split(" ")[1] ? (
-												<div className="m mx-2" />
-											) : null}
-											{lostFound?.split(" ")[1] ? (
-												<a
-													href={`localhost:3000/lost:${books[
-														index
-													]?.id.toString()}`}
-													className={
-														colorTheme.theme !== "missing"
-															? "font-bold bg-gray-700 p-2 text-green-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
-															: "font-bold text-red-500 hover:underline"
-													}
+												// availability
+											) : colorTheme.theme === "book" ? (
+												book.available ? (
+													"Avaliable"
+												) : (
+													"Not Avaliable"
+												)
+											) : lostFound?.split(" ")[1] ? (
+												<div className="flex">
+													{/* lost button borrow tab */}
+													<button
+														type="submit"
+														className="transform p-2 bg-gray-700 rounded-xl text-red-500 font-bold hover:scale-110 transition-transform"
+														onClick={async (
+															e: React.MouseEvent<
+																HTMLButtonElement,
+																MouseEvent
+															>,
+														) => {
+															await setBookMissing(e, state.bookId);
+															refresh();
+														}}
+													>
+														{lostFound.split(" ")[0]}
+													</button>
+													<div className="w-2" />
+													{/* return button borrow tab */}
+													<button
+														type="submit"
+														className="transform p-2 bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
+														onClick={async (e) => {
+															await setBookAvailable(
+																e,
+																state.bookId,
+																"borrowed",
+															);
+															refresh();
+														}}
+													>
+														{lostFound.split(" ")[1]}
+													</button>
+												</div>
+											) : (
+												// found button missing tab
+												<button
+													type="submit"
+													className="transform p-2 bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
+													onClick={async (e) => {
+														await setBookAvailable(e, state.bookId, "missing");
+														refresh();
+													}}
 												>
-													{`${lostFound?.split(" ")[1]}`}
-												</a>
-											) : null}
+													{lostFound}
+												</button>
+											)}
 										</td>
 									</tr>
 								) : null;
@@ -257,6 +338,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 					</tbody>
 				</table>
 			</div>
+			{/* Filter button */}
 			<FilterButton />
 		</div>
 	);
