@@ -5,8 +5,7 @@ const prisma = new PrismaClient();
 
 const fetchUser = async (id: number, userType: string) => {
 	try {
-			// Update for staff
-			const user = await prisma[userType]
+			const user = await (prisma as any)[userType]
 				.findUnique({
 					where: { id: id },
 				});
@@ -26,7 +25,7 @@ const fetchUser = async (id: number, userType: string) => {
 export const POST = async (req: NextRequest) => {
 	try {
 		const { id, type } = await req.json();
-        const userType = type === "staffuser" ? "Staff" : "Student";
+        const userType = type === "staffuser" ? "staff" : "student";
 		const userdata = await fetchUser(id, userType);
 		return NextResponse.json(userdata);
 	} catch (error) {
