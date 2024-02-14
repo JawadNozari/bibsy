@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect, use } from "react";
 import { FilterButton } from "./filterButton";
-import axios from "axios";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 // Interfaces
 interface Book {
@@ -65,7 +65,6 @@ const linkObject: LinkArray = {
 export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 	// where the fetched data is stored
 	const { refresh } = useRouter();
-
 	const [books, setBooks] = useState<Array<Book>>([]);
 	const [bookState, setBookState] = useState<Array<BookState>>([
 		{
@@ -78,6 +77,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 		},
 	]);
 	const lostFound = colorTheme.lostFound;
+	const [searchPhrase, setSearchPhrase] = useState("");
 
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
@@ -146,7 +146,6 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 		});
 		console.log(response.data);
 	};
-
 	return (
 		// TableTemplate edited
 		<div className="size-9/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap ">
@@ -211,6 +210,11 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 											className={`${
 												theme[colorTheme.theme].split(" ")[2]
 											} block w-full p-4 ps-10 text-sm text-gray-900 border-gray-400 rounded-lg bg-gray-500  dark:placeholder-gray-300 dark:text-white border-2 outline-none`}
+											onChange={() =>
+												setSearchPhrase(
+													(event?.target as HTMLInputElement).value,
+												)
+											}
 											placeholder="Search for books..."
 											required
 										/>
@@ -244,7 +248,10 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 						{/* Map of fetched data which prints out table-row */}
 						{bookState.map((state, index) =>
 							books.map((book, index) => {
-								return state.bookId === book.id || !colorTheme.type ? (
+								return (state.bookId === book.id || !colorTheme.type) &&
+									book.title
+										.toLowerCase()
+										.includes(searchPhrase.toLowerCase()) ? (
 									<tr
 										key={book.id}
 										className={`bg-white border-b ${
