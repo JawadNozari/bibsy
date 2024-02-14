@@ -9,25 +9,44 @@ export default function Page() {
 	const [lastName, setLastName] = useState("");
 	const [phone, setPhone] = useState("");
 	const [email, setEmail] = useState("");
-	const [image, setImage] = useState("");
+	const [file, setFile] = useState<File | undefined>(undefined);
 	const [classroom, setClassroom] = useState("");
-	// const [qrCode, setQrCode] = useState("");
 
-	const handleSubmit = (e: React.SyntheticEvent) => {
+	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
 		const hashedPassword = bcrypt.hashSync(password, 10);
+
+		const formData = new FormData();
+		let imagePath = "";
+		if (file !== undefined) {
+			formData.append("file", file || undefined);
+			formData.append("path", "StudentPFP");
+			imagePath = await axios
+				.post("/api/uploader", formData, {
+					headers: { "Content-Type": "multipart/form-data" },
+				})
+				.then((res) => {
+					return res.data.path;
+				})
+				.catch((error: Error) => {
+					console.debug(error);
+					console.log("there is issue when getting path from uploader ");
+				});
+		};
+
 		axios.post("/api/adminCenter", {
 			password: hashedPassword,
 			firstName: firstName,
 			lastName: lastName,
 			email: email,
 			phone: phone,
-			image: image,
+			image: imagePath,
 			classroom: classroom,
 			qrCode: firstName + lastName + classroom,
 		});
 
 	};
+
 	return (
 		<form onSubmit={handleSubmit}>
 			<input
@@ -64,11 +83,11 @@ export default function Page() {
 					id="phone"
 				/>
 				<input
-        			type="file"
-        			onChange={(e) => setImage(e.target.value)}
-        			name="image"
-        			id="image"
-      			/>
+					type="file"
+					id="customFile"
+					onChange={(e) => {
+						setFile(e.target.files?.[0]);}}
+				/>	
 				<input
 					type="text"
 					value={classroom}
@@ -77,14 +96,6 @@ export default function Page() {
 					name="classroom"
 					id="classroom"
 				/>
-				{/* <input
-					type="string"
-					value={qrCode}
-					onChange={(e) => setQrCode(e.target.value)}
-					placeholder="qrCode"
-					name="qrCode"
-					id="qrCode"
-				/> */}
 				<input
 					type="text"
 					value={email}
@@ -97,4 +108,4 @@ export default function Page() {
 			<button type="submit">Register</button>
 		</form>
 	);
-}
+};
