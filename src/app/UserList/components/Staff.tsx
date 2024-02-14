@@ -1,9 +1,9 @@
-import React, { useState } from "react"; // Importera React och useState-hook från React-biblioteket
-import Image from "next/image"; // Importera Image-komponenten från Next.js-biblioteket för att visa bilder
-import StaffEditModal from "./StaffEditModal"; // Importera StaffEditModal-komponenten från en annan fil
+import React, { useState } from "react"; // Import React and useState hook from React library
+import Image from "next/image"; // Import Image component from Next.js library for displaying images
+import StaffEditModal from "./StaffEditModal"; // Import StaffEditModal component from another file
 
+// Defines an interface for a user
 interface User {
-	// Definierar en interface för en användare
 	id: number;
 	password: string;
 	firstName: string;
@@ -16,127 +16,129 @@ interface User {
 	qrCode: number;
 }
 
-// Definierar en interface för egenskaper som StaffList-komponenten förväntar sig ta emot
+// Defines an interface for the properties that the StaffList component expects to receive
 interface StaffListProps {
-	staffUsers: User[]; // En array av användare
-	handleClick: (user: User | null) => void; // En funktion för att hantera klick på användare
+	staffUsers: User[]; // An array of users
+	handleClick: (user: User | null) => void; // A function to handle click on user
 }
 
-// Definierar en funktionell komponent StaffList som tar emot egenskaper definierade av StaffListProps
+// Defines a functional component StaffList that receives properties defined by StaffListProps
 const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
-	// State-hooks
-	const [showModal, setShowModal] = useState(false); // Visar eller döljer modalen för att redigera användare
-	const [selectedUser, setSelectedUser] = useState<User | null>(null); // Den användare som är vald för redigering
-	const [editedUser, setEditedUser] = useState<User | null>(null); // Den användare som redigeras
-	const [editedFirstName, setEditedFirstName] = useState(""); // Det redigerade förnamnet
-	const [editedLastName, setEditedLastName] = useState(""); // Det redigerade efternamnet
-	const [editedEmail, setEditedEmail] = useState(""); // Den redigerade e-postadressen
-	const [editedPhone, setEditedPhone] = useState(""); // Det redigerade telefonnumret
-	const [editedAdmin, setEditedAdmin] = useState("false"); // Boolean-värdet för om användaren är administratör
-	const [selectedImage, setSelectedImage] = useState<File | null>(null); // Den valda bilden för användaren
-	const [imagePreview, setImagePreview] = useState<string | null>(null); // Förhandsgranskning av bilden
-	const [showFullImage, setShowFullImage] = useState(false); // Visar hela bilden
+	// State hooks
+	const [showModal, setShowModal] = useState(false); // Shows or hides the modal for editing user
+	const [selectedUser, setSelectedUser] = useState<User | null>(null); // The user selected for editing
+	const [editedUser, setEditedUser] = useState<User | null>(null); // The user being edited
+	const [editedFirstName, setEditedFirstName] = useState(""); // The edited first name
+	const [editedLastName, setEditedLastName] = useState(""); // The edited last name
+	const [editedEmail, setEditedEmail] = useState(""); // The edited email address
+	const [editedPhone, setEditedPhone] = useState(""); // The edited phone number
+	const [editedAdmin, setEditedAdmin] = useState("false"); // The boolean value for whether the user is an admin
+	const [selectedImage, setSelectedImage] = useState<File | null>(null); // The selected image for the user
+	const [imagePreview, setImagePreview] = useState<string | null>(null); // Image preview
+	const [showFullImage, setShowFullImage] = useState(false); // Shows the full image
 
-	// Öppnar redigeringsmodalen för en specifik användare
+	// Opens the editing modal for a specific user
 	const openModal = (user: User) => {
-		setSelectedUser(user);
-		setEditedUser(user);
-		setEditedFirstName(user.firstName);
-		setEditedLastName(user.lastName);
-		setEditedEmail(user.email);
-		setEditedPhone(user.phone);
-		setEditedAdmin(String(user.admin)); // Konvertera boolean-värdet till en sträng för radioknapp
-		setImagePreview(user.image); // Visa förhandsgranskning av bilden när modalen öppnas
-		setShowModal(true); // Visa modalen
+		setSelectedUser(user); // Set the selected user
+		setEditedUser(user); // Set the user being edited
+		setEditedFirstName(user.firstName); // Set the edited first name
+		setEditedLastName(user.lastName); // Set the edited last name
+		setEditedEmail(user.email); // Set the edited email
+		setEditedPhone(user.phone); // Set the edited phone number
+		setEditedAdmin(String(user.admin)); // Convert boolean value to string for radio button
+		setImagePreview(user.image); // Show image preview when the modal opens
+		setShowModal(true); // Show the modal
 	};
 
-	// Stänger modalen
+	// Closes the modal
 	const closeModal = () => {
-		setShowModal(false); // Döljer modalen
+		setShowModal(false); // Hides the modal
 	};
 
-	// Hanterar redigeringen av en användare
+	// Handles editing of a user
 	const handleEditUser = () => {
 		if (editedUser) {
-			const updatedUsers = [...staffUsers];
-			const index = updatedUsers.findIndex((user) => user.id === editedUser.id);
+			const updatedUsers = [...staffUsers]; // Create a copy of the staffUsers array
+			const index = updatedUsers.findIndex((user) => user.id === editedUser.id); // Finds the index of the user being edited
 
 			if (index !== -1) {
+				// If the user is found in the array
 				updatedUsers[index] = {
-					...updatedUsers[index],
-					firstName: editedFirstName,
-					lastName: editedLastName,
-					email: editedEmail,
-					phone: editedPhone,
-					admin: editedAdmin === "true", // Konvertera strängen till boolean
-					image: selectedImage ? selectedImage.name : editedUser.image, // Uppdatera bilden om en ny är vald
+					...updatedUsers[index], // Spread the existing user properties
+					firstName: editedFirstName, // Update the first name
+					lastName: editedLastName, // Update the last name
+					email: editedEmail, // Update the email
+					phone: editedPhone, // Update the phone number
+					admin: editedAdmin === "true", // Convert the string to boolean and update the admin status
+					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one is selected
 				};
 			}
 
-			console.log("Updated user information:", updatedUsers[index]); // Skriv ut uppdaterad användarinformation
-			closeModal(); // Stänger modalen
+			console.log("Updated user information:", updatedUsers[index]); // Log updated user information
+			closeModal(); // Close the modal
 		}
 	};
 
-	// Hanterar ändringar i inputfältet
+	// Handles changes in the input field
 	const handleInputChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
 		field: string,
 	) => {
-		const value = event.target.value;
+		const value = event.target.value; // Get the value from the input field
 		switch (field) {
 			case "firstName":
-				setEditedFirstName(value);
+				setEditedFirstName(value); // Updates the edited first name
 				break;
 			case "lastName":
-				setEditedLastName(value);
+				setEditedLastName(value); // Updates the edited last name
 				break;
 			case "email":
-				setEditedEmail(value);
+				setEditedEmail(value); // Updates the edited email
 				break;
 			case "phone":
-				setEditedPhone(value);
+				setEditedPhone(value); // Updates the edited phone number
 				break;
 			case "admin":
-				setEditedAdmin(value);
+				setEditedAdmin(value); // Updates the edited admin status
 				break;
 			case "image":
-				// Uppdaterar bildstatet när en ny bild väljs
+				// Updates the image state when a new image is selected
 				if (event.target.files?.[0]) {
-					const selected = event.target.files[0];
-					setSelectedImage(selected);
-					const reader = new FileReader();
+					const selected = event.target.files[0]; // Get the selected image file
+					setSelectedImage(selected); // Set the selected image file
+					const reader = new FileReader(); // Create a new FileReader object
 					reader.onload = () => {
 						if (typeof reader.result === "string") {
-							setImagePreview(reader.result);
+							setImagePreview(reader.result); // Set the image preview with the base64 data URL
 						}
 					};
-					reader.readAsDataURL(selected);
+					reader.readAsDataURL(selected); // Read the selected image as a data URL
 				}
 				break;
 			default:
 				break;
 		}
-		// Uppdaterar editedUser-state
+
+		// Updates the editedUser state
 		setEditedUser((prevUser: User | null) => ({
-			...prevUser,
-			firstName: editedFirstName,
-			lastName: editedLastName,
-			email: editedEmail,
-			phone: editedPhone,
-			classroom: editedAdmin, // Antagande: Du vill uppdatera classroom också
-			id: editedUser?.id || 0,
-			password: editedUser?.password || "",
-			admin: editedUser?.admin || false,
-			qrCode: editedUser?.qrCode || 0,
-			image: selectedImage ? selectedImage.name : editedUser?.image || "", // Tilldela en tom sträng om 'editedUser?.image' är undefined
+			...prevUser, // Keeps the previous user properties
+			firstName: editedFirstName, // Updates the first name with the edited value
+			lastName: editedLastName, // Updates the last name with the edited value
+			email: editedEmail, // Updates the email with the edited value
+			phone: editedPhone, // Updates the phone number with the edited value
+			classroom: editedAdmin, // Updates the classroom with the edited admin status
+			id: editedUser?.id || 0, // Assigns the user id if available, otherwise assign 0
+			password: editedUser?.password || "", // Assigns the user password if available, otherwise assign an empty string
+			admin: editedUser?.admin || false, // Assigns the user admin status if available, otherwise assign false
+			qrCode: editedUser?.qrCode || 0, // Assigns the user QR code if available, otherwise assign 0
+			image: selectedImage ? selectedImage.name : editedUser?.image || "", // Assigns the selected image name if available, otherwise assign the previous image name or an empty string
 		}));
 	};
 
-	// Renderar JSX-kod för StaffList-komponenten
+	// Renders JSX code for StaffList component
 	return (
 		<>
-			{/* Renderar en tabell med användare */}
+			{/* Render a table with users */}
 			<thead>
 				<tr>
 					<th colSpan={4} className="text-lg font-bold px-6 py-3">
@@ -144,6 +146,20 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					</th>
 				</tr>
 			</thead>
+			<tr className=" border-b-4 border-indigo-500 text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+				<th scope="col" className="px-6 py-3">
+					Name {/* Name */}
+				</th>
+				<th scope="col" className="px-6 py-3">
+					Phone {/* Phone */}
+				</th>
+				<th scope="col" className="px-6 py-3">
+					Admin {/* Classroom */}
+				</th>
+				<th scope="col" className="px-6 py-3">
+					Action {/* Action */}
+				</th>
+			</tr>
 			{staffUsers?.map((user) => (
 				<tbody key={user.id}>
 					<tr
@@ -157,7 +173,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 							}
 						}}
 					>
-						{/* Renderar användarinformation */}
+						{/* Render user information */}
 						<th
 							scope="row"
 							className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -181,7 +197,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 							</div>
 						</td>
 						<td className="px-6 py-4">
-							{/* Knapp för att öppna redigeringsmodalen */}
+							{/* Button to open the editing modal */}
 							<button
 								type="button"
 								onClick={(e) => {
@@ -196,7 +212,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					</tr>
 				</tbody>
 			))}
-			{/* Visar redigeringsmodalen om en användare är vald */}
+			{/* Show the editing modal if a user is selected */}
 			{selectedUser && (
 				<StaffEditModal
 					showModal={showModal}
@@ -211,11 +227,11 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					handleInputChange={handleInputChange}
 					handleEditUser={handleEditUser}
 					closeModal={closeModal}
-					setShowFullImage={setShowFullImage} // Lägg till den saknade egenskapen
+					setShowFullImage={setShowFullImage} // Add the missing property
 				/>
 			)}
 		</>
 	);
 };
 
-export default StaffList; // Exporterar StaffList-komponenten
+export default StaffList; // Export the StaffList component

@@ -4,9 +4,11 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Staff from "./Components/Staff";
 import Student from "./Components/Student";
+import axios from "axios";
 import "../globals.css";
-import { useSpring, animated } from "react-spring"; // Importera react-spring
+import { useSpring, animated } from "react-spring"; // Import react-spring library
 
+// Define interfaces for User and ApiResponse
 interface User {
 	id: number;
 	password: string;
@@ -28,62 +30,67 @@ interface ApiResponse {
 export default function Home() {
 	const [apiData, setApiData] = useState<ApiResponse | null>(null);
 	const [selectedUser, setSelectedUser] = useState<User | null>(null);
-	const [userType, setUserType] = useState<string>("all"); // State för att hålla reda på det valda användartyperna
+	const [userType, setUserType] = useState<string>("all"); // State to keep track of the selected user types
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const [showUserDetails, setShowUserDetails] = useState(false);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch("/api/getUsers");
-				const data: ApiResponse = await response.json();
-				setApiData(data);
+				const response = await axios("/api/getUsers"); // Fetch data from API endpoint
+				const data: ApiResponse = await response.data(); // Parse response as ApiResponse type
+				setApiData(data); // Set fetched data to state
 			} catch (error) {
-				console.error(error);
+				console.error(error); // Log any errors that occur during data fetching
 			}
 		};
 
-		fetchData();
+		fetchData(); // Call fetchData function on component mount
 	}, []);
 
+	// Function to handle click on a user
 	const handleClick = (user: User | null) => {
-		setSelectedUser(user);
-		setShowUserDetails(true);
+		setSelectedUser(user); // Set the selected user to the clicked user, or null if no user is clicked
+		setShowUserDetails(true); // Show user details
 		setDetailsAnimation({
-			transform: "translateX(0%)", // Visa användardetaljer
+			// Set animation to show user details
+			transform: "translateX(0%)", // Show user details
 		});
 	};
-
+	// Defines the handleUserTypeChange function to handle changes in user type
 	const handleUserTypeChange = (type: string) => {
-		setUserType(type);
+		setUserType(type); // Set the user type to the selected type
 	};
 
+	// Function to handle search input
 	const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const searchTerm = event.target.value.toLowerCase();
-		setSearchTerm(searchTerm);
+		const searchTerm = event.target.value.toLowerCase(); // Get the search term from the input and convert it to lowercase
+		setSearchTerm(searchTerm); // Set the search term to the state
 	};
 
+    // Define animation for user details
 	const [detailsAnimation, setDetailsAnimation] = useSpring(() => ({
-		transform: "translateX(-100%)",
-		config: { mass: 1, tension: 170, friction: 26 },
+		transform: "translateX(-100%)", // Hide user details off-screen
+		config: { mass: 1, tension: 170, friction: 26 }, // Set animation configuration
 	}));
 
+    // Return the user list page
 	return (
 		<main className="flex border items-center h-screen justify-around p-4">
-			{showUserDetails && (
-				<animated.div
+			{showUserDetails && ( // Conditionally show user details based on state
+				<animated.div // Apply animation to user details
 					className="bg-white px-4 shadow-xl rounded-lg min-h-content w-80"
-					style={detailsAnimation}
+					style={detailsAnimation} // Set animation style
 				>
 					<div className="flex items-center justify-center ">
 						<div className="flex items-center justify-center max-w-xs">
 							<div className="flex flex-col justify-center items-center rounded-lg py-3">
 								<div className="flex items-center justify-center flex-col max-h-screen bg-white py-3">
-									<Image
+									<Image 
 										className="w-10 h-10 rounded-full"
 										width={200}
 										height={200}
-										src={`/images/${selectedUser?.image}`} // Uppdaterad sökväg
+										src={`/images/${selectedUser?.image}`} // Add null check for selectedUser
 										alt={`${selectedUser?.firstName} ${selectedUser?.lastName}`} // Add null check for selectedUser
 									/>
 									<div className="p-2 max-h-screen ">
@@ -123,7 +130,7 @@ export default function Home() {
 														</td>
 													</tr>
 												</tbody>
-											) : (
+											) : ( // If "classroom" property is not present, display admin status
 												<tbody>
 													<tr>
 														<td className="px-4 py-1 text-gray-500 font-semibold">
@@ -167,7 +174,7 @@ export default function Home() {
 						<ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48 top-42">
 							<li>
 								{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
-								<button onClick={() => handleUserTypeChange("all")}>
+								<button onClick={() => handleUserTypeChange("all")}> {/* Add onClick event to button */}
 									All Users
 								</button>
 							</li>
@@ -203,30 +210,30 @@ export default function Home() {
 								/>
 							</svg>
 						</div>
-						<input
+						<input // Add input element for search
 							type="text"
 							id="table-search-users"
 							className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 							placeholder="Search for users"
-							value={searchTerm}
-							onChange={handleSearch}
+							value={searchTerm} // Set value to searchTerm
+							onChange={handleSearch} // Add onChange event to handle search
 						/>
 					</div>
 				</div>
 
 				<div className="overflow-x-auto">
 					<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-						{apiData && (
+						{apiData && ( // Conditionally render user list based on API data
 							<>
-								{userType === "all" && (
+								{userType === "all" && ( // Conditionally render user list based on user type
 									<>
-										<Staff
-											staffUsers={apiData.staffUsers.filter((user) =>
-												`${user.firstName} ${user.lastName}`
-													.toLowerCase()
-													.includes(searchTerm.toLowerCase()),
+										<Staff 
+											staffUsers={apiData.staffUsers.filter((user) => // Filter staff users based on search term
+												`${user.firstName} ${user.lastName}` // Combine first and last name
+													.toLowerCase()  // Convert to lowercase
+													.includes(searchTerm.toLowerCase()), // Check if it includes the search term
 											)}
-											handleClick={handleClick}
+											handleClick={handleClick} // Pass handleClick
 										/>
 
 										<Student

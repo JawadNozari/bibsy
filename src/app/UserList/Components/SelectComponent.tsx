@@ -39,20 +39,20 @@ const SelectComponent: React.FC<SelectComponentProps> = ({
 
 		return classroomOptions;
 	};
-
-	const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		setSelectedClassroom(event.target.value);
+   
+	const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => { // Define event type
+		setSelectedClassroom(event.target.value); // Update the selected classroom
 	};
 
 	return (
 		<div>
-			<select
+			<select 
 				className="border rounded-full"
 				value={selectedClassroom}
 				onChange={handleChange}
 			>
 				<option value="">Select</option>
-				{generateClassroomOptions().map((classroom) => (
+				{generateClassroomOptions().map((classroom) => ( // Map over the classroom options
 					<option key={classroom} value={classroom}>
 						{classroom}
 					</option>

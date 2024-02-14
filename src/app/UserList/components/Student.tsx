@@ -3,7 +3,7 @@ import Image from "next/image";
 import StudentEditModal from "./StudentEditModal";
 
 interface User {
-	// Definierar en interface för en användare
+	// Defines an interface for a user
 	id: number;
 	password: string;
 	firstName: string;
@@ -16,33 +16,33 @@ interface User {
 	qrCode: number;
 }
 
-// Definierar en interface för egenskaper som StudentList-komponenten förväntar sig ta emot
+// Defines an interface for the properties that the StudentList component expects to receive
 interface StudentListProps {
-	studentUsers: User[]; // Typ för studentanvändare
-	handleClick: (user: User | null) => void; // Funktion för att hantera klick på en användare
-	setStudentUsers?: React.Dispatch<React.SetStateAction<User[]>>; // Funktion för att uppdatera studentanvändare
+	studentUsers: User[]; // Type for student users
+	handleClick: (user: User | null) => void; // Function to handle click on a user
+	setStudentUsers?: React.Dispatch<React.SetStateAction<User[]>>; // Function to update student users
 }
 
-// Definierar en funktionell komponent StudentList som tar emot egenskaper definierade av StudentListProps
+// Defines a functional component StudentList that receives properties defined by StudentListProps
 const StudentList: React.FC<StudentListProps> = ({
-	studentUsers, // En array av studentanvändare som ska visas i listan
-	handleClick, // En funktion som hanterar klickhändelser på en användare i listan
-	setStudentUsers, // En funktion för att uppdatera studentanvändare (valfri)
+	studentUsers, // An array of student users to be displayed in the list
+	handleClick, // A function that handles click events on a user in the list
+	setStudentUsers, // A function to update student users (optional)
 }) => {
-	// State variabler
-	const [showModal, setShowModal] = useState(false); // Visa eller dölj modal
-	const [selectedUser, setSelectedUser] = useState<User | null>(null); // Den valda användaren för redigering
-	const [editedUser, setEditedUser] = useState<User | null>(null); // Den användare som är under redigering
-	const [editedFirstName, setEditedFirstName] = useState(""); // Redigerad förnamn
-	const [editedLastName, setEditedLastName] = useState(""); // Redigerat efternamn
-	const [editedEmail, setEditedEmail] = useState(""); // Redigerad e-postadress
-	const [editedPhone, setEditedPhone] = useState(""); // Redigerat telefonnummer
-	const [editedClassroom, setEditedClassroom] = useState(""); // Redigerat klassrum
-	const [selectedImage, setSelectedImage] = useState<File | null>(null); // Den valda bilden för uppladdning
-	const [imagePreview, setImagePreview] = useState<string | null>(null); // Förhandsgranskning av bilden
-	const [showFullImage, setShowFullImage] = useState(false); // Visa eller dölj fullständig bild
+	// State variables
+	const [showModal, setShowModal] = useState(false); // Show or hide modal
+	const [selectedUser, setSelectedUser] = useState<User | null>(null); // The selected user for editing
+	const [editedUser, setEditedUser] = useState<User | null>(null); // The user being edited
+	const [editedFirstName, setEditedFirstName] = useState(""); // Edited first name
+	const [editedLastName, setEditedLastName] = useState(""); // Edited last name
+	const [editedEmail, setEditedEmail] = useState(""); // Edited email address
+	const [editedPhone, setEditedPhone] = useState(""); // Edited phone number
+	const [editedClassroom, setEditedClassroom] = useState(""); // Edited classroom
+	const [selectedImage, setSelectedImage] = useState<File | null>(null); // The selected image for upload
+	const [imagePreview, setImagePreview] = useState<string | null>(null); // Image preview
+	const [showFullImage, setShowFullImage] = useState(false); // Show or hide full image
 
-	// Funktion för att öppna redigeringsmodalen för en användare
+	// Function to open the editing modal for a user
 	const openModal = (user: User) => {
 		setSelectedUser(user);
 		setEditedUser(user);
@@ -51,22 +51,25 @@ const StudentList: React.FC<StudentListProps> = ({
 		setEditedEmail(user.email);
 		setEditedPhone(user.phone);
 		setEditedClassroom(user.classroom);
-		setImagePreview(user.image); // Förhandsgranska bilden när modalen öppnas
+		setImagePreview(user.image); // Preview the image when the modal opens
 		setShowModal(true);
 	};
 
-	// Funktion för att stänga modalen
+	// Function to close the modal
 	const closeModal = () => {
 		setShowModal(false);
 	};
 
-	// Funktion för att hantera redigeringen av en användare
+	// Function to handle editing of a user
 	const handleEditUser = () => {
 		if (editedUser) {
+			// Create a copy of the user list
 			const updatedUsers = [...studentUsers];
+			// Find the index of the edited user in the copied list
 			const index = updatedUsers.findIndex((user) => user.id === editedUser.id);
 
 			if (index !== -1) {
+				// Update the user's information in the copied list
 				updatedUsers[index] = {
 					...updatedUsers[index],
 					firstName: editedFirstName,
@@ -74,25 +77,26 @@ const StudentList: React.FC<StudentListProps> = ({
 					email: editedEmail,
 					phone: editedPhone,
 					classroom: editedClassroom,
-					image: selectedImage ? selectedImage.name : editedUser.image, // Uppdatera bilden om en ny har valts
+					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one has been selected
 				};
 
+				// If the function to update the user list is provided, update the original user list
 				if (setStudentUsers) {
-					setStudentUsers(updatedUsers); // Uppdatera användarlistan
+					setStudentUsers(updatedUsers);
 				}
 			}
 
 			console.log("Updated user information:", updatedUsers[index]);
-			closeModal(); // Stäng modalen efter redigeringen är klar
+			closeModal(); // Close the modal after editing is done
 		}
 	};
 
-	// Funktion för att hantera ändringar i inputfälten
+	// Function to handle changes in the input fields
 	const handleInputChange = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
 		field: string,
 	) => {
-		const value = event.target.value;
+		const value = event.target.value; // Get the value from the input field
 		switch (field) {
 			case "firstName":
 				setEditedFirstName(value);
@@ -110,7 +114,7 @@ const StudentList: React.FC<StudentListProps> = ({
 				setEditedClassroom(value);
 				break;
 			case "image":
-				// Uppdatera bilden när en ny bild väljs
+				// Update the image when a new image is selected
 				if (
 					event.target instanceof HTMLInputElement &&
 					event.target.files?.[0]
@@ -129,47 +133,43 @@ const StudentList: React.FC<StudentListProps> = ({
 			default:
 				break;
 		}
+		// Update the editedUser state with the edited information
 		setEditedUser((prevUser: User | null) => ({
-			...prevUser,
-			firstName: editedFirstName,
-			lastName: editedLastName,
-			email: editedEmail,
-			phone: editedPhone,
-			classroom: editedClassroom,
-			id: editedUser?.id || 0,
-			password: editedUser?.password || "",
-			admin: editedUser?.admin || false,
-			qrCode: editedUser?.qrCode || 0,
-			image: selectedImage ? selectedImage.name : editedUser?.image || "", // Tilldela en tom sträng om 'editedUser?.image' är undefined
+			...prevUser, // Spread the previous user object to retain unchanged properties
+			firstName: editedFirstName, // Update the first name with the edited first name
+			lastName: editedLastName, // Update the last name with the edited last name
+			email: editedEmail, // Update the email with the edited email
+			phone: editedPhone, // Update the phone number with the edited phone number
+			classroom: editedClassroom, // Update the classroom with the edited classroom
+			id: editedUser?.id || 0, // Keep the id the same or set it to 0 if it's undefined
+			password: editedUser?.password || "", // Keep the password the same or set it to an empty string if it's undefined
+			admin: editedUser?.admin || false, // Keep the admin status the same or set it to false if it's undefined
+			qrCode: editedUser?.qrCode || 0, // Keep the QR code the same or set it to 0 if it's undefined
+			image: selectedImage ? selectedImage.name : editedUser?.image || "", // Update the image name with the selected image's name or set it to an empty string if 'editedUser?.image' is undefined
 		}));
 	};
-
-	// Funktion för att hantera tangentbordstryck (ej implementerad i detta skede)
-	function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
-		throw new Error("Function not implemented.");
-	}
 
 	return (
 		<>
 			<thead>
 				<tr>
 					<th colSpan={4} className="text-lg font-bold px-6 py-3">
-						Student Users: {/* Rubrik för studentanvändare */}
+						Student Users: {/* Header for student users */}
 					</th>
 				</tr>
 			</thead>
 			<tr className=" border-b-4 border-indigo-500 text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 				<th scope="col" className="px-6 py-3">
-					Name {/* Namn */}
+					Name {/* Name */}
 				</th>
 				<th scope="col" className="px-6 py-3">
-					Phone {/* Telefon */}
+					Phone {/* Phone */}
 				</th>
 				<th scope="col" className="px-6 py-3">
-					Classroom {/* Klassrum */}
+					Classroom {/* Classroom */}
 				</th>
 				<th scope="col" className="px-6 py-3">
-					Action {/* Åtgärd */}
+					Action {/* Action */}
 				</th>
 			</tr>
 			{studentUsers?.map((user) => (
@@ -212,14 +212,14 @@ const StudentList: React.FC<StudentListProps> = ({
 								}}
 								className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
 							>
-								Edit user {/* Redigera användare */}
+								Edit user {/* Edit user */}
 							</button>
 						</td>
 					</tr>
 				</tbody>
 			))}
 
-			{selectedUser && (
+			{selectedUser && ( // If a user is selected, render the edit modal
 				<StudentEditModal
 					showModal={showModal}
 					selectedUser={selectedUser}
