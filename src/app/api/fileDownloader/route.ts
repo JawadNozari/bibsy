@@ -1,76 +1,98 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
-//import { writeFile, mkdir } from "fs/promises"; //! This was not used, lint error
-//import { PrismaClient, Book } from "@prisma/client"; //! This was not used, lint error
 import axios from "axios";
 import fs from "fs";
 import { promisify } from "util";
 
 const writeFileAsync = promisify(fs.writeFile);
+
 export const POST = async (req: NextRequest) => {
-	// const request = await req.formData();
-	// const file = request.get("file") as File;
-	const { filename, url }: { filename: string; url: string } = await req.json();
+	const request = await req.json();
+	const { filename, url }: { filename: string; url: string } = request;
 	let path = "";
-	// if (!file && url === "") {
-	// 	return NextResponse.json({ message: "No file received" });
-	// }
-	// if (file) {
-	// 	path = await downloader(file, "");
-	// }
-	if (url !== "") {
-		path = await downloader(undefined, { filename, url });
-	}
-
-	// Update the book image path
-	return NextResponse.json({ path: path }, { status: 200 });
-};
-
-async function downloader(
-	userfile: File | undefined,
-	{ filename, url }: { filename: string; url: string },
-) {
-	// Directory where the file will be uploaded
-	const uploadedBookImage = path.join(
-		process.cwd(),
-		"public/uploadedBookImage",
-	); //! This was not used, lint error
-	console.log(uploadedBookImage);
-	// let buffer;
-
 	console.log(url);
+
+	// path = await downloader({ filename, url });
+	// Directory where the file will be uploaded
+
 	const imageBuffer = await axios.get(url, {
 		responseType: "arraybuffer",
 	});
 
+	// Determine the content type and extract file extension
+	const firstBytes = imageBuffer.data.slice(0, 4).toString("hex");
+	console.log(`Your buffer is: ${firstBytes}`);
+	let extension = "";
+
+	// Match the file signature with known image formats
+	if (firstBytes.startsWith("89504e47")) {
+		extension = "png";
+	} else if (
+		firstBytes.startsWith("ffd8ffe0") ||
+		firstBytes.startsWith("ffd8ffe1")
+	) {
+		extension = "jpg";
+	} else if (firstBytes.startsWith("47494638")) {
+		extension = "gif";
+	} else if (firstBytes.startsWith("49492a00")) {
+		extension = "tif";
+	} else if (firstBytes.startsWith("424d")) {
+		extension = "bmp";
+	} else {
+		console.log("We can't find any type here :(");
+		extension = "png";
+	}
+
 	// Determine the file extension based on the content type or add .png by default
-	const contentType = imageBuffer.headers["content-type"]; //! This was not used, lint error
-	console.log(contentType);
-
-	const fileExtension = "png";
-
-	const filePath = `public/uploadedBookImage/${filename}.${fileExtension}`;
+	const filePath = `public/bookImage/${filename}.${extension}`;
 
 	// const filePath = `public/uploadedBookImage/${filename}`;
 	await writeFileAsync(filePath, imageBuffer.data, "binary");
-	// const response = await axios
-	// 	.get(url, { responseType: "arraybuffer" })
-	// 	.then(async (res) => {
-	// 		buffer = Buffer.from(await (res.data as File).arrayBuffer());
-	// 		filename = (userfile as File).name.replaceAll(" ", "_");
-	// 		await mkdir(uploadedBookImage, { recursive: true });
-	// 		// Write the file to the directory
-	// 		await writeFile(path.join(uploadedBookImage, filename), buffer);
-	// 	});
-	// if (userfile) {
-	// 	buffer = Buffer.from(await (userfile as File).arrayBuffer());
-	// 	filename = (userfile as File).name.replaceAll(" ", "_");
-	// }
 
-	// // Create the directory if it doesn't exist
-	// await mkdir(uploadedBookImage, { recursive: true });
-	// // Write the file to the directory
-	// await writeFile(path.join(uploadedBookImage, filename), buffer);
-	// return `uploadedBookImage/${filename}`;
-	return `uploadedBookImage/${filename}.${fileExtension}`;
-}
+	path = `public/bookImage/${filename}.${extension}`;
+	console.log(`path from backend: ${path}`);
+	// Update the book image path
+	return NextResponse.json({ path: path }, { status: 200 });
+};
+
+// async function downloader({
+// 	filename,
+// 	url,
+// }: { filename: string; url: string }) {
+// 	console.log("We are inside Download ");
+// 	// Directory where the file will be uploaded
+
+// 	const imageBuffer = await axios.get(url, {
+// 		responseType: "arraybuffer",
+// 	});
+
+// 	// Determine the content type and extract file extension
+// 	const firstBytes = imageBuffer.data.slice(0, 4).toString("hex");
+// 	console.log(`Your buffer is: ${firstBytes}`);
+// 	let extension = "";
+
+// 	// Match the file signature with known image formats
+// 	if (firstBytes.startsWith("89504e47")) {
+// 		extension = ".png";
+// 	} else if (
+// 		firstBytes.startsWith("ffd8ffe0") ||
+// 		firstBytes.startsWith("ffd8ffe1")
+// 	) {
+// 		extension = ".jpg";
+// 	} else if (firstBytes.startsWith("47494638")) {
+// 		extension = ".gif";
+// 	} else if (firstBytes.startsWith("49492a00")) {
+// 		extension = ".tif";
+// 	} else if (firstBytes.startsWith("424d")) {
+// 		extension = ".bmp";
+// 	} else {
+// 		throw new Error("Unknown file format");
+// 	}
+
+// 	// Determine the file extension based on the content type or add .png by default
+// 	const filePath = `public/bookImage/${filename}.${extension}`;
+
+// 	// const filePath = `public/uploadedBookImage/${filename}`;
+// 	await writeFileAsync(filePath, imageBuffer.data, "binary");
+
+// 	return `bookImage/${filename}.${extension}`;
+// }

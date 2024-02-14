@@ -1,3 +1,6 @@
+//TODO Handle ERRORS!!!!
+//TODO If image cant be loaded, show "no-cover-jpg" as default image
+
 "use client";
 import React, { useState } from "react";
 import axios, { AxiosResponse } from "axios";
@@ -22,7 +25,7 @@ interface BookData {
 export default function Home() {
 	// variables for form fields and book data
 	const [file, setFile] = useState<File | undefined>(undefined);
-	const [imageUrl, setImageUrl] = useState<string>("");
+	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
 	const [isbn, setIsbn] = useState("");
 	const [invNr, setInvNr] = useState<number>(0);
 	const [price, setPrice] = useState<number>(0);
@@ -57,6 +60,8 @@ export default function Home() {
 				setImageUrl(bookVolumeInfo.imageLinks.thumbnail || "");
 				// Set book data
 				setBookData(bookinfo.data);
+				console.log(imageUrl);
+				console.log(isbn);
 			}
 		} catch (error) {
 			setGotError(true);
@@ -70,12 +75,17 @@ export default function Home() {
 		let imagePath = "";
 		if (file !== undefined) {
 			formData.append("file", file || undefined);
+			formData.append("path", "bookImage");
 			imagePath = await axios
-				.post("/api/fileDownloader", formData, {
+				.post("/api/uploader", formData, {
 					headers: { "Content-Type": "multipart/form-data" },
 				})
 				.then((res) => {
 					return res.data.path;
+				})
+				.catch((error: Error) => {
+					console.debug(error);
+					console.log("there is issue when getting path from uploader ");
 				});
 		}
 		if (imageUrl) {
@@ -84,9 +94,12 @@ export default function Home() {
 				.post("/api/fileDownloader", userData)
 				.then((res) => {
 					return res.data.path;
+				})
+				.catch((Err) => {
+					setGotError(true);
+					setMessage(Err);
 				});
 		}
-
 		const userData: Book = {
 			bookImg: imagePath,
 			title: title,
