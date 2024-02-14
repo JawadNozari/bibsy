@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import axios from "axios";
+import Profile from "../../../public/img/profileuser.png";
 
 interface User {
   id: number;
@@ -38,22 +39,26 @@ interface BookApiResponse {
 }
 
 
-
-
-export default function Home() {
-    const [apiData, setApiData] = useState<ApiResponse[]>([]);
+export default function LoanBook() {
+	const [apiData, setApiData] = useState<ApiResponse[]>([]);
 	const [data2, setData2] = useState<BookApiResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true); 
 	const [searchQuery, setSearchQuery] = useState(""); // Add search query state
 	const [showList, setShowList] = useState(false); // List hidden by default
 	const [selectedUser, setSelectedUser] = useState<User | null>(null); // Add selected user state
 	const userClickedRef = useRef(false); // Add this ref
-	const [invNr, setinvNr] = useState("");
+	const [invNr, setInvNr] = useState("");
 	const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+
+
 
 
 	// * Fetch users from the API
 	useEffect(() => {
+		const invNr = new URLSearchParams(window.location.search).get("invNr");
+		if (invNr) {
+			setInvNr(invNr); // Update the state with the passed invNr
+		}
 		const fetchData = async () => {
 		 	try {
 				const response = await fetch("../api/getUsers");
@@ -66,6 +71,7 @@ export default function Home() {
 				  const data: ApiResponse = await response.json();
 				  const data2: BookApiResponse = await response2.json();
 
+				  
 				  // * Set the fetched data to the state
 				  setApiData([data]); 
 				  
@@ -73,7 +79,7 @@ export default function Home() {
 				  setData2(data2); 
 
 				  // * Log the fetched data
-				  console.log("Fetched data:", data , data2);
+				  console.log("Fetched data:", data, data2);
 
 				  // * Set loading state to false
 				  setIsLoading(false); // * Set loading state to false
@@ -87,9 +93,22 @@ export default function Home() {
 				// * Log the error
  		 	}
 		};
-	  
+
 		fetchData();
-	}, []);
+	}, []); 
+	// []
+
+
+	//* Am gonna use it later 
+	// const getCurrentUserId = () => {
+	// 	const token  = localStorage.getItem("token");	
+
+	// 	if (token) {
+	// 		const payload = JSON.parse(atob(token.split(".")[1]));
+	// 		return payload.id;
+	// 	}
+	// 	return null;
+	// };
 		
   
 	// * Handle search input change
@@ -103,11 +122,11 @@ export default function Home() {
 	};
 
 	const handleinvNrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setinvNr(event.target.value);
+		setInvNr(event.target.value);
 	  
 		//* Search for a book with the entered invNr
 		const book = data2?.books.find((book) => book.invNr.toString() === event.target.value);
-	  
+
 		//*  Update the selected book
 		setSelectedBook(book || null);
 	};
@@ -121,11 +140,33 @@ export default function Home() {
 		
 		// * Normalize search query and user names for case-insensitive search
 		const normalizedQuery = searchQuery.toLowerCase();
+
+		//** Am gonna use it for later 
+		// const currentUserId = getCurrentUserId();
 		return users.filter((user) => {
 		    const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
 		    return fullName.includes(normalizedQuery);
 		});
     };  
+
+	// * Filter users and staff based of who is logged in 
+	// const filterUsers = (users: User[]) => {
+	// 	// If there is no search query, return all users
+	// 	if (!searchQuery) {
+	// 	  return users;
+	// 	}
+	  
+	// 	// Normalize search query and user names for case-insensitive search
+	// 	const normalizedQuery = searchQuery.toLowerCase();
+	// 	return users.filter((user) => {
+	// 	  const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+	// 	  return fullName.includes(normalizedQuery) && (user.type === 'student' || (user.type === 'staff' && user.id === currentUserId));
+	// 	});
+	// };
+
+	
+
+
      
 	//* Handle user click event
 	const handleUserClick = (user: User) => {
@@ -134,79 +175,75 @@ export default function Home() {
 		setSearchQuery(`${user.firstName} ${user.lastName}`); //*  Set search query to the user's name
 		console.log(selectedUser);
 		console.log(user);
-	};
+		setShowList(false); //* Hide the list on user click
+    };
  
 	//* Handle focus out event
 	const handleFocusOut = () => {
-
-		if (!searchQuery) {
-			setTimeout(() => {
-				if (!selectedUser) {
-					setShowList(false);
-				}
-				userClickedRef.current = false; //* Reset the ref after the timeout´
-			},  500);
-		}
+		setTimeout(() => {
+			if (!userClickedRef.current) {
+			  setShowList(false);
+			}
+			userClickedRef.current = false; //* Reset the ref after the timeout
+		}, 100);
 	};
 
 
     // * Handle form submit
-	// const handleSubmit = (e:React.SyntheticEvent) => {
-	// 	e.preventDefault();
-	// 	console.log("Submitted");
-	// 	return axios.post("/api/setBookBorrowed", {
-	// 		user: selectedUser,
-	// 		invNr: invNr,
-	// 	});
-	// };
-
 	const handleSubmit = async (e:React.SyntheticEvent) => {
 		e.preventDefault();
+		//* Send a POST request to the server
 		try {
-		  const response = await axios.post("/api/setBookBorrowed", {
-			user: selectedUser,
-			invNr: invNr,
-		  });
-		  if (response.status === 200) {
-			// Update frontend state based on response
-			// For example, if the response includes the updated book:
-			setSelectedBook(response.data.book);
-		  } else {
-			console.error("Error borrowing book:", response.statusText);
-		  }
+		  	const response = await axios.post("/api/setBookBorrowed", {
+				user: selectedUser,
+				invNr: invNr,
+			});
+			//* Log the response status 
+		  	if (response.status === 200) {
+				// Update frontend state based on response
+				// For example, if the response includes the updated book:
+				setSelectedBook(response.data.book);
+			} else {
+				console.error("Error borrowing book:", response.statusText);
+		  	}
 		} catch (error) {
 		  console.error("Error:", error);
 		}
 	};
   
   
+	// * Render the page
 	return (
-	 	<main className="flex min-h-screen items-center justify-around bg-neutral-50 text-black"> 
-		    <div className="flex  justify">
+	 	<main className="flex w-screen h-screen justify-center items-center bg-neutral-50 text-black"> 
+		    <div className="flex justify-between ">
 				{selectedUser && (
-					<div className="w-[25rem] border card-normal  mr-10 h-[30rem] ">
+					<div className="w-96 rounded card-normal mr-20 h-auto shadow-md">
+
 						<div className=" text-center">
 							<button type="button" className="btn m-3 btn-wide btn-active btn-neutral" onClick={() => setSelectedUser(null)}>Close</button> 
-							{/* <h2>Selected User Details</h2> */}
 						</div>
+
 						<div className="m-10 justify-center items-center flex">
-							{/* <img src={selectedUser.image} alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-20 h-20 rounded-full m-5" />	 */}
-							<img src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-20 h-20 rounded-full m-5" />	
-							{/* <Image src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} height={112} width={112} className="w-28 h-28 mask mask-hexagon m-5" /> */}
+							<Image src={Profile} alt="profile" width={200} height={200} />
 						</div>
+
 						<div className="m-5 ">
 							<p>Name: {selectedUser.firstName} {selectedUser.lastName}</p>
 						</div>
+
 						<div className="m-5">
 							<p>Email: {selectedUser.email}</p> 
 						</div>
+
 					    <div className="m-5 "> 
 							<p>Class: {selectedUser.classroom}</p>
 						</div>
 					</div>
 				)}
-				<div className="justify-center flex w-[25rem] h-[27rem] bg-neutral-200 rounded-md">
+			
+				<div className=" flex justify-center  items-center w-96 h-[27rem] mx-auto   bg-neutral-200 rounded-md drop-shadow-2xl">
 				    <form onSubmit={handleSubmit} className="flex flex-col w-64" autoComplete="off">
+
 						<div className="flex justify-center mb-10 items-center m-3 border">
 							<h1 className="text-4xl font-bold text-center">Loan Book</h1>
 						</div>
@@ -219,13 +256,13 @@ export default function Home() {
 			 						type="text"
 			 						value={searchQuery}
 									onChange={handleSearchChange}
-									onFocus={() => setShowList(!showList)} 
+									onFocus={() => setShowList(true)} 
 									onBlur={handleFocusOut}
 									placeholder="Search User..."
 									className="rounded-md  input  bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 								/>
 						        
-                                <div className="  ">
+                                <div>
 									{isLoading ? (
 										<p>Loading data...</p>
 										) : (
@@ -245,7 +282,6 @@ export default function Home() {
 													)
 												)}
 					  
-
 												<h1 className="m-1 text-xl text-center border-b border-gray-300  bg-slate-800  p-2 cursor-pointer ">Student Users:</h1>
 												{filterUsers(apiData.flatMap((data) => data.studentUsers))
 					 								.map((student) => (
@@ -269,32 +305,22 @@ export default function Home() {
   							<label htmlFor="invNr" className="block mb-2 text-lg font-medium text-gray-900 text-center">invNr</label>
 
 							<div className="flex">
-							   <input type="text" id="invNr" value={invNr} onChange={handleinvNrChange} className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
-							   <i className="fa-solid fa-barcode   "><button className=" rounded-r-lg bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" type="button">code</button></i>
+							   <input type="text" id="invNr" placeholder="Enter InvNR..." value={invNr} onChange={handleinvNrChange} className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+							   <i className="fa-solid fa-barcode "><button className=" rounded-r-lg bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" type="button">code</button></i>
 							</div>
 						</div> 
 						
-						<div className="mt-10 justify-center flex">
-							<button type="submit"className="btn block   m-3  dark:bg-gray-700  btn-active btn-neutral">Laon</button>
+						<div className="mt-10 mb-10 justify-center flex">
+							<button type="submit"className="btn block   m-3  dark:bg-gray-700  btn-active btn-neutral">Loan</button>
 						</div>
 					</form>
 				</div>
 
-                {/* BookImg */}
-				{/* <div className="ml-20">
-					{data2 && data2.books.length > 0 && (
-   						<div className="w-[15rem] h-[20rem] border">
-    					  <img src={data2.books[31].bookImg} alt="book cover" className="w-[15rem] h-[20rem]" />
-    					  <h1 className="text-center mt-5 text-xl">{data2.books[31].title}</h1>
-   						</div>
- 					)} 
-				</div> */}
-				<div className="ml-20">
+                
+				<div className="flex justify-end">
  					{selectedBook && (
-  						<div className="w-[15rem] h-[20rem] border">
-    					  {/* <Image src={selectedBook.bookImg} alt="book cover" width={64} height={80} className="w-[15rem] h-[20rem]" /> */}
-						  <img src={selectedBook.bookImg} alt="book cover" width={64} height={80} className="w-[15rem] h-[20rem]" /> 
-
+  						<div className="w-[15rem] h-[20rem] ml-20 border">
+    					  <Image src={`/${selectedBook.bookImg}`} alt="book cover" width={64} height={80}  />
      					  <h1 className="text-center mt-5 text-xl">{selectedBook.title}</h1>
    						</div>
   					)}

@@ -2,8 +2,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Staff from "./Components/Staff";
-import Student from "./Components/Student";
+import Staff from "./components/Staff";
+import Student from "./components/Student";
 import "../globals.css";
 import { useSpring, animated } from "react-spring"; // Importera react-spring
 
