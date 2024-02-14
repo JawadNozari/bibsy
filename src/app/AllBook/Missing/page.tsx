@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BookList from "../Component/BookList";
+import { redirect } from "next/navigation";
 
 // Define your component
 const Missing = () => {
@@ -9,6 +10,7 @@ const Missing = () => {
 		type: "missingBooks",
 		lostFound: "Found",
 	};
+
 	return (
 		<div
 			className="size-full bg-white"

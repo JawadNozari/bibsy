@@ -1,7 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { FilterButton } from "./filterButton";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 // Interfaces
 interface Book {
@@ -63,6 +64,8 @@ const linkObject: LinkArray = {
 
 export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 	// where the fetched data is stored
+	const { refresh } = useRouter();
+
 	const [books, setBooks] = useState<Array<Book>>([]);
 	const [bookState, setBookState] = useState<Array<BookState>>([
 		{
@@ -103,40 +106,47 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 	}, [colorTheme.type]);
 
 	//* On missing button press, set the book to missing and remove it from the array and db
-	 const setBookMissing = async (event: React.MouseEvent<HTMLElement>, bookId: number) => {
+	const setBookMissing = async (
+		event: React.MouseEvent<HTMLElement>,
+		bookId: number,
+	) => {
 		event.stopPropagation();
 		bookState.map((borrowedBook) => {
-		  if (borrowedBook.bookId === bookId) {
-			bookState.splice(bookState.indexOf(borrowedBook), 1);
-		  }
+			if (borrowedBook.bookId === bookId) {
+				bookState.splice(bookState.indexOf(borrowedBook), 1);
+			}
 		});
 		//setBookState(bookState); // Dont know if this works?
-	
-		const response = await axios.post("/api/setBookMissing", {
-		  bookId,
-		});
-		console.log(response.data);
-	  };
-	
-	  //* On return button press, set the book to available and remove it from the array and db
-	  const setBookAvailable = async (event: React.MouseEvent<HTMLElement>, bookId: number, listType: string) => {
-		event.stopPropagation();
-		bookState.map((borrowedBook) => {
-		  if (borrowedBook.bookId === bookId) {
-			bookState.splice(bookState.indexOf(borrowedBook), 1);
-		  }
-		});
-		//setBookState(bookState); // Dont know if this works?
-	
-		const response = await axios.post("/api/setBookAvailable", {
-		  bookId,
-		  userType: "student",
-		  listType,
-		});
-		console.log(response.data);
-	  };
 
-	// Dropdown class so that works with tailwind
+		const response = await axios.post("/api/setBookMissing", {
+			bookId,
+		});
+		console.log(response.data);
+	};
+
+	//* On return button press, set the book to available and remove it from the array and db
+	const setBookAvailable = async (
+		event: React.MouseEvent<HTMLElement>,
+		bookId: number,
+		listType: string,
+	) => {
+		event.stopPropagation();
+		bookState.map((borrowedBook) => {
+			if (borrowedBook.bookId === bookId) {
+				bookState.splice(bookState.indexOf(borrowedBook), 1);
+			}
+		});
+
+		//setBookState(bookState);
+
+		const response = await axios.post("/api/setBookAvailable", {
+			bookId,
+			userType: "student",
+			listType,
+		});
+		console.log(response.data);
+	};
+
 	return (
 		// TableTemplate edited
 		<div className="size-9/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap ">
@@ -278,7 +288,15 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 													<button
 														type="submit"
 														className="transform p-2 bg-gray-700 rounded-xl text-red-500 font-bold hover:scale-110 transition-transform"
-														onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setBookMissing(e, state.bookId)}
+														onClick={async (
+															e: React.MouseEvent<
+																HTMLButtonElement,
+																MouseEvent
+															>,
+														) => {
+															await setBookMissing(e, state.bookId);
+															refresh();
+														}}
 													>
 														{lostFound.split(" ")[0]}
 													</button>
@@ -287,7 +305,14 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 													<button
 														type="submit"
 														className="transform p-2 bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
-														onClick={(e) => setBookAvailable(e, state.bookId, "borrowed")}
+														onClick={async (e) => {
+															await setBookAvailable(
+																e,
+																state.bookId,
+																"borrowed",
+															);
+															refresh();
+														}}
 													>
 														{lostFound.split(" ")[1]}
 													</button>
@@ -297,7 +322,10 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 												<button
 													type="submit"
 													className="transform p-2 bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
-													onClick={(e) => setBookAvailable(e, state.bookId, "missing")}
+													onClick={async (e) => {
+														await setBookAvailable(e, state.bookId, "missing");
+														refresh();
+													}}
 												>
 													{lostFound}
 												</button>
