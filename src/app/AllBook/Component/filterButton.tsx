@@ -23,7 +23,7 @@ export const FilterButton: React.FC = () => {
 						: "z-20 bg-white p-2 rounded-lg shadow w-28 dark:bg-gray-700 translate-y-5 flex justify-around items-center"
 				}
 			>
-				<input type="checkBox" name="myBooks" id="myBoooks" />
+				<input type="checkBox" name="myBooks" id="myBooks" />
 				<label htmlFor="myBooks" className="text-xs">
 					My books
 				</label>

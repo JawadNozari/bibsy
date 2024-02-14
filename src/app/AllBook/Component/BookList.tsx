@@ -9,6 +9,8 @@ interface Book {
 	title: string;
 	author: string;
 	published: string;
+	available: boolean;
+	invNr: number;
 }
 interface BookState {
 	id: number;
@@ -188,7 +190,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 								scope="col"
 								className="px-6 py-3 flex justify-center items-center w-full h-full"
 							>
-								{colorTheme.theme !== "book" ? "Action" : null}
+								{colorTheme.theme !== "book" ? "Action" : "Availability"}
 							</th>
 						</tr>
 					</thead>
@@ -217,38 +219,45 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 										<td className="px-6 py-4">
 											${books.length > 0 ? books[index]?.price : "loading..."}
 										</td>
+										{/*Ternary if available adds link to borrow else if book add corresponding availability else, add buttuns for post */}
 										<td className="px-6 py-4 flex justify-center items-center w-full h-full">
-											{lostFound ? (
+											{colorTheme.theme === "available" ? (
 												<a
-													href={`/lost:${books[index]?.id.toString()}`}
-													className={
-														colorTheme.theme === "available"
-															? "trasnform font-bold bg-gray-700 p-2 text-yellow-600 rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
-															: colorTheme.theme === "missing"
-															  ? "font-bold bg-gray-700 p-2 text-green-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
-															  : "font-bold bg-gray-700 p-2 text-red-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
-													}
+													href={`/loanBook?invNr=${book.invNr}`}
+													className="transform p-2 bg-gray-700 rounded-xl text-yellow-600 font-bold hover:scale-110 transition-transform"
 												>
-													{`${lostFound?.split(" ")[0]}`}
+													Borrow
 												</a>
-											) : null}
-											{lostFound?.split(" ")[1] ? (
-												<div className="m mx-2" />
-											) : null}
-											{lostFound?.split(" ")[1] ? (
-												<a
-													href={`localhost:3000/lost:${books[
-														index
-													]?.id.toString()}`}
-													className={
-														colorTheme.theme !== "missing"
-															? "font-bold bg-gray-700 p-2 text-green-500 hover:underline rounded-xl hover:scale-110 hover:text-red-600 transition-transform"
-															: "font-bold text-red-500 hover:underline"
-													}
+											) : colorTheme.theme === "book" ? (
+												book.available ? (
+													"Avaliable"
+												) : (
+													"Not Avaliable"
+												)
+											) : lostFound?.split(" ")[1] ? (
+												<div className="flex">
+													<button
+														type="submit"
+														className="transform p-2 bg-gray-700 rounded-xl text-red-500 font-bold hover:scale-110 transition-transform"
+													>
+														{lostFound.split(" ")[0]}
+													</button>
+													<div className="w-2" />
+													<button
+														type="submit"
+														className="transform p-2 bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
+													>
+														{lostFound.split(" ")[1]}
+													</button>
+												</div>
+											) : (
+												<button
+													type="submit"
+													className="transform p-2 bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
 												>
-													{`${lostFound?.split(" ")[1]}`}
-												</a>
-											) : null}
+													{lostFound}
+												</button>
+											)}
 										</td>
 									</tr>
 								) : null;
