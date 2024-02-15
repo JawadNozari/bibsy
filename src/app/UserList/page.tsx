@@ -38,7 +38,7 @@ export default function Home() {
 		const fetchData = async () => {
 			try {
 				const response = await axios("/api/getUsers"); // Fetch data from API endpoint
-				const data: ApiResponse = await response.data(); // Parse response as ApiResponse type
+				const data: ApiResponse = await response.data; // Parse response as ApiResponse type
 				setApiData(data); // Set fetched data to state
 			} catch (error) {
 				console.error(error); // Log any errors that occur during data fetching
