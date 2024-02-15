@@ -41,23 +41,23 @@ interface LinkArray {
 // Link object for mapping(save space)
 const linkObject: LinkArray = {
 	links: [
-		{ key: "book", name: "Book", link: "/AllBook", color: "bg-blue-800" },
+		{ key: "book", name: "Book", link: "/allBook", color: "bg-blue-800" },
 		{
 			key: "available",
 			name: "Available",
-			link: "/AllBook/Available",
+			link: "/allBook/available",
 			color: "bg-green-600",
 		},
 		{
 			key: "missing",
 			name: "Missing",
-			link: "/AllBook/Missing",
+			link: "/allBook/missing",
 			color: "bg-red-600",
 		},
 		{
 			key: "borrowed",
 			name: "Borrowed",
-			link: "/AllBook/Borrowed",
+			link: "/allBook/borrowed",
 			color: "bg-yellow-600",
 		},
 	],
