@@ -4,12 +4,12 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-//TODO: 1. Restrict access without token (Authorization) 2. Implement 'remember me' feature
+//TODO: 1. Implement 'remember me' feature
 
 export const POST = async (req: NextRequest) => {
   try {
 
-    const secretKey = String(process.env.NEXT_PUBLIC_SECRET_KEY); 
+    const secretKey = String(process.env.NEXT_PUBLIC_SECRET_KEY);
 
     // * Parse from request (../src/login)
     const body = await req.json();
@@ -30,7 +30,7 @@ export const POST = async (req: NextRequest) => {
         ]
       }
     }).then((staffUser: Staff | null) => {
-      
+
       // * Staff (non-admin)
       if (staffUser && body.remember) { // Remember me
 
@@ -42,7 +42,7 @@ export const POST = async (req: NextRequest) => {
         const token = jwt.sign({ user: staffUser, role: "Staff" }, secretKey);
         return new NextResponse(JSON.stringify({ token }), { status: 200 });
 
-      // * Staff (admin)
+        // * Staff (admin)
       } if (staffUser && staffUser.admin == true && body.remember) { // Remember me
 
         const token = jwt.sign({ user: staffUser, role: "Admin" }, secretKey, { expiresIn: "7d" });
@@ -56,7 +56,7 @@ export const POST = async (req: NextRequest) => {
       } else {
 
         // * If not found in staff, check in student * //
-        
+
         /* This works since you cannot create duplicate/identical (same email/id) 
         accounts with different roles, therefore conflicts will not appear. */
 

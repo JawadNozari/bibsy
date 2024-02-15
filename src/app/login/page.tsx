@@ -36,7 +36,6 @@ const Page = () => {
   };
 
   const router = useRouter();
-  const secretKey = String(process.env.NEXT_PUBLIC_SECRET_KEY); 
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,9 +53,12 @@ const Page = () => {
         const responseData = await response.json();
         localStorage.setItem("token", responseData.token);
         const decodedToken = JSON.parse(atob(responseData.token.split(".")[1])); // * Decode JWT to get user details
-        console.log("Login successful:", decodedToken.user.id);
 
-        router.push("/protectedPage");
+        if (decodedToken.user.admin == true) {
+          router.push("/adminTest");
+        } else {
+          router.push("/protectedPage");
+        }
 
       } else {
         const errorData = await response.json();
