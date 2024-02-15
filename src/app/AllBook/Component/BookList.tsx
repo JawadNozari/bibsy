@@ -369,7 +369,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 				</table>
 			</div>
 			{/* Filter button */}
-			{colorTheme.theme === "missing" || colorTheme.theme === "borrowed" ? (
+			{colorTheme.theme === "missing" || colorTheme.theme === "borrowed" ? ( // If missing or borrowed, show filter button
 				<div className="relative size-1/12 h-56 flex justify-start flex-col items-start left-2">
 					<button
 						id="dropdownDefaultButton"
