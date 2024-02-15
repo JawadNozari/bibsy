@@ -1,5 +1,5 @@
 import React from "react";
-import BookList from "../component/BookList";
+import BookList from "../Component/BookList";
 
 // Define your component
 const Borrowed = () => {
