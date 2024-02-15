@@ -1,6 +1,7 @@
 import React, { useState } from "react"; // Import React and useState hook from React library
 import Image from "next/image"; // Import Image component from Next.js library for displaying images
 import StaffEditModal from "./StaffEditModal"; // Import StaffEditModal component from another file
+import axios from "axios";
 
 // Defines an interface for a user
 interface User {
@@ -56,7 +57,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 	};
 
 	// Handles editing of a user
-	const handleEditUser = () => {
+	const handleEditUser = async () => {
 		if (editedUser) {
 			const updatedUsers = [...staffUsers]; // Create a copy of the staffUsers array
 			const index = updatedUsers.findIndex((user) => user.id === editedUser.id); // Finds the index of the user being edited
@@ -72,6 +73,14 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					admin: editedAdmin === "true", // Convert the string to boolean and update the admin status
 					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one is selected
 				};
+				const user = {
+					...updatedUsers[index],
+					userType: "staff",
+				};
+				await axios
+				.post("/api/editUsers", user, {
+					headers: { "Content-Type": "application/json" },
+				});
 			}
 
 			console.log("Updated user information:", updatedUsers[index]); // Log updated user information

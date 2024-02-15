@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import StudentEditModal from "./StudentEditModal";
+import axios from "axios";
 
 interface User {
 	// Defines an interface for a user
@@ -61,7 +62,7 @@ const StudentList: React.FC<StudentListProps> = ({
 	};
 
 	// Function to handle editing of a user
-	const handleEditUser = () => {
+	const handleEditUser = async () => {
 		if (editedUser) {
 			// Create a copy of the user list
 			const updatedUsers = [...studentUsers];
@@ -79,6 +80,14 @@ const StudentList: React.FC<StudentListProps> = ({
 					classroom: editedClassroom,
 					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one has been selected
 				};
+				const user = {
+					...updatedUsers[index],
+					userType: "student",
+				};
+				await axios
+				.post("/api/editUsers", user, {
+					headers: { "Content-Type": "application/json" },
+				});
 
 				// If the function to update the user list is provided, update the original user list
 				if (setStudentUsers) {
