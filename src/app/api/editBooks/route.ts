@@ -1,10 +1,8 @@
 //* EDIT BOOK 
 
 // Imports
-import  path  from "path";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Book } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
 
 
 // Respons for a get request
@@ -15,49 +13,28 @@ export const GET = async () => {
 
 //* Main function for uppdateing book data in the database
 const prisma = new PrismaClient();
+type incomingData = Book & { bookImg: File | undefined };
+console.log("Tetet");
 export const POST = async (req: NextRequest) => {
-	// Geting the post request formData
-	const formData = await req.formData();
-	// Checking if it's empty and giving a response
-	if (formData === undefined) {
-		return NextResponse.json(
-			{ message: "Malformed request syntax, Invalid request message framing" },
-			{ status: 400 },
-		);
-	}
 	
+
 	// Setting upp variables for the data from the post
-		//Makeing the numbers get saved as numbers
-		//Fixing the published date
-	const file = formData.get("file");
-	const id = Number(formData.get("id") as string);
-	const author = formData.get("author") as string;
-	const title = formData.get("title") as string;
-	const publisher = formData.get("publishers") as string;
-	const published = new Date(formData.get("published") as unknown as string);
-	const isbn = formData.get("isbn") as string;
-	const invNr = Number(formData.get("invNr") as string);
-	const price = Number(formData.get("price") as string);
+	const request: incomingData = await req.json();
+	const {bookImg ,id ,author  ,title  ,publishers  ,published  ,isbn  ,invNr  ,price } = (request as incomingData);
 
 
-	//* Makeing the image get saved in the image folder
-	const buffer = Buffer.from(await (file as File).arrayBuffer());
-		// Removes the empty spaces in the filename
-	const filename = (file as File).name.replaceAll(" ", "_");
-		// Creates the imagefolder if it doesn't exist
-	const uploadDirectory = path.join(process.cwd(), "public/UploadedImage");
-	await mkdir(uploadDirectory, { recursive: true });
-	await writeFile(path.join(uploadDirectory, filename), buffer);
+	console.log("Hello");
+	console.log(bookImg);
 
 	// Checks if any variable is null and gives a response
 	if (
 		!id ||
 		!title ||
 		!author ||
-		!publisher ||
+		!publishers ||
 		!invNr ||
 		!price ||
-		!filename ||
+		!bookImg ||
 		!isbn ||
 		!published
 	) {
@@ -75,12 +52,12 @@ export const POST = async (req: NextRequest) => {
 			data: {
 				title: title,
 				author: author,
-				publishers: publisher,
+				publishers: publishers,
 				published: published,
 				invNr: invNr,
 				price: price,
 				isbn: isbn,
-				bookImg: `UploadedImage/${filename}`,
+				bookImg: `UploadedImage/${bookImg}`,
 			},
 		}) // gives a satus 200 response
 		.then((edit) => {

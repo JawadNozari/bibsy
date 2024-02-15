@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
-import axios from "axios";
-//TODO: ERROR handling
 
+import React, { useState } from "react";
+import axios from "axios";
+import { Book } from "@prisma/client";
 
 
 export default function Page() {
@@ -12,43 +12,58 @@ export default function Page() {
 	const [author, setAuthor] = useState<string>("");
 	const [publishers, setPublishers] = useState<string>("");
 	const [published, setPublished] = useState<Date>(new Date());
-	const [isbn, setIsbn] = useState<number>(0);
+	const [isbn, setIsbn] = useState<string>("");
 	const [price, setPrice] = useState<number>(0);
 	const [invNr, setInv] = useState<number>(0);
 	const [message, setMessage] = useState<string | undefined>("");
-	const [gotError, setgotError] = useState<boolean>(false);
+	const [gotError, setGotError] = useState<boolean>(false);
 
 	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
 		const formData = new FormData();
-		if (file) {
-			formData.append("file", file);
+		let imagePath = "";
+		if (file !== undefined) {
+			formData.append("file", file || undefined);
+			formData.append("path", "bookImage");
+			imagePath = await axios
+				.post("/api/uploader", formData, {
+					headers: { "Content-Type": "multipart/form-data" },
+				})
+				.then((res) => {
+					return res.data.path;
+				})
+				.catch((error: Error) => {
+					console.debug(error);
+					console.log("there is issue when getting path from uploader ");
+				});
 		}
-		formData.append("id", String(id));
-		formData.append("title", title);
-		formData.append("author", author);
-		formData.append("publishers", publishers);
-		formData.append("published", published as unknown as string);
-		formData.append("isbn", String(isbn));
-		formData.append("invNr", String(invNr));
-		formData.append("price", String(price));
-
-
-		return await axios
-			.post("/api/editBooks", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			})
-			.then((res) => {
-				setgotError(false);
-				setMessage(res.data.Message);
-			})
-			.catch((err) => {
-				setgotError(true);
-				setMessage(err.message);
-				console.log(err);
-			});
+			const userData: Book = {
+				bookImg: imagePath,
+				title: title,
+				author: author,
+				publishers: publishers,
+				published: published,
+				isbn: isbn,
+				invNr: invNr,
+				price: price,
+				available: true,
+				id: id,
+				regDate: new Date(),
+			};
+	
+			// Post form data to backend
+			await axios
+				.post("/api/editBooks", userData, {
+					headers: { "Content-Type": "application/json" },
+				})
+				.then((res) => {
+					setGotError(false);
+					setMessage(res.data.Message);
+				})
+				.catch((err) => {
+					setGotError(true);
+					setMessage(err.message);
+				});
 	};
 
 	return gotError ? (
@@ -57,7 +72,7 @@ export default function Page() {
 			{message}
 		</div>
 	) : (
-		<form onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit} method="POST">
 			<div>
 			<input
 				type="file"
@@ -65,7 +80,6 @@ export default function Page() {
 				onChange={(e) => {
 					setFile(e.target.files?.[0]);
 				}}
-				required
 				/>
 			</div>
 			<div>
@@ -101,10 +115,10 @@ export default function Page() {
 			/>
 			<div>
 			<input
-				type="number"
+				type="text"
 				value={isbn}
 				onChange={(e) => {
-					setIsbn(e.target.valueAsNumber);
+					setIsbn(e.target.value);
 				}}
 				placeholder="isbn"
 				id="isbn"
