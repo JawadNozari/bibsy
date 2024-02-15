@@ -1,30 +1,42 @@
-import { PrismaClient } from "@prisma/client";
+//* EDIT BOOK 
+
+// Imports
+import { PrismaClient, Book } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
+
+// Respons for a get request
 export const GET = async () => {
 	return NextResponse.json({ message: "This Method is not Allowed" });
 };
 
-const prisma = new PrismaClient();
-export const POST = async (req: NextRequest) => {
-	const data = await req.json();
-	if (data === undefined) {
-		return NextResponse.json(
-			{ message: "Malformed request syntax, Invalid request message framing" },
-			{ status: 400 },
-		);
-	}
-	const { id, title, author, publisher, invNr, price, image, isbn } = data;
 
+//* Main function for uppdateing book data in the database
+const prisma = new PrismaClient();
+type incomingData = Book & { bookImg: File | undefined };
+console.log("Tetet");
+export const POST = async (req: NextRequest) => {
+	
+
+	// Setting upp variables for the data from the post
+	const request: incomingData = await req.json();
+	const {bookImg ,id ,author  ,title  ,publishers  ,published  ,isbn  ,invNr  ,price } = (request as incomingData);
+
+
+	console.log("Hello");
+	console.log(bookImg);
+
+	// Checks if any variable is null and gives a response
 	if (
 		!id ||
 		!title ||
 		!author ||
-		!publisher ||
+		!publishers ||
 		!invNr ||
 		!price ||
-		!image ||
-		!isbn
+		!bookImg ||
+		!isbn ||
+		!published
 	) {
 		return NextResponse.json(
 			{
@@ -33,23 +45,24 @@ export const POST = async (req: NextRequest) => {
 			{ status: 400 },
 		);
 	}
-
+	//* Prisma function to uppdate the user
 	return await prisma.book
 		.update({
 			where: { id: id },
 			data: {
 				title: title,
 				author: author,
-				publishers: publisher,
+				publishers: publishers,
+				published: published,
 				invNr: invNr,
 				price: price,
-				isbn: isbn, // ISBN Max Length is 9
-				bookImg: image,
+				isbn: isbn,
+				bookImg: `UploadedImage/${bookImg}`,
 			},
-		})
+		}) // gives a satus 200 response
 		.then((edit) => {
 			return NextResponse.json(edit, { status: 200 });
-		})
+		}) // Error handling
 		.catch((error:Error) => {
 			console.debug(error);
 			return NextResponse.json(
@@ -59,7 +72,7 @@ export const POST = async (req: NextRequest) => {
 				},
 				{ status: 500 },
 			);
-		})
+		}) // Closes the prisma session
 		.finally(() => {
 			prisma.$disconnect();
 		});
