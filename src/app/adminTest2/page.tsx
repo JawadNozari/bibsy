@@ -9,25 +9,44 @@ export default function Page() {
 	const [lastName, setLastName] = useState("");
 	const [phone, setPhone] = useState("");
 	const [email, setEmail] = useState("");
-	const [image, setImage] = useState("");
+	const [file, setFile] = useState<File | undefined>(undefined);
 	const [admin, setAdmin] = useState(false);
-	// const [qrCode, setQrCode] = useState("");
-    const [role] = useState("Staff");
+	const [role] = useState("Staff");
 
-	const handleSubmit = (e: React.SyntheticEvent) => {
+	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
-        const hashedPassword = bcrypt.hashSync(password, 10);
+		const hashedPassword = bcrypt.hashSync(password, 10);
+
+		const formData = new FormData();
+		let imagePath = "";
+		if (file !== undefined) {
+			formData.append("file", file || undefined);
+			formData.append("path", "StaffPFP");
+			imagePath = await axios
+				.post("/api/uploader", formData, {
+					headers: { "Content-Type": "multipart/form-data" },
+				})
+				.then((res) => {
+					return res.data.path;
+				})
+				.catch((error: Error) => {
+					console.debug(error);
+					console.log("there is issue when getting path from uploader ");
+				});
+		}
+
 		axios.post("/api/adminStaffReg", {
 			password: hashedPassword,
 			firstName: firstName,
 			lastName: lastName,
 			email: email,
 			phone: phone,
-			image: image,
+			image: imagePath,
 			admin: Boolean(admin),
 			qrCode: firstName + lastName + role,
 		});
 	};
+
 	return (
 		<form onSubmit={handleSubmit}>
 			<input
@@ -46,14 +65,14 @@ export default function Page() {
 				id="LastName"
 				name="LastName"
 			/>
-             <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="password"
-                id="password"
-                name="password"
-            />
+			<input
+				type="password"
+				value={password}
+				onChange={(e) => setPassword(e.target.value)}
+				placeholder="password"
+				id="password"
+				name="password"
+			/>
 			<div>
 				<input
 					type="string"
@@ -64,12 +83,11 @@ export default function Page() {
 					id="phone"
 				/>
 				<input
-					type="text"
-					value={image}
-					onChange={(e) => setImage(e.target.value)}
-					placeholder="image"
-					name="image"
-					id="image"
+					type="file"
+					id="customFile"
+					onChange={(e) => {
+						setFile(e.target.files?.[0]);
+					}}
 				/>
 				<input
 					type="checkbox"
@@ -79,14 +97,6 @@ export default function Page() {
 					name="admin"
 					id="admin"
 				/>
-				{/* <input
-					type="string"
-					value={qrCode}
-					onChange={(e) => setQrCode(e.target.value)}
-					placeholder="qrCode"
-					name="qrCode"
-					id="qrCode"
-				/> */}
 				<input
 					type="text"
 					value={email}
