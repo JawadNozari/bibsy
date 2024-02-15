@@ -12,7 +12,7 @@ type UserModal = {
 
 export default function Home() {
 	const [apiData, setApiData] = useState<UserModal>();
-	const [books, setBooks] = useState([]);
+	//const [bookArray, setBookArray] = useState([]);
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const params = useParams();
 
@@ -23,33 +23,22 @@ export default function Home() {
 					type: params.role,
 					id: Number(params.id),
 				});
-
-				setApiData(response.data);
-				setBooks(response.data.borrowed);
-			} catch (error) {
-				return [];
-			}
-		};
-
-		const fetchData2 = async () => {
-			try {
-				console.log(books);
-				const response = await axios.post("/api/specifiedBook", {
-					books: books,
+				const response2 = await axios.post("/api/specifiedBook", {
+					books: response.data.borrowed,
 				});
-				setApiData(response.data);
+
+				console.log("frontEnd",response2.data);
 			} catch (error) {
 				return [];
 			}
 		};
 
 		fetchData();
-		fetchData2();
 	}, [params.role, params.id]);
 
 	return (
 		<main className="flex border items-center h-screen justify-around p-4">
-			<div className="flex border items-center justify-center max-w-xs">
+			{/* <div className="flex border items-center justify-center max-w-xs">
 				<div className="max-h-screen items-center flex-col justify-center h-5/6 w-96 bg-white shadow-xl rounded-lg py-3">
 					<Image
 						className="w-10 h-10 rounded-full"
@@ -151,7 +140,7 @@ export default function Home() {
 						))}
 					</table>
 				</div>
-			</div>
+			</div> */}
 		</main>
 	);
 }
