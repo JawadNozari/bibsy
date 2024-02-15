@@ -32,7 +32,7 @@ const Page = () => {
 	const runThroughBooks = () => {
 		return (
 			availableBooks.map((book) => (
-				// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+				// biome-ignore lint/a11y/useKeyWithClickEvents: <Biome wanted to use outdated code so comment is here to ignore the error>
 				<tr
 					className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
 					key={book.invNr}

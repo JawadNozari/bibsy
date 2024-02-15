@@ -2,6 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 import bcrypt from "bcryptjs";
+import ProtectedPage from "../protectedPage/page";
 
 export default function Page() {
 	const [password, setPassword] = useState("");
@@ -45,10 +46,12 @@ export default function Page() {
 			qrCode: firstName + lastName + classroom,
 		});
 
+
 	};
 
 	return (
 		<form onSubmit={handleSubmit}>
+			<ProtectedPage />
 			<input
 				type="text"
 				value={firstName}

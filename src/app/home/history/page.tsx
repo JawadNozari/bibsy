@@ -33,7 +33,7 @@ const Page = () => {
             return books.map((registeredBook) => {
                 if (book.bookId === registeredBook.id) {
                     return (
-                        // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+                        // biome-ignore lint/a11y/useKeyWithClickEvents: <Comment was needed to disable a biome error because its a false positive that used outdated code>
                         <tr
                             className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
                             key={book.id}
@@ -47,7 +47,6 @@ const Page = () => {
                                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                             >{`${registeredBook.title}`}</th>
                             <td className="px-6 py-4">{registeredBook.author}</td>
-                            {/* //suggestion: We need code cleanup here */}
                             <td className="px-6 py-4">{`${(book.regDate).toString().split("T")[0]
                                 } ${(book.regDate).toString().split("T")[1].split(".")[0]}`}</td>
                             {/* //* Runs through the users to fetch their names */}

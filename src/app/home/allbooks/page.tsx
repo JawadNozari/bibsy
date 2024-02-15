@@ -15,7 +15,7 @@ const Page = () => {
 				const response = await axios.get("/api/registeredBooks");
 				setBooks(response.data.books);
 			} catch (err) {
-				console.log(err);
+				console.error(err);
 			}
 		};
 		getBooks();
@@ -25,7 +25,6 @@ const Page = () => {
 	const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const bookTitle = (event.currentTarget[0] as HTMLInputElement).value;
-		console.log(bookTitle);
 		const response = await axios.post("/api/searchForBooks", {
 			bookTitle,
 			listType: "allbooks",
@@ -38,7 +37,7 @@ const Page = () => {
 		return (
 			books.map((book: Book) => {
 				return (
-					// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+					// biome-ignore lint/a11y/useKeyWithClickEvents: <Biome wanted to use depricated code so error is here to stop that>
 					<tr
 						className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
 						key={book.invNr}
