@@ -39,7 +39,7 @@ const ProtectedPage = () => {
     } else if (token.role === "Student") {
       jwt.verify(token, secretKey, (error: any) => {
         if (error) {
-          console.log('Type of token:', typeof token);
+          console.log("Type of token:", typeof token);
           console.log(token);
           router.push("/");
         } else {
