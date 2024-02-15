@@ -78,7 +78,8 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 	]);
 	const lostFound = colorTheme.lostFound;
 	const [searchPhrase, setSearchPhrase] = useState("");
-
+	const [userCookie, setUserCookie] = useState();
+	const [dropdown, setDropdown] = useState(false);
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
 	const theme: { [key: string]: string } = {
@@ -166,7 +167,9 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 							</a>
 						))}
 					{/* spaceDiv */}
-					<div className="size-1/12" />
+					{colorTheme.theme === "missing" || colorTheme.theme === "borrowed" ? (
+						<div className="size-1/12" />
+					) : null}
 				</div>
 			</div>
 			<div
@@ -251,7 +254,10 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 								return (state.bookId === book.id || !colorTheme.type) &&
 									book.title
 										.toLowerCase()
-										.includes(searchPhrase.toLowerCase()) ? (
+										.includes(searchPhrase.toLowerCase()) &&
+									(userCookie && state.bookId
+										? userCookie === state.studentId
+										: true) ? (
 									<tr
 										key={book.id}
 										className={`bg-white border-b ${
@@ -346,7 +352,33 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 				</table>
 			</div>
 			{/* Filter button */}
-			<FilterButton />
+			{colorTheme.theme === "missing" || colorTheme.theme === "borrowed" ? (
+				<div className="relative size-1/12 h-56 flex justify-start flex-col items-start left-2">
+					<button
+						id="dropdownDefaultButton"
+						onClick={() => {
+							setDropdown(!dropdown);
+						}}
+						className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm text-center inline-flex items-center justify-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-28 h-14 translate-y-5"
+						type="button"
+					>
+						Filter
+					</button>
+					<div
+						id="dropdown"
+						className={
+							!dropdown
+								? "hidden"
+								: "z-20 bg-white p-2 rounded-lg shadow w-28 dark:bg-gray-700 translate-y-5 flex justify-around items-center"
+						}
+					>
+						<input type="checkBox" name="myBooks" id="myBooks" />
+						<label htmlFor="myBooks" className="text-xs">
+							My books
+						</label>
+					</div>{" "}
+				</div>
+			) : null}
 		</div>
 	);
 }
