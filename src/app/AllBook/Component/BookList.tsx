@@ -13,6 +13,7 @@ interface Book {
 	published: string;
 	available: boolean;
 	invNr: number;
+	regDate: string;
 }
 interface BookState {
 	id: number;
@@ -38,6 +39,7 @@ interface LinkArray {
 	links: Links[];
 }
 
+// Link object for mapping(save space)
 const linkObject: LinkArray = {
 	links: [
 		{ key: "book", name: "Book", link: "/AllBook", color: "bg-blue-800" },
@@ -61,11 +63,15 @@ const linkObject: LinkArray = {
 		},
 	],
 };
-
+// Export
 export default function BookList({ colorTheme }: { colorTheme: Theme }) {
-	// where the fetched data is stored
+	//refresh method
 	const { refresh } = useRouter();
+
+	// where the fetched book-data is stored
 	const [books, setBooks] = useState<Array<Book>>([]);
+
+	// where the fetched state-data is stored
 	const [bookState, setBookState] = useState<Array<BookState>>([
 		{
 			id: 0,
@@ -76,9 +82,14 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 			studentId: 0,
 		},
 	]);
+
+	// Shortened colroTheme.lostFound to lostFound
 	const lostFound = colorTheme.lostFound;
+	// searchphrase to be compered to
 	const [searchPhrase, setSearchPhrase] = useState("");
+	// User cookie
 	const [userCookie, setUserCookie] = useState();
+	// Dropdown state
 	const [dropdown, setDropdown] = useState(false);
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
@@ -112,12 +123,12 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 		bookId: number,
 	) => {
 		event.stopPropagation();
-		bookState.map((borrowedBook) => {
+		bookState?.map((borrowedBook) => {
 			if (borrowedBook.bookId === bookId) {
 				bookState.splice(bookState.indexOf(borrowedBook), 1);
 			}
 		});
-		//setBookState(bookState); // Dont know if this works?
+		//setBookState(bookState);
 
 		const response = await axios.post("/api/setBookMissing", {
 			bookId,
@@ -132,14 +143,13 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 		listType: string,
 	) => {
 		event.stopPropagation();
-		bookState.map((borrowedBook) => {
+		bookState?.map((borrowedBook) => {
 			if (borrowedBook.bookId === bookId) {
 				bookState.splice(bookState.indexOf(borrowedBook), 1);
 			}
 		});
 
 		//setBookState(bookState);
-
 		const response = await axios.post("/api/setBookAvailable", {
 			bookId,
 			userType: "student",
@@ -154,7 +164,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 				{/* link container */}
 				<div className="w-full h-full flex justify-center items-end">
 					{/* Link map */}
-					{linkObject.links
+					{linkObject?.links
 						.slice(0)
 						.reverse()
 						.map((link: Links) => (
@@ -172,6 +182,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 					) : null}
 				</div>
 			</div>
+			{/* the */}
 			<div
 				className={
 					"relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 shadow-md  size-10/12 rounded-t-xl bg-gray-800"
@@ -180,14 +191,18 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 				<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-300">
 					<thead className="text-xs  uppercase bg-gray-50 dark:bg-gray-700 dark:text-white sticky top-0 p-3 z-10">
 						<tr>
+							{/* Input th */}
 							<th colSpan={5}>
+								{/* Input form */}
 								<form className="p-4">
+									{/* Label */}
 									<label
 										htmlFor="default-search"
 										className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
 									>
 										Search
 									</label>
+									{/* Search icon */}
 									<div className="relative">
 										<div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
 											<svg
@@ -211,15 +226,16 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 											type="search"
 											id="default-search"
 											className={`${
+												// Dynamic color
 												theme[colorTheme.theme].split(" ")[2]
 											} block w-full p-4 ps-10 text-sm text-gray-900 border-gray-400 rounded-lg bg-gray-500  dark:placeholder-gray-300 dark:text-white border-2 outline-none`}
+											// On change set searchPhrase to input value
 											onChange={() =>
 												setSearchPhrase(
 													(event?.target as HTMLInputElement).value,
 												)
 											}
 											placeholder="Search for books..."
-											required
 										/>
 									</div>
 								</form>
@@ -233,7 +249,10 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 								Author
 							</th>
 							<th scope="col" className="px-6 py-3">
-								Published
+								{colorTheme.theme === "missing" ||
+								colorTheme.theme === "borrowed"
+									? "Registered"
+									: "Published"}
 							</th>
 							<th scope="col" className="px-6 py-3">
 								Price
@@ -249,8 +268,8 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 					</thead>
 					<tbody>
 						{/* Map of fetched data which prints out table-row */}
-						{bookState.map((state, index) =>
-							books.map((book, index) => {
+						{bookState?.map((state, index) =>
+							books?.map((book, index) => {
 								return (state.bookId === book.id || !colorTheme.type) &&
 									book.title
 										.toLowerCase()
@@ -265,19 +284,17 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 										} dark:border-gray-700`}
 									>
 										<td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/5 overflow-auto">
-											{books.length > 0 ? books[index]?.title : "loading..."}
+											{books[index]?.title}
 										</td>
+										<td className="px-6 py-4">{books[index]?.author}</td>
 										<td className="px-6 py-4">
-											{books.length > 0 ? books[index]?.author : "loading..."}
+											{colorTheme.theme === "missing" ||
+											colorTheme.theme === "borrowed"
+												? `${books[index]?.regDate.split("T")[0]} 
+												  ${books[index]?.regDate.split("T")[1].split(".")[0]}`
+												: books[index]?.published.split("T")[0]}
 										</td>
-										<td className="px-6 py-4">
-											{books.length > 0
-												? books[index]?.published.split("T")[0]
-												: "loading..."}
-										</td>
-										<td className="px-6 py-4">
-											${books.length > 0 ? books[index]?.price : "loading..."}
-										</td>
+										<td className="px-6 py-4">{books[index]?.price}</td>
 										{/*Ternary if available adds link to borrow else if book add corresponding availability else, add buttuns for post */}
 										<td className="px-6 py-4 flex justify-center items-center w-full h-full">
 											{colorTheme.theme === "available" ? (
@@ -291,9 +308,9 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 												// availability
 											) : colorTheme.theme === "book" ? (
 												book.available ? (
-													"Avaliable"
+													"Available"
 												) : (
-													"Not Avaliable"
+													"Not Available"
 												)
 											) : lostFound?.split(" ")[1] ? (
 												<div className="flex">
@@ -307,6 +324,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 																MouseEvent
 															>,
 														) => {
+															//setBookMissing(e, state.bookId);, state.bookId, "missing"
 															await setBookMissing(e, state.bookId);
 															refresh();
 														}}
