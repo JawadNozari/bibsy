@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import BookList from "../component/BookList";
+import BookList from "../Component/BookList";
 import { redirect } from "next/navigation";
 
 // Define your component
