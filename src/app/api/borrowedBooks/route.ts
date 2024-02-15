@@ -18,17 +18,17 @@ export const GET = async () => {
 const prisma = new PrismaClient();
 
 export const POST = async (req: NextRequest) => {
-	// get the userId and userType from the request body
+	//* get the userId and userType from the request body
 	const request = await req.json();
 	const userId: number = parseInt(request.userId);
 	const userType: string = request.userType;
 
-	// Make sure the user is a staff
+	//* Make sure the user is a staff
 	if (userType !== "staff") {
 		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 	}
 
-	// Check if the userId is undefined
+	//* Check if the userId is undefined
 	if (userId === undefined) {
 		return NextResponse.json(
 			{ message: "Malformed request syntax, Invalid request message framing" },
@@ -51,7 +51,7 @@ export const POST = async (req: NextRequest) => {
 				prisma.$disconnect();
 			});
 	}
-	// Get the borrowed books based on staffId from the database
+	//* Get the borrowed books based on staffId from the database
 	return await prisma.borrowedBooks
 		.findMany({
 			where: {

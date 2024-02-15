@@ -45,10 +45,6 @@ const getBorrowedBooks = async (): Promise<borrowedBooks[]> => {
 	}
 };
 
-//?? I just made the existing code work. But I think you can make it better!!!!
-//TODO Recomm endation: separate the code into smaller functions for better readability and maintainability
-//TODO Recommendation: instead you can make smaller functions and call them in the main function
-
 //* If the request is POST then run this
 export const POST = async (req: NextRequest) => {
 	const request = await req.json();

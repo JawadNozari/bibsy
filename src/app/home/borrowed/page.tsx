@@ -34,7 +34,7 @@ const Page = () => {
   }, []);
 
   //* On UserId search get all borrowed books by user's ID
-  //! THIS IS SUPPOSED TO BE A BUTTON, BUT CANT WITHOUT SESSION
+  //! THIS IS SUPPOSED TO BE A BUTTON, BUT CANT WITHOUT SESSION //THIS FILE IS NOT FOR PRODUCTION, THIS IS A DEMO
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const userId = (event.currentTarget[0] as HTMLInputElement).value as unknown as number;
@@ -45,7 +45,6 @@ const Page = () => {
   //* On missing button press, set the book to missing and remove it from the array and db
   const setBookMissing = async (event: React.MouseEvent<HTMLElement>, bookId: number) => {
     event.stopPropagation();
-    console.log(borrowedBooks);
     borrowedBooks.map((borrowedBook) => {
       if (borrowedBook.bookId === bookId) {
         borrowedBooks.splice(borrowedBooks.indexOf(borrowedBook), 1);
@@ -53,10 +52,9 @@ const Page = () => {
     });
     setBorrowedBooks(borrowedBooks);
 
-    const response = await axios.post("/api/setBookMissing", {
+    await axios.post("/api/setBookMissing", {
       bookId,
     });
-    console.log(response.data);
   };
 
   //* On return button press, set the book to available and remove it from the array and db
@@ -69,12 +67,11 @@ const Page = () => {
     });
     setBorrowedBooks(borrowedBooks);
 
-    const response = await axios.post("/api/setBookAvailable", {
+    await axios.post("/api/setBookAvailable", {
       bookId,
       userType: "student",
       listType: "borrowed",
     });
-    console.log(response.data);
   };
 
   //* On book title search, get all books that have a related title and add them to the list
