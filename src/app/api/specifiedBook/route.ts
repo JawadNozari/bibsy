@@ -10,7 +10,9 @@ const fetchbook = async (id: number, bookdata: Array<object>) => {
 		});
 		if (book !== null) {
 			bookdata.push(book);
+            prisma.$disconnect();
 		} else {
+            prisma.$disconnect();
 			return NextResponse.json(
 				{
 					message:
@@ -19,6 +21,7 @@ const fetchbook = async (id: number, bookdata: Array<object>) => {
 				{ status: 500 },
 			);
 		}
+        return(bookdata);
 	} catch {
 		// Extra error checking
 		console.debug(Error);
@@ -35,9 +38,9 @@ export const POST = async (req: NextRequest) => {
 	try {
 		const { books } = await req.json();
 		const bookdata: object[] = [];
-		books.map(async (book: borrowedBooks) => {
-			await fetchbook(book.id, bookdata);
-		});
+		await Promise.all(books.map(async (book: borrowedBooks) => {
+            await fetchbook(book.bookId, bookdata);
+		}));
 		return NextResponse.json(bookdata);
 	} catch (error) {
 		// If there is an error, return the error
