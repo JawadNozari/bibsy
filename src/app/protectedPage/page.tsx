@@ -3,6 +3,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 const checkToken = () => {
   //* Grab jwt from local storage  
@@ -23,6 +24,8 @@ const ProtectedPage = () => {
   
   const router = useRouter();
 
+  const secretKey = String(process.env.NEXT_PUBLIC_SECRET_KEY); 
+
   useEffect(() => {
     //* Check for token when the page is visited
     const { exists, token } = checkToken();
@@ -32,13 +35,18 @@ const ProtectedPage = () => {
     //* If no token found, redirect to login page
     if (!exists) {
       router.push("/login");
-      console.log("no token found");
     //* If student, redirect to main page
     } else if (token.role === "Student") {
-      router.push("/");
-      console.log("student");
-    }
+      jwt.verify(token, secretKey, (error: any) => {
+        if (error) {
+          console.log('Type of token:', typeof token);
+          console.log(token);
+          router.push("/");
+        } else {
 
+        }
+      });
+    }
     
   }, [router]);
 
@@ -46,11 +54,12 @@ const ProtectedPage = () => {
     <div>
       {loggedIn ? (
         <div>
-          <h1>Protected Page Content</h1>
         </div>
 
       ) : (
-        <h1>Loading...</h1>
+        <div style={{height: 1000, color: "white"}}>
+          <h1>Checking if logged in. . .</h1>
+        </div>
       )}
     </div>
   );

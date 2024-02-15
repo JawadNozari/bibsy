@@ -9,6 +9,8 @@ const prisma = new PrismaClient();
 export const POST = async (req: NextRequest) => {
   try {
 
+    const secretKey = String(process.env.NEXT_PUBLIC_SECRET_KEY); 
+
     // * Parse from request (../src/login)
     const body = await req.json();
 
@@ -32,23 +34,23 @@ export const POST = async (req: NextRequest) => {
       // * Staff (non-admin)
       if (staffUser && body.remember) { // Remember me
 
-        const token = jwt.sign({ user: staffUser, role: "Staff" }, "staff", { expiresIn: "7d" });
+        const token = jwt.sign({ user: staffUser, role: "Staff" }, secretKey, { expiresIn: "7d" });
         return new NextResponse(JSON.stringify({ token }), { status: 200 });
 
       } if (staffUser && !body.remember) { // Do not remember me
 
-        const token = jwt.sign({ user: staffUser, role: "Staff" }, "staff");
+        const token = jwt.sign({ user: staffUser, role: "Staff" }, secretKey);
         return new NextResponse(JSON.stringify({ token }), { status: 200 });
 
       // * Staff (admin)
       } if (staffUser && staffUser.admin == true && body.remember) { // Remember me
 
-        const token = jwt.sign({ user: staffUser, role: "Admin" }, "staff", { expiresIn: "7d" });
+        const token = jwt.sign({ user: staffUser, role: "Admin" }, secretKey, { expiresIn: "7d" });
         return new NextResponse(JSON.stringify({ token }), { status: 200 });
 
       } if (staffUser && staffUser.admin && !body.remember) { // Do not remember me
 
-        const token = jwt.sign({ user: staffUser, role: "Admin" }, "staff");
+        const token = jwt.sign({ user: staffUser, role: "Admin" }, secretKey);
         return new NextResponse(JSON.stringify({ token }), { status: 200 });
 
       } else {
@@ -70,12 +72,12 @@ export const POST = async (req: NextRequest) => {
           // * Student
           if (studentUser && body.remember) { // Remember me
 
-            const token = jwt.sign({ user: studentUser, role: "Student" }, "student", { expiresIn: "7d" });
+            const token = jwt.sign({ user: studentUser, role: "Student" }, secretKey, { expiresIn: "7d" });
             return new NextResponse(JSON.stringify({ token }), { status: 200 });
 
           } if (studentUser && !body.remember) { // Do not remember me
 
-            const token = jwt.sign({ user: studentUser, role: "Student" }, "student");
+            const token = jwt.sign({ user: studentUser, role: "Student" }, secretKey);
             return new NextResponse(JSON.stringify({ token }), { status: 200 });
 
           } else {
