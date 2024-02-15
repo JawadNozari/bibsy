@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import axios from "axios";
-import Profile from "../../../public/img/profileuser.png";
+import Profile from "../../../public/img/img.jpg";
 
 interface User {
   id: number;
