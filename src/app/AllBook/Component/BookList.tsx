@@ -34,6 +34,24 @@ interface Theme {
 	type?: string;
 	lostFound?: string;
 }
+
+/**
+ * Represents a theme object.
+ * @interface ThemeObject
+ */
+interface ThemeObject {
+	[key: string]: string;
+}
+interface ThemeColors {
+	darkBg: String;
+	lightBg: String;
+	darkFocus: String;
+	lightFocus: String;
+	darkHover: String;
+	lightHover: String;
+  }
+  
+
 interface LinkArray {
 	links: Links[];
 }
@@ -41,24 +59,24 @@ interface LinkArray {
 // Link object for mapping(save space)
 const linkObject: LinkArray = {
 	links: [
-		{ key: "book", name: "Book", link: "/allBook", color: "bg-blue-800" },
+		{ key: "book", name: "Book", link: "/allBook", color: " dark:bg-blue-800 bg-blue-700 " },
 		{
 			key: "available",
 			name: "Available",
 			link: "/allBook/available",
-			color: "bg-green-600",
+			color: " dark:bg-green-600 bg-green-500 ",
 		},
 		{
 			key: "missing",
 			name: "Missing",
 			link: "/allBook/missing",
-			color: "bg-red-600",
+			color: " dark:bg-red-600 bg-red-500 ",
 		},
 		{
 			key: "borrowed",
 			name: "Borrowed",
 			link: "/allBook/borrowed",
-			color: "bg-yellow-600",
+			color: " dark:bg-yellow-600 bg-yellow-500 ",
 		},
 	],
 };
@@ -92,11 +110,40 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 	const [dropdown, setDropdown] = useState(false);
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
-	const theme: { [key: string]: string } = {
-		book: " bg-blue-800 focus:border-blue-800 hover:bg-blue-900",
-		available: " bg-green-600 focus:border-green-600 hover:bg-green-700",
-		missing: " bg-red-600 focus:border-red-600 hover:bg-red-700",
-		borrowed: " bg-yellow-600 focus:border-yellow-600 hover:bg-yellow-700",
+	const theme:{[key: string]: ThemeColors} ={
+		book: {
+			darkBg: " dark:bg-blue-800 ",
+			lightBg: " bg-blue-700 ",
+			darkFocus: " dark:focus:border-blue-800 ",
+			lightFocus: " focus:border-blue-700 ",
+			darkHover: " dark:hover:bg-blue-900 ",
+			lightHover: " hover:bg-blue-800 ",
+		},
+		missing: {
+			darkBg: " dark:bg-red-600 ",
+			lightBg: " bg-red-500 ",
+			darkFocus: " dark:focus:border-red-600 ",
+			lightFocus: " focus:border-red-500 ",
+			darkHover: " dark:hover:bg-red-700 ",
+			lightHover: " hover:bg-red-500 ",
+		},
+		borrowed: {
+			darkBg: " dark:bg-yellow-600 ",
+			lightBg: " bg-yellow-500 ",
+			darkFocus: " dark:focus:border-yellow-600 ",
+			lightFocus: " focus:border-yellow-500 ",
+			darkHover: " dark:hover:bg-yellow-700 ",
+			lightHover: " hover:bg-yellow-500 ",
+		},
+		available: {
+			darkBg: " dark:bg-green-600 ",
+			lightBg: " bg-green-500 ",
+			darkFocus: " dark:focus:border-green-600 ",
+			lightFocus: " focus:border-green-500 ",
+			darkHover: " dark:hover:bg-green-700 ",
+			lightHover: " hover:bg-green-500 ",
+		},
+		
 	};
 	// Fetching data
 	useEffect(() => {
@@ -170,7 +217,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 							<a
 								key={link.key}
 								href={link.link}
-								className={`h-4/5 transform hover:scale-100 scale-95 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 transition-colors rounded-t-3xl border-gray-700 border-b-0`}
+								className={`h-4/5 transform hover:scale-100 scale-95 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 transition-colors rounded-t-3xl border-gray-600 dark:border-gray-700 border-b-0`}
 							>
 								{link.name}
 							</a>
@@ -184,11 +231,11 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 			{/* the */}
 			<div
 				className={
-					"relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 shadow-md  size-10/12 rounded-t-xl bg-gray-800"
+					"relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 shadow-md  size-10/12 rounded-t-xl bg-gray-700 dark:bg-gray-800"
 				}
 			>
 				<table className="w-full text-sm text-left rtl:text-right text-gray-300">
-					<thead className="text-xs uppercase bg-gray-700 text-white sticky top-0 p-3 z-10">
+					<thead className="text-xs uppercase bg-gray-600 dark:bg-gray-700 text-white sticky top-0 p-3 z-10">
 						<tr>
 							{/* Input th */}
 							<th colSpan={5} className="z-10">
@@ -226,8 +273,11 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 											id="default-search"
 											className={`${
 												// Dynamic color
-												theme[colorTheme.theme].split(" ")[2]
-											} block w-full p-4 ps-10 text-sm border-gray-400 rounded-lg bg-gray-500  placeholder-gray-300 text-white border-2 outline-none`}
+												theme[colorTheme.theme].darkFocus
+											} ${
+												theme[colorTheme.theme].lightFocus
+
+											}block w-full p-4 ps-10 text-sm border-gray-400 rounded-lg bg-gray-500  placeholder-gray-300 text-white border-2 outline-none`}
 											// On change set searchPhrase to input value
 											onChange={() =>
 												setSearchPhrase(
@@ -279,7 +329,10 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 									<tr
 										key={book.id}
 										className={`border-b ${
-											theme[colorTheme.theme]
+											theme[colorTheme.theme].lightBg
+										}
+										${
+											theme[colorTheme.theme].darkBg
 										} border-gray-700`}
 									>
 										<td className="px-6 py-4 font-medium whitespace-nowrap text-white w-1/5 overflow-auto">
@@ -300,7 +353,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 												// borrow button
 												<a
 													href={`/loanBook?invNr=${book.invNr}`}
-													className="transform p-2 bg-gray-700 rounded-xl text-yellow-600 font-bold hover:scale-110 transition-transform"
+													className="transform p-2 bg-gray-800 dark:bg-gray-700 rounded-xl text-yellow-600 font-bold hover:scale-110 transition-transform"
 												>
 													Borrow
 												</a>
@@ -316,7 +369,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 													{/* lost button borrow tab */}
 													<button
 														type="submit"
-														className="transform p-2 bg-gray-700 rounded-xl text-red-500 font-bold hover:scale-110 transition-transform"
+														className="transform p-2 bg-gray-600 dark:bg-gray-700 rounded-xl text-red-500 font-bold hover:scale-110 transition-transform"
 														onClick={async (
 															e: React.MouseEvent<
 																HTMLButtonElement,
@@ -334,7 +387,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 													{/* return button borrow tab */}
 													<button
 														type="submit"
-														className="transform p-2 bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
+														className="transform p-2 bg-gray-600 dark:bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
 														onClick={async (e) => {
 															await setBookAvailable(
 																e,
@@ -351,7 +404,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 												// found button missing tab
 												<button
 													type="submit"
-													className="transform p-2 bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
+													className="transform p-2 bg-gray-600 dark:bg-gray-700 rounded-xl text-green-500 font-bold hover:scale-110 transition-transform"
 													onClick={async (e) => {
 														await setBookAvailable(e, state.bookId, "missing");
 														refresh();
@@ -376,7 +429,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 						onClick={() => {
 							setDropdown(!dropdown);
 						}}
-						className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm text-center inline-flex items-center justify-center w-28 h-14 translate-y-5"
+						className="text-white bg-blue-600 dark:bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm text-center inline-flex items-center justify-center w-28 h-14 translate-y-5"
 						type="button"
 					>
 						Filter
@@ -386,7 +439,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 						className={
 							!dropdown
 								? "hidden"
-								: "z-2 p-2 rounded-lg shadow w-28 bg-gray-700 translate-y-5 flex justify-around items-center"
+								: "z-2 p-2 rounded-lg shadow w-28 bg-gray-600 dark:bg-gray-700 translate-y-5 flex justify-around items-center"
 						}
 					>
 						<input type="checkBox" name="myBooks" id="myBooks" />
