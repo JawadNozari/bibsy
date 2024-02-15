@@ -1,5 +1,5 @@
 import React from "react";
-import BookList from "./Component/BookList";
+import BookList from "./component/BookList";
 // Define your component
 const Book = () => {
 	const colorTheme = {
