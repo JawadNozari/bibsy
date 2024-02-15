@@ -68,13 +68,13 @@ export default function Home() {
 		setSearchTerm(searchTerm); // Set the search term to the state
 	};
 
-    // Define animation for user details
+	// Define animation for user details
 	const [detailsAnimation, setDetailsAnimation] = useSpring(() => ({
 		transform: "translateX(-100%)", // Hide user details off-screen
 		config: { mass: 1, tension: 170, friction: 26 }, // Set animation configuration
 	}));
 
-    // Return the user list page
+	// Return the user list page
 	return (
 		<main className="flex border items-center h-screen justify-around p-4">
 			{showUserDetails && ( // Conditionally show user details based on state
@@ -86,7 +86,7 @@ export default function Home() {
 						<div className="flex items-center justify-center max-w-xs">
 							<div className="flex flex-col justify-center items-center rounded-lg py-3">
 								<div className="flex items-center justify-center flex-col max-h-screen bg-white py-3">
-									<Image 
+									<Image
 										className="w-10 h-10 rounded-full"
 										width={200}
 										height={200}
@@ -129,8 +129,8 @@ export default function Home() {
 															{selectedUser?.classroom}
 														</td>
 													</tr>
-												</tbody>
-											) : ( // If "classroom" property is not present, display admin status
+												</tbody> // If "classroom" property is not present, display admin status
+											) : (
 												<tbody>
 													<tr>
 														<td className="px-4 py-1 text-gray-500 font-semibold">
@@ -174,7 +174,9 @@ export default function Home() {
 						<ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48 top-42">
 							<li>
 								{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
-								<button onClick={() => handleUserTypeChange("all")}> {/* Add onClick event to button */}
+								<button onClick={() => handleUserTypeChange("all")}>
+									{" "}
+									{/* Add onClick event to button */}
 									All Users
 								</button>
 							</li>
@@ -227,11 +229,14 @@ export default function Home() {
 							<>
 								{userType === "all" && ( // Conditionally render user list based on user type
 									<>
-										<Staff 
-											staffUsers={apiData.staffUsers.filter((user) => // Filter staff users based on search term
-												`${user.firstName} ${user.lastName}` // Combine first and last name
-													.toLowerCase()  // Convert to lowercase
-													.includes(searchTerm.toLowerCase()), // Check if it includes the search term
+										<Staff
+											staffUsers={apiData.staffUsers.filter(
+												(
+													user, // Filter staff users based on search term
+												) =>
+													`${user.firstName} ${user.lastName}` // Combine first and last name
+														.toLowerCase() // Convert to lowercase
+														.includes(searchTerm.toLowerCase()), // Check if it includes the search term
 											)}
 											handleClick={handleClick} // Pass handleClick
 										/>
