@@ -170,8 +170,8 @@ export default function Home() {
 						</div>
 						<div className="m-10 justify-center items-center flex">
 							{/* <img src={selectedUser.image} alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-20 h-20 rounded-full m-5" />	 */}
-							<Image src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-20 h-20 rounded-full m-5" />	
-							{/* <Image src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} height={112} width={112} className="w-28 h-28 mask mask-hexagon m-5" /> */}
+{/* 							<Image src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} className="w-20 h-20 rounded-full m-5" />	
+ */}							{/* <Image src="https://www.w3schools.com/w3images/avatar2.png" alt={`${selectedUser.firstName} ${selectedUser.lastName}`} height={112} width={112} className="w-28 h-28 mask mask-hexagon m-5" /> */}
 						</div>
 						<div className="m-5 ">
 							<p>Name: {selectedUser.firstName} {selectedUser.lastName}</p>
@@ -272,8 +272,8 @@ export default function Home() {
  					{selectedBook && (
   						<div className="w-[15rem] h-[20rem] border">
     					  {/* <Image src={selectedBook.bookImg} alt="book cover" width={64} height={80} className="w-[15rem] h-[20rem]" /> */}
-						  <Image src={selectedBook.bookImg} alt="book cover" width={64} height={80} className="w-[15rem] h-[20rem]" /> 
-
+{/* 						  <Image src={selectedBook.bookImg} alt="book cover" width={64} height={80} className="w-[15rem] h-[20rem]" /> 
+ */}
      					  <h1 className="text-center mt-5 text-xl">{selectedBook.title}</h1>
    						</div>
   					)}

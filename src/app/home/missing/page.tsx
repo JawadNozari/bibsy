@@ -6,8 +6,6 @@ import axios from "axios";
 
 const Page = () => {
 	const router = useRouter();
-
-	//! WHAT IS THIS??
 	interface Book {
 		bookId: number;
 		note: string;
@@ -33,8 +31,6 @@ const Page = () => {
 
 				const missing = await axios("/api/missingBooks");
 				setMissingBooks(missing.data.books);
-			} else {
-				console.log(response);
 			}
 
 			const response2 = await axios("/api/getUsers");
@@ -50,7 +46,9 @@ const Page = () => {
 		event.preventDefault();
 		let userId = (event.currentTarget[0] as HTMLInputElement)
 			.value as unknown as number;
-		userId = parseInt(userId.toString()); // Convert to string, then to number (has to be done in two steps because of TypeScript)
+
+		//* Convert to string, then to number (has to be done in two steps because of TypeScript)
+		userId = parseInt(userId.toString());
 		const response = await axios.post("/api/missingBooks", {
 			userId,
 			userType: "staff",
@@ -70,7 +68,10 @@ const Page = () => {
 	};
 
 	//* Sets the book as available and removes it from the missing books list
-	const setBookAvailable = async (event: React.MouseEvent<HTMLElement>, bookId: number) => {
+	const setBookAvailable = async (
+		event: React.MouseEvent<HTMLElement>,
+		bookId: number,
+	) => {
 		event.stopPropagation();
 		missingBooks.map((missingBook: Book) => {
 			if (missingBook.bookId === bookId) {
@@ -79,68 +80,64 @@ const Page = () => {
 		});
 		setMissingBooks(missingBooks);
 
-		const response = await axios.post("/api/setBookAvailable", {
+		await axios.post("/api/setBookAvailable", {
 			bookId,
 			listType: "missing",
 		});
-		console.log(response.data);
 	};
 
 	//* Runs through the books and missing books and returns the JSX for the table
 	const runThroughBooks = () => {
-		return (
-			books.map((book: Book) => {
-				return missingBooks.map((missingBook: Book) => {
-					if (missingBook.bookId === book.id) {
-						return (
-							<tr
-								className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
-								key={book.id}
-								onClick={() =>
-									router.push(`/home/bookDetails/${book.id}`)
-								}
-								onKeyUp={() => { }}
-								onKeyDown={() => { }}
-							>
-								<th
-									scope="row"
-									className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-								>{`${book.title}`}</th>
-								<td className="px-6 py-4">{`${book.author}`}</td>
-								<td className="px-6 py-4">{`${missingBook.note}`}</td>
-								<td className="px-6 py-4">{`${`${book.regDate.split("T")[0]
-									} ${book.regDate.split("T")[1].split(".")[0]}`}`}</td>
-								<td className="px-6 py-4">{
-									staff.map((staffMember) => {
-										if (staffMember.id === missingBook.staffId) {
-											return `${staffMember.firstName} ${staffMember.lastName} | ID: ${staffMember.id}`;
-										}
-									})
-								}</td>
-								<td className="px-6 py-4">{
-									students.map((student) => {
-										if (student.id === missingBook.studentId) {
-											return `${student.firstName} ${student.lastName} | ID: ${student.id}`;
-										}
-									})
-								}</td><td className="px-6 py-4">
-									<button
-										type="button"
-										onClick={(e) => setBookAvailable(e, missingBook.bookId)}
-										className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-									>
-										RETURNED
-									</button>
-								</td>
-							</tr>
-						);
-					}
-					return null;
-				});
-			})
-		);
+		return books.map((book: Book) => {
+			return missingBooks.map((missingBook: Book) => {
+				if (missingBook.bookId === book.id) {
+					return (
+						<tr
+							className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
+							key={book.id}
+							onClick={() => router.push(`/home/bookDetails/${book.id}`)}
+							onKeyUp={() => {}}
+							onKeyDown={() => {}}
+						>
+							<th
+								scope="row"
+								className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+							>{`${book.title}`}</th>
+							<td className="px-6 py-4">{`${book.author}`}</td>
+							<td className="px-6 py-4">{`${missingBook.note}`}</td>
+							<td className="px-6 py-4">{`${`${book.regDate.split("T")[0]} ${
+								book.regDate.split("T")[1].split(".")[0]
+							}`}`}</td>
+							<td className="px-6 py-4">
+								{staff.map((staffMember) => {
+									if (staffMember.id === missingBook.staffId) {
+										return `${staffMember.firstName} ${staffMember.lastName} | ID: ${staffMember.id}`;
+									}
+								})}
+							</td>
+							<td className="px-6 py-4">
+								{students.map((student) => {
+									if (student.id === missingBook.studentId) {
+										return `${student.firstName} ${student.lastName} | ID: ${student.id}`;
+									}
+								})}
+							</td>
+							<td className="px-6 py-4">
+								<button
+									type="button"
+									onClick={(e) => setBookAvailable(e, missingBook.bookId)}
+									className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+								>
+									RETURNED
+								</button>
+							</td>
+						</tr>
+					);
+				}
+				return null;
+			});
+		});
 	};
-
 
 	//* Returns the JSX for the page with the missing books and buttons to navigate to different pages
 	return (
@@ -192,9 +189,7 @@ const Page = () => {
 							<th scope="col" className="px-6 py-3" />
 						</tr>
 					</thead>
-					<tbody>
-						{runThroughBooks()}
-					</tbody>
+					<tbody>{runThroughBooks()}</tbody>
 				</table>
 			</div>
 			<div
