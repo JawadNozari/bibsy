@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import Image from "next/image";
-
-interface StudentListProps {
-	studentUsers: User[];
-	handleClick: (user: User | null) => void;
-	setStudentUsers?: React.Dispatch<React.SetStateAction<User[]>>;
-}
+import StudentEditModal from "./StudentEditModal";
 
 interface User {
+	// Defines an interface for a user
 	id: number;
 	password: string;
 	firstName: string;
@@ -20,23 +16,33 @@ interface User {
 	qrCode: number;
 }
 
-const StudentList: React.FC<StudentListProps> = ({
-	studentUsers,
-	handleClick,
-	setStudentUsers,
-}) => {
-	// Statevariabler:
-	const [showModal, setShowModal] = useState(false);
-	const [selectedUser, setSelectedUser] = useState<User | null>(null);
-	// State för redigerad användarinformation:
-	const [editedUser, setEditedUser] = useState<User | null>(null);
-	const [editedFirstName, setEditedFirstName] = useState("");
-	const [editedLastName, setEditedLastName] = useState("");
-	const [editedEmail, setEditedEmail] = useState("");
-	const [editedPhone, setEditedPhone] = useState("");
-	const [editedClassroom, setEditedClassroom] = useState("");
+// Defines an interface for the properties that the StudentList component expects to receive
+interface StudentListProps {
+	studentUsers: User[]; // Type for student users
+	handleClick: (user: User | null) => void; // Function to handle click on a user
+	setStudentUsers?: React.Dispatch<React.SetStateAction<User[]>>; // Function to update student users
+}
 
-	// Funktioner för att hantera modalfönstret:
+// Defines a functional component StudentList that receives properties defined by StudentListProps
+const StudentList: React.FC<StudentListProps> = ({
+	studentUsers, // An array of student users to be displayed in the list
+	handleClick, // A function that handles click events on a user in the list
+	setStudentUsers, // A function to update student users (optional)
+}) => {
+	// State variables
+	const [showModal, setShowModal] = useState(false); // Show or hide modal
+	const [selectedUser, setSelectedUser] = useState<User | null>(null); // The selected user for editing
+	const [editedUser, setEditedUser] = useState<User | null>(null); // The user being edited
+	const [editedFirstName, setEditedFirstName] = useState(""); // Edited first name
+	const [editedLastName, setEditedLastName] = useState(""); // Edited last name
+	const [editedEmail, setEditedEmail] = useState(""); // Edited email address
+	const [editedPhone, setEditedPhone] = useState(""); // Edited phone number
+	const [editedClassroom, setEditedClassroom] = useState(""); // Edited classroom
+	const [selectedImage, setSelectedImage] = useState<File | null>(null); // The selected image for upload
+	const [imagePreview, setImagePreview] = useState<string | null>(null); // Image preview
+	const [showFullImage, setShowFullImage] = useState(false); // Show or hide full image
+
+	// Function to open the editing modal for a user
 	const openModal = (user: User) => {
 		setSelectedUser(user);
 		setEditedUser(user);
@@ -45,21 +51,25 @@ const StudentList: React.FC<StudentListProps> = ({
 		setEditedEmail(user.email);
 		setEditedPhone(user.phone);
 		setEditedClassroom(user.classroom);
+		setImagePreview(user.image); // Preview the image when the modal opens
 		setShowModal(true);
 	};
 
-	// ... (stänger modal, rensar redigeringsinformation)
+	// Function to close the modal
 	const closeModal = () => {
 		setShowModal(false);
 	};
 
-	// Funktion för att hantera redigering av användare:
+	// Function to handle editing of a user
 	const handleEditUser = () => {
 		if (editedUser) {
+			// Create a copy of the user list
 			const updatedUsers = [...studentUsers];
+			// Find the index of the edited user in the copied list
 			const index = updatedUsers.findIndex((user) => user.id === editedUser.id);
 
 			if (index !== -1) {
+				// Update the user's information in the copied list
 				updatedUsers[index] = {
 					...updatedUsers[index],
 					firstName: editedFirstName,
@@ -67,24 +77,26 @@ const StudentList: React.FC<StudentListProps> = ({
 					email: editedEmail,
 					phone: editedPhone,
 					classroom: editedClassroom,
+					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one has been selected
 				};
 
+				// If the function to update the user list is provided, update the original user list
 				if (setStudentUsers) {
-					setStudentUsers(updatedUsers); // Update the parent component's state
+					setStudentUsers(updatedUsers);
 				}
 			}
 
 			console.log("Updated user information:", updatedUsers[index]);
-			closeModal();
+			closeModal(); // Close the modal after editing is done
 		}
 	};
 
-	// Funktion för att hantera ändringar i redigeringsfälten:
+	// Function to handle changes in the input fields
 	const handleInputChange = (
-		event: React.ChangeEvent<HTMLInputElement>,
+		event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
 		field: string,
 	) => {
-		const value = event.target.value;
+		const value = event.target.value; // Get the value from the input field
 		switch (field) {
 			case "firstName":
 				setEditedFirstName(value);
@@ -101,21 +113,39 @@ const StudentList: React.FC<StudentListProps> = ({
 			case "classroom":
 				setEditedClassroom(value);
 				break;
+			case "image":
+				// Update the image when a new image is selected
+				if (
+					event.target instanceof HTMLInputElement &&
+					event.target.files?.[0]
+				) {
+					const selected = event.target.files[0];
+					setSelectedImage(selected);
+					const reader = new FileReader();
+					reader.onload = () => {
+						if (typeof reader.result === "string") {
+							setImagePreview(reader.result);
+						}
+					};
+					reader.readAsDataURL(selected);
+				}
+				break;
 			default:
 				break;
 		}
+		// Update the editedUser state with the edited information
 		setEditedUser((prevUser: User | null) => ({
-			...prevUser,
-			firstName: editedFirstName,
-			lastName: editedLastName,
-			email: editedEmail,
-			phone: editedPhone,
-			classroom: editedClassroom,
-			id: editedUser?.id || 0,
-			password: editedUser?.password || "",
-			image: editedUser?.image || "",
-			admin: editedUser?.admin || false,
-			qrCode: editedUser?.qrCode || 0,
+			...prevUser, // Spread the previous user object to retain unchanged properties
+			firstName: editedFirstName, // Update the first name with the edited first name
+			lastName: editedLastName, // Update the last name with the edited last name
+			email: editedEmail, // Update the email with the edited email
+			phone: editedPhone, // Update the phone number with the edited phone number
+			classroom: editedClassroom, // Update the classroom with the edited classroom
+			id: editedUser?.id || 0, // Keep the id the same or set it to 0 if it's undefined
+			password: editedUser?.password || "", // Keep the password the same or set it to an empty string if it's undefined
+			admin: editedUser?.admin || false, // Keep the admin status the same or set it to false if it's undefined
+			qrCode: editedUser?.qrCode || 0, // Keep the QR code the same or set it to 0 if it's undefined
+			image: selectedImage ? selectedImage.name : editedUser?.image || "", // Update the image name with the selected image's name or set it to an empty string if 'editedUser?.image' is undefined
 		}));
 	};
 
@@ -124,35 +154,34 @@ const StudentList: React.FC<StudentListProps> = ({
 			<thead>
 				<tr>
 					<th colSpan={4} className="text-lg font-bold px-6 py-3">
-						Student Users:
-						{/* <hr className="mt-4" /> */}
+						Student Users: {/* Header for student users */}
 					</th>
 				</tr>
 			</thead>
-			<tr className="text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+			<tr className=" border-b-4 border-indigo-500 text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 				<th scope="col" className="px-6 py-3">
-					Name
+					Name {/* Name */}
 				</th>
 				<th scope="col" className="px-6 py-3">
-					Phone
+					Phone {/* Phone */}
 				</th>
 				<th scope="col" className="px-6 py-3">
-					Class
+					Classroom {/* Classroom */}
 				</th>
 				<th scope="col" className="px-6 py-3">
-					Action
+					Action {/* Action */}
 				</th>
 			</tr>
 			{studentUsers?.map((user) => (
 				<tbody key={user.id}>
 					<tr
 						className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-						tabIndex={0} // Make rows focusable
+						tabIndex={0}
 						aria-label={`User details for ${user.firstName} ${user.lastName}`}
 						onClick={() => handleClick(user)}
 						onKeyDown={(event) => {
 							if (event.key === "Enter" || event.key === " ") {
-								handleClick(user); // Trigger handleClick on 'Enter' or 'Space'
+								handleClick(user);
 							}
 						}}
 					>
@@ -161,11 +190,11 @@ const StudentList: React.FC<StudentListProps> = ({
 							className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
 						>
 							<Image
-								className=" w-10 h-10 rounded-full"
+								className="w-10 h-10 rounded-full"
 								width={10}
 								height={10}
-								src="https://pbs.twimg.com/profile_images/1701878932176351232/AlNU3WTK_400x400.jpg"
-								alt="Bob Bergman"
+								src={`/image/${user.image}`}
+								alt={`${user.firstName} ${user.lastName}`}
 							/>
 							<div className="ps-3">
 								<div className="text-base font-semibold">{`${user.firstName} ${user.lastName}`}</div>
@@ -173,11 +202,7 @@ const StudentList: React.FC<StudentListProps> = ({
 							</div>
 						</th>
 						<td className="px-6 py-4">{user.phone}</td>
-						<td className="px-6 py-4">
-							<div className="flex items-center">
-								<div className="h-4 w-0.5">{user.classroom}</div>
-							</div>
-						</td>
+						<td className="px-6 py-4">{user.classroom}</td>
 						<td className="px-6 py-4">
 							<button
 								type="button"
@@ -187,146 +212,28 @@ const StudentList: React.FC<StudentListProps> = ({
 								}}
 								className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
 							>
-								Edit user
+								Edit user {/* Edit user */}
 							</button>
 						</td>
 					</tr>
 				</tbody>
 			))}
 
-			{/* Modal */}
-			{selectedUser && (
-				<div
-					className={`fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 ${
-						showModal ? "" : "hidden"
-					}`}
-				>
-					<div className="bg-white p-6 md:p-8 w-full max-w-md mx-auto rounded-lg shadow-lg z-50">
-						<div className="flex items-center justify-between border-b">
-							<h2 className="text-lg font-semibold text-gray-900">
-								Edit {`${selectedUser.firstName} ${selectedUser.lastName}`}
-							</h2>
-							<button
-								type="button"
-								onClick={closeModal}
-								className="text-gray-500 hover:text-gray-700 focus:outline-none"
-							>
-								<svg
-									className="w-6 h-6"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<title>Close</title>
-
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M6 18L18 6M6 6l12 12"
-									/>
-								</svg>
-							</button>
-						</div>
-						<div className="mt-4">
-							{/* Edit form content */}
-							<form>
-								<div className="mb-4">
-									<label
-										htmlFor="firstName"
-										className="block text-sm font-medium text-gray-700"
-									>
-										First Name
-									</label>
-									<input
-										type="text"
-										id="firstName"
-										className="mt-1 p-1 border rounded-md"
-										value={editedFirstName}
-										onChange={(e) => handleInputChange(e, "firstName")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="lastName"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Last Name
-									</label>
-									<input
-										type="text"
-										id="lastName"
-										className="mt-1 p-1 border rounded-md"
-										value={editedLastName}
-										onChange={(e) => handleInputChange(e, "lastName")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="email"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Email
-									</label>
-									<input
-										type="email"
-										id="email"
-										className="mt-1 p-1 border rounded-md"
-										value={editedEmail}
-										onChange={(e) => handleInputChange(e, "email")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="phone"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Phone
-									</label>
-									<input
-										type="text"
-										id="phone"
-										className="mt-1 p-1 border rounded-md"
-										value={editedPhone}
-										onChange={(e) => handleInputChange(e, "phone")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="classroom"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Classroom
-									</label>
-									<input
-										type="text"
-										id="classroom"
-										className="mt-1 p-1 border rounded-md"
-										value={editedClassroom}
-										onChange={(e) => handleInputChange(e, "classroom")}
-									/>
-								</div>
-							</form>
-						</div>
-						<div className="mt-6 flex justify-end">
-							<button
-								type="button"
-								onClick={handleEditUser}
-								className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
-							>
-								Confirm
-							</button>
-							<button
-								type="button"
-								onClick={closeModal}
-								className="ml-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none"
-							>
-								Cancel
-							</button>
-						</div>
-					</div>
-				</div>
+			{selectedUser && ( // If a user is selected, render the edit modal
+				<StudentEditModal
+					showModal={showModal}
+					selectedUser={selectedUser}
+					editedFirstName={editedFirstName}
+					editedLastName={editedLastName}
+					editedEmail={editedEmail}
+					editedPhone={editedPhone}
+					imagePreview={imagePreview}
+					showFullImage={showFullImage}
+					handleInputChange={handleInputChange}
+					handleEditUser={handleEditUser}
+					closeModal={closeModal}
+					setShowFullImage={setShowFullImage}
+				/>
 			)}
 		</>
 	);

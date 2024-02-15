@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import Image from "next/image";
+import React, { useState } from "react"; // Import React and useState hook from React library
+import Image from "next/image"; // Import Image component from Next.js library for displaying images
+import StaffEditModal from "./StaffEditModal"; // Import StaffEditModal component from another file
+
+// Defines an interface for a user
 interface User {
 	id: number;
 	password: string;
@@ -13,121 +16,150 @@ interface User {
 	qrCode: number;
 }
 
+// Defines an interface for the properties that the StaffList component expects to receive
 interface StaffListProps {
-	staffUsers: User[];
-	handleClick: (user: User | null) => void;
+	staffUsers: User[]; // An array of users
+	handleClick: (user: User | null) => void; // A function to handle click on user
 }
 
+// Defines a functional component StaffList that receives properties defined by StaffListProps
 const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
-	const [showModal, setShowModal] = useState(false);
-	const [selectedUser, setSelectedUser] = useState<User | null>(null);
-	const [editedUser, setEditedUser] = useState<User | null>(null);
-	const [editedFirstName, setEditedFirstName] = useState("");
-	const [editedLastName, setEditedLastName] = useState("");
-	const [editedEmail, setEditedEmail] = useState("");
-	const [editedPhone, setEditedPhone] = useState("");
-	const [editedAdmin, setEditedAdmin] = useState("false"); // Default value for admin radio button
+	// State hooks
+	const [showModal, setShowModal] = useState(false); // Shows or hides the modal for editing user
+	const [selectedUser, setSelectedUser] = useState<User | null>(null); // The user selected for editing
+	const [editedUser, setEditedUser] = useState<User | null>(null); // The user being edited
+	const [editedFirstName, setEditedFirstName] = useState(""); // The edited first name
+	const [editedLastName, setEditedLastName] = useState(""); // The edited last name
+	const [editedEmail, setEditedEmail] = useState(""); // The edited email address
+	const [editedPhone, setEditedPhone] = useState(""); // The edited phone number
+	const [editedAdmin, setEditedAdmin] = useState("false"); // The boolean value for whether the user is an admin
+	const [selectedImage, setSelectedImage] = useState<File | null>(null); // The selected image for the user
+	const [imagePreview, setImagePreview] = useState<string | null>(null); // Image preview
+	const [showFullImage, setShowFullImage] = useState(false); // Shows the full image
 
+	// Opens the editing modal for a specific user
 	const openModal = (user: User) => {
-		setSelectedUser(user);
-		setEditedUser(user);
-		setEditedFirstName(user.firstName);
-		setEditedLastName(user.lastName);
-		setEditedEmail(user.email);
-		setEditedPhone(user.phone);
-		setEditedAdmin(String(user.admin)); // Convert boolean to string for radio button
-		setShowModal(true);
+		setSelectedUser(user); // Set the selected user
+		setEditedUser(user); // Set the user being edited
+		setEditedFirstName(user.firstName); // Set the edited first name
+		setEditedLastName(user.lastName); // Set the edited last name
+		setEditedEmail(user.email); // Set the edited email
+		setEditedPhone(user.phone); // Set the edited phone number
+		setEditedAdmin(String(user.admin)); // Convert boolean value to string for radio button
+		setImagePreview(user.image); // Show image preview when the modal opens
+		setShowModal(true); // Show the modal
 	};
 
+	// Closes the modal
 	const closeModal = () => {
-		setShowModal(false);
+		setShowModal(false); // Hides the modal
 	};
 
+	// Handles editing of a user
 	const handleEditUser = () => {
 		if (editedUser) {
-			const updatedUsers = [...staffUsers];
-			const index = updatedUsers.findIndex((user) => user.id === editedUser.id);
+			const updatedUsers = [...staffUsers]; // Create a copy of the staffUsers array
+			const index = updatedUsers.findIndex((user) => user.id === editedUser.id); // Finds the index of the user being edited
 
 			if (index !== -1) {
+				// If the user is found in the array
 				updatedUsers[index] = {
-					...updatedUsers[index],
-					firstName: editedFirstName,
-					lastName: editedLastName,
-					email: editedEmail,
-					phone: editedPhone,
-					admin: editedAdmin === "true", // Convert string to boolean
+					...updatedUsers[index], // Spread the existing user properties
+					firstName: editedFirstName, // Update the first name
+					lastName: editedLastName, // Update the last name
+					email: editedEmail, // Update the email
+					phone: editedPhone, // Update the phone number
+					admin: editedAdmin === "true", // Convert the string to boolean and update the admin status
+					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one is selected
 				};
 			}
 
-			console.log("Updated user information:", updatedUsers[index]);
-			closeModal();
+			console.log("Updated user information:", updatedUsers[index]); // Log updated user information
+			closeModal(); // Close the modal
 		}
 	};
 
+	// Handles changes in the input field
 	const handleInputChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
 		field: string,
 	) => {
-		const value = event.target.value;
+		const value = event.target.value; // Get the value from the input field
 		switch (field) {
 			case "firstName":
-				setEditedFirstName(value);
+				setEditedFirstName(value); // Updates the edited first name
 				break;
 			case "lastName":
-				setEditedLastName(value);
+				setEditedLastName(value); // Updates the edited last name
 				break;
 			case "email":
-				setEditedEmail(value);
+				setEditedEmail(value); // Updates the edited email
 				break;
 			case "phone":
-				setEditedPhone(value);
+				setEditedPhone(value); // Updates the edited phone number
 				break;
 			case "admin":
-				setEditedAdmin(value);
+				setEditedAdmin(value); // Updates the edited admin status
+				break;
+			case "image":
+				// Updates the image state when a new image is selected
+				if (event.target.files?.[0]) {
+					const selected = event.target.files[0]; // Get the selected image file
+					setSelectedImage(selected); // Set the selected image file
+					const reader = new FileReader(); // Create a new FileReader object
+					reader.onload = () => {
+						if (typeof reader.result === "string") {
+							setImagePreview(reader.result); // Set the image preview with the base64 data URL
+						}
+					};
+					reader.readAsDataURL(selected); // Read the selected image as a data URL
+				}
 				break;
 			default:
 				break;
 		}
+
+		// Updates the editedUser state
 		setEditedUser((prevUser: User | null) => ({
-			...prevUser,
-			firstName: editedFirstName,
-			lastName: editedLastName,
-			email: editedEmail,
-			phone: editedPhone,
-			classroom: editedAdmin,
-			id: editedUser?.id || 0,
-			password: editedUser?.password || "",
-			image: editedUser?.image || "",
-			admin: editedUser?.admin || false,
-			qrCode: editedUser?.qrCode || 0,
+			...prevUser, // Keeps the previous user properties
+			firstName: editedFirstName, // Updates the first name with the edited value
+			lastName: editedLastName, // Updates the last name with the edited value
+			email: editedEmail, // Updates the email with the edited value
+			phone: editedPhone, // Updates the phone number with the edited value
+			classroom: editedAdmin, // Updates the classroom with the edited admin status
+			id: editedUser?.id || 0, // Assigns the user id if available, otherwise assign 0
+			password: editedUser?.password || "", // Assigns the user password if available, otherwise assign an empty string
+			admin: editedUser?.admin || false, // Assigns the user admin status if available, otherwise assign false
+			qrCode: editedUser?.qrCode || 0, // Assigns the user QR code if available, otherwise assign 0
+			image: selectedImage ? selectedImage.name : editedUser?.image || "", // Assigns the selected image name if available, otherwise assign the previous image name or an empty string
 		}));
 	};
 
+	// Renders JSX code for StaffList component
 	return (
 		<>
+			{/* Render a table with users */}
 			<thead>
 				<tr>
 					<th colSpan={4} className="text-lg font-bold px-6 py-3">
 						Staff Users:
-						{/* <hr className="mt-4" /> */}
 					</th>
 				</tr>
 			</thead>
-			<tr className="text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+			<tr className=" border-b-4 border-indigo-500 text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 				<th scope="col" className="px-6 py-3">
-					Name
+					Name {/* Name */}
 				</th>
 				<th scope="col" className="px-6 py-3">
-					Phone
+					Phone {/* Phone */}
 				</th>
 				<th scope="col" className="px-6 py-3">
-					Admin
+					Admin {/* Classroom */}
 				</th>
 				<th scope="col" className="px-6 py-3">
-					Action
+					Action {/* Action */}
 				</th>
 			</tr>
-
 			{staffUsers?.map((user) => (
 				<tbody key={user.id}>
 					<tr
@@ -141,6 +173,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 							}
 						}}
 					>
+						{/* Render user information */}
 						<th
 							scope="row"
 							className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -149,7 +182,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 								className="w-10 h-10 rounded-full"
 								width={10}
 								height={10}
-								src={`/image/${user.image}`} // Bygg upp den fullständiga sökvägen
+								src={`/image/${user.image}`}
 								alt={`${user.firstName} ${user.lastName}`}
 							/>
 							<div className="ps-3">
@@ -164,6 +197,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 							</div>
 						</td>
 						<td className="px-6 py-4">
+							{/* Button to open the editing modal */}
 							<button
 								type="button"
 								onClick={(e) => {
@@ -178,156 +212,26 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					</tr>
 				</tbody>
 			))}
+			{/* Show the editing modal if a user is selected */}
 			{selectedUser && (
-				<div
-					className={`fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 ${
-						showModal ? "" : "hidden"
-					}`}
-				>
-					<div className="bg-white p-6 md:p-8 w-full max-w-md mx-auto rounded-lg shadow-lg z-50">
-						<div className="flex items-center justify-between border-b">
-							<h2 className="text-lg font-semibold text-gray-900">
-								Edit {`${selectedUser.firstName} ${selectedUser.lastName}`}
-							</h2>
-							<button
-								type="submit"
-								onClick={closeModal}
-								className="text-gray-500 hover:text-gray-700 focus:outline-none"
-							>
-								<svg
-									className="w-6 h-6"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<title>Close</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M6 18L18 6M6 6l12 12"
-									/>
-								</svg>
-							</button>
-						</div>
-						<div className="mt-4">
-							<form>
-								<div className="mb-4">
-									<label
-										htmlFor="firstName"
-										className="block text-sm font-medium text-gray-700"
-									>
-										First Name
-									</label>
-									<input
-										type="text"
-										id="firstName"
-										className="mt-1 p-1 border rounded-md"
-										value={editedFirstName}
-										onChange={(e) => handleInputChange(e, "firstName")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="lastName"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Last Name
-									</label>
-									<input
-										type="text"
-										id="lastName"
-										className="mt-1 p-1 border rounded-md"
-										value={editedLastName}
-										onChange={(e) => handleInputChange(e, "lastName")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="email"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Email
-									</label>
-									<input
-										type="email"
-										id="email"
-										className="mt-1 p-1 border rounded-md"
-										value={editedEmail}
-										onChange={(e) => handleInputChange(e, "email")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="phone"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Phone
-									</label>
-									<input
-										type="text"
-										id="phone"
-										className="mt-1 p-1 border rounded-md"
-										value={editedPhone}
-										onChange={(e) => handleInputChange(e, "phone")}
-									/>
-								</div>
-								<div className="mb-4">
-									<label
-										htmlFor="admin"
-										className="block text-sm font-medium text-gray-700"
-									>
-										Admin
-									</label>
-									<div className="flex items-center mt-2">
-										<input
-											type="radio"
-											id="admin-yes"
-											name="admin"
-											value="true"
-											checked={editedAdmin === "true"}
-											onChange={(e) => handleInputChange(e, "admin")}
-											className="mr-1"
-										/>
-										<label htmlFor="admin-yes" className="mr-4">
-											Yes
-										</label>
-										<input
-											type="radio"
-											id="admin-no"
-											name="admin"
-											value="false"
-											checked={editedAdmin === "false"}
-											onChange={(e) => handleInputChange(e, "admin")}
-											className="mr-1"
-										/>
-										<label htmlFor="admin-no">No</label>
-									</div>
-								</div>
-							</form>
-						</div>
-						<div className="mt-6 flex justify-end">
-							<button
-								type="submit"
-								onClick={handleEditUser}
-								className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none"
-							>
-								Confirm
-							</button>
-							<button
-								type="submit"
-								onClick={closeModal}
-								className="ml-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none"
-							>
-								Cancel
-							</button>
-						</div>
-					</div>
-				</div>
+				<StaffEditModal
+					showModal={showModal}
+					selectedUser={selectedUser}
+					editedFirstName={editedFirstName}
+					editedLastName={editedLastName}
+					editedEmail={editedEmail}
+					editedPhone={editedPhone}
+					editedAdmin={editedAdmin}
+					imagePreview={imagePreview}
+					showFullImage={showFullImage}
+					handleInputChange={handleInputChange}
+					handleEditUser={handleEditUser}
+					closeModal={closeModal}
+					setShowFullImage={setShowFullImage} // Add the missing property
+				/>
 			)}
 		</>
 	);
 };
 
-export default StaffList;
+export default StaffList; // Export the StaffList component

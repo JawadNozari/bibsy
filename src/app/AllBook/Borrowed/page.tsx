@@ -7,6 +7,7 @@ const Borrowed = () => {
 		theme: "borrowed",
 		fetchLink: "registeredBooks",
 		type: "borrowedBooks",
+		lostFound: "Lost Return",
 	};
 	return (
 		<div
