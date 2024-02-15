@@ -45,7 +45,7 @@ model Book {
   publishers String?
   published  DateTime
   regDate    DateTime        @default(now())
-  isbn       Int
+  isbn       String
   invNr      Int             @unique
   price      Int
   available  Boolean         @default(true)
@@ -70,10 +70,10 @@ model borrowedBooks {
   id        Int      @id @default(autoincrement())
   regDate   DateTime @default(now())
   note      String   @db.VarChar(255)
-  bookId    Int?
+  bookId    Int
   staffId   Int?
   studentId Int?
-  Book      Book?    @relation(fields: [bookId], references: [id])
+  Book      Book     @relation(fields: [bookId], references: [id])
   Staff     Staff?   @relation(fields: [staffId], references: [id])
   Student   Student? @relation(fields: [studentId], references: [id])
 }
