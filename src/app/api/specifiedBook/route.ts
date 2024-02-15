@@ -12,7 +12,6 @@ const fetchbook = async (id: number, bookdata: Array<object>) => {
 			bookdata.push(book);
             prisma.$disconnect();
 		} else {
-            console.log("Fail");
             prisma.$disconnect();
 			return NextResponse.json(
 				{
