@@ -3,7 +3,7 @@
 
 "use client";
 import React, { useState } from "react";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import Image from "next/image";
 import { Book } from "@prisma/client";
 
@@ -22,6 +22,7 @@ interface BookData {
 		volumeInfo: VolumeInfo;
 	}[];
 }
+
 export default function Home() {
 	// variables for form fields and book data
 	const [file, setFile] = useState<File | undefined>(undefined);
@@ -36,12 +37,12 @@ export default function Home() {
 	// variables for book search result and error handling
 	const [bookData, setBookData] = useState<BookData | null>(null);
 	const [message, setMessage] = useState<string | undefined>("");
-	const [gotError, setGotError] = useState<boolean>(false);
+	const [status, setStatus] = useState<number>(0);
 
 	// Function to search for book by ISBN using Google Books API
 	const searchByIsbn = async () => {
 		try {
-			const bookinfo: AxiosResponse<BookData> = await axios.get(
+			const bookinfo = await axios.get<BookData>(
 				`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`,
 			);
 
@@ -60,80 +61,78 @@ export default function Home() {
 				setImageUrl(bookVolumeInfo.imageLinks.thumbnail || "");
 				// Set book data
 				setBookData(bookinfo.data);
-				console.log(imageUrl);
-				console.log(isbn);
 			}
 		} catch (error) {
-			setGotError(true);
+			setMessage("Error occurred while fetching book data");
 			console.error(error);
 		}
 	};
 
-	// Function to handle form submission
 	const formSubmit = async () => {
-		const formData = new FormData();
-		let imagePath = "";
-		if (file !== undefined) {
-			formData.append("file", file || undefined);
-			formData.append("path", "bookImage");
-			imagePath = await axios
-				.post("/api/uploader", formData, {
-					headers: { "Content-Type": "multipart/form-data" },
-				})
-				.then((res) => {
-					return res.data.path;
-				})
-				.catch((error: Error) => {
-					console.debug(error);
-					console.log("there is issue when getting path from uploader ");
-				});
-		}
-		if (imageUrl) {
-			const userData = { filename: isbn, url: imageUrl };
-			imagePath = await axios
-				.post("/api/fileDownloader", userData)
-				.then((res) => {
-					return res.data.path;
-				})
-				.catch((Err) => {
-					setGotError(true);
-					setMessage(Err);
-				});
-		}
-		const userData: Book = {
-			bookImg: imagePath,
-			title: title,
-			author: author,
-			publishers: publishers,
-			published: published,
-			isbn: isbn,
-			invNr: invNr,
-			price: price,
-			available: true,
-			id: 0,
-			regDate: new Date(),
-		};
+		try {
+			const formData = new FormData();
+			let imagePath = "";
 
-		// Post form data to backend
-		await axios
-			.post("/api/bookReg", userData)
-			.then((res) => {
-				setGotError(false);
-				setMessage(res.data.Message);
-			})
-			.catch((err) => {
-				setGotError(true);
-				setMessage(err.message);
-			});
+			// File upload logic (if needed)
+			// Replace 'file' with your actual file input reference
+			if (file !== undefined) {
+				formData.append("file", file);
+				formData.append("path", "bookImage");
+
+				const uploadResponse = await axios.post("/api/uploader", formData, {
+					headers: { "Content-Type": "multipart/form-data" },
+				});
+				imagePath = uploadResponse.data.path;
+			}
+
+			// Image download logic (if imageUrl is available)
+			if (imageUrl) {
+				const userData = { filename: isbn, url: imageUrl };
+				const downloadResponse = await axios.post(
+					"/api/fileDownloader",
+					userData,
+				);
+				imagePath = downloadResponse.data.path;
+			}
+
+			// Create book data object
+			const userData: Book = {
+				bookImg: imagePath,
+				title,
+				author,
+				publishers,
+				published,
+				isbn,
+				invNr,
+				price,
+				available: true,
+				id: 0,
+				regDate: new Date(),
+			};
+
+			// Post form data to backend
+			const response = await axios.post("/api/bookReg", userData);
+            setStatus(response.data.status);
+			setMessage(response.data.Message);
+
+            // if (status === 405){
+            //     setGotError(true);
+            //     setMessage("Looks like this InvNr is already Registered");
+            // }
+
+		} catch (error) {
+				setMessage("An error occurred while registering the book");
+				console.error(error);
+		}
 	};
 
-	return gotError ? (
+	return status ? (
 		// Show error message
 		<div className="flex justify-center items-center h-screen w-screen">
-			{message}
+			{/* if status is 405 (invNr already exist) it will show message here */}
+			{status === 405 && <div className="text-red-500 mt-4">{message}</div>}
 		</div>
 	) : (
-		// Render form and book details
 		<div className="flex flex-col h-100 w-100 justify-center items-center">
 			{/* ISBN input for google book api search*/}
 			<div>
@@ -154,7 +153,7 @@ export default function Home() {
 					Search
 				</button>
 			</div>
-
+			{/* Rest of your JSX */}
 			{/* Form fields */}
 			<div>
 				<label>Title</label>

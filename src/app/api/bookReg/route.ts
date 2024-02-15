@@ -39,17 +39,14 @@ export const POST = async (req: NextRequest) => {
 		.catch((error: Error) => {
 			// Handle errors
 			console.debug(error);
-			console.log("Looks like this Book is already Registered");
-			return NextResponse.json(
-				{ Message: "Looks like this Book is already Registered" },
-				{ status: 405 },
-			);
+			return {
+				Message: "Looks like this invNr is already Registered",
+				status: 405,
+			};
 		})
 		.finally(() => {
 			prisma.$disconnect();
 		});
-
-	console.log(resp);
 
 	return NextResponse.json(resp);
 };
