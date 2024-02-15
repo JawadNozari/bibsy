@@ -93,10 +93,10 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
 	const theme: { [key: string]: string } = {
-		book: " dark:bg-blue-800 focus:border-blue-800 hover:bg-blue-900",
-		available: " dark:bg-green-600 focus:border-green-600 hover:bg-green-700",
-		missing: " dark:bg-red-600 focus:border-red-600 hover:bg-red-700",
-		borrowed: " dark:bg-yellow-600 focus:border-yellow-600 hover:bg-yellow-700",
+		book: " bg-blue-800 focus:border-blue-800 hover:bg-blue-900",
+		available: " bg-green-600 focus:border-green-600 hover:bg-green-700",
+		missing: " bg-red-600 focus:border-red-600 hover:bg-red-700",
+		borrowed: " bg-yellow-600 focus:border-yellow-600 hover:bg-yellow-700",
 	};
 	// Fetching data
 	useEffect(() => {
@@ -187,17 +187,17 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 					"relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 shadow-md  size-10/12 rounded-t-xl bg-gray-800"
 				}
 			>
-				<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-300">
-					<thead className="text-xs  uppercase bg-gray-50 dark:bg-gray-700 dark:text-white sticky top-0 p-3 z-10">
+				<table className="w-full text-sm text-left rtl:text-right text-gray-300">
+					<thead className="text-xs uppercase bg-gray-700 text-white sticky top-0 p-3 z-10">
 						<tr>
 							{/* Input th */}
-							<th colSpan={5}>
+							<th colSpan={5} className="z-10">
 								{/* Input form */}
-								<form className="p-4">
+								<form className="p-4 z-10">
 									{/* Label */}
 									<label
 										htmlFor="default-search"
-										className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+										className="mb-2 text-sm font-medium text-gray-900 sr-only"
 									>
 										Search
 									</label>
@@ -205,7 +205,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 									<div className="relative">
 										<div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
 											<svg
-												className="w-4 h-4 text-gray-300 dark:text-gray-300"
+												className="w-4 h-4 text-gray-300"
 												aria-hidden="true"
 												xmlns="http://www.w3.org/2000/svg"
 												fill="none"
@@ -227,7 +227,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 											className={`${
 												// Dynamic color
 												theme[colorTheme.theme].split(" ")[2]
-											} block w-full p-4 ps-10 text-sm text-gray-900 border-gray-400 rounded-lg bg-gray-500  dark:placeholder-gray-300 dark:text-white border-2 outline-none`}
+											} block w-full p-4 ps-10 text-sm border-gray-400 rounded-lg bg-gray-500  placeholder-gray-300 text-white border-2 outline-none`}
 											// On change set searchPhrase to input value
 											onChange={() =>
 												setSearchPhrase(
@@ -241,7 +241,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 							</th>
 						</tr>
 						<tr>
-							<th scope="col" className="px-6 py-3">
+							<th scope="col" className="px-6 py-3 z-20">
 								Title
 							</th>
 							<th scope="col" className="px-6 py-3">
@@ -278,11 +278,11 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 										: true) ? (
 									<tr
 										key={book.id}
-										className={`bg-white border-b ${
+										className={`border-b ${
 											theme[colorTheme.theme]
-										} dark:border-gray-700`}
+										} border-gray-700`}
 									>
-										<td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/5 overflow-auto">
+										<td className="px-6 py-4 font-medium whitespace-nowrap text-white w-1/5 overflow-auto">
 											{books[index]?.title}
 										</td>
 										<td className="px-6 py-4">{books[index]?.author}</td>
@@ -376,7 +376,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 						onClick={() => {
 							setDropdown(!dropdown);
 						}}
-						className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm text-center inline-flex items-center justify-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-28 h-14 translate-y-5"
+						className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm text-center inline-flex items-center justify-center w-28 h-14 translate-y-5"
 						type="button"
 					>
 						Filter
@@ -386,11 +386,11 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 						className={
 							!dropdown
 								? "hidden"
-								: "z-20 bg-white p-2 rounded-lg shadow w-28 dark:bg-gray-700 translate-y-5 flex justify-around items-center"
+								: "z-2 p-2 rounded-lg shadow w-28 bg-gray-700 translate-y-5 flex justify-around items-center"
 						}
 					>
 						<input type="checkBox" name="myBooks" id="myBooks" />
-						<label htmlFor="myBooks" className="text-xs">
+						<label htmlFor="myBooks" className="text-xs text-white">
 							My books
 						</label>
 					</div>{" "}
