@@ -14,7 +14,7 @@ const prisma = new PrismaClient();
 export const POST = async (req: NextRequest) => {
 	const {userType, id, image, firstName, lastName, password, email, phone, admin, studentclass} =
 	(await req.json()) ; // We have to await the request body to get the data
-	const teacher = "lärare";
+	const teacher = "staff";
 
 	if (
 		!id ||
