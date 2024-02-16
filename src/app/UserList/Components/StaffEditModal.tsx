@@ -226,8 +226,8 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 										<Image
 											src={
 												imagePreview !== null
-													? imagePreview
-													: "/default-image.png"
+												? `/images/${imagePreview}`
+												: "/default-image.png"
 											} // Provide a default image
 											alt="Full size"
 											layout="intrinsic"
