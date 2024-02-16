@@ -1,17 +1,16 @@
 "use client";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ProtectedPage from "@/app/protectedPage/page";
 import axios from "axios";
 
-
 // Interfaces
 interface BookListProps {
-    colorTheme: {
-        theme: string;
-        fetchLink: string;
-    };
-    toggleModal: () => void; // Function to toggle modal visibility
+	colorTheme: {
+		theme: string;
+		fetchLink: string;
+	};
+	toggleModal: () => void; // Function to toggle modal visibility
 }
 interface Book {
 	id: number;
@@ -64,14 +63,13 @@ interface ThemeObject {
 	[key: string]: string;
 }
 interface ThemeColors {
-	darkBg: String;
-	lightBg: String;
-	darkFocus: String;
-	lightFocus: String;
-	darkHover: String;
-	lightHover: String;
-  }
-  
+	darkBg: string;
+	lightBg: string;
+	darkFocus: string;
+	lightFocus: string;
+	darkHover: string;
+	lightHover: string;
+}
 
 interface LinkArray {
 	links: Links[];
@@ -80,7 +78,12 @@ interface LinkArray {
 // Link object for mapping(save space)
 const linkObject: LinkArray = {
 	links: [
-		{ key: "book", name: "Book", link: "/allBook", color: " dark:bg-blue-800 bg-blue-700 " },
+		{
+			key: "book",
+			name: "Book",
+			link: "/allBook",
+			color: " dark:bg-blue-800 bg-blue-700 ",
+		},
 		{
 			key: "available",
 			name: "Available",
@@ -104,9 +107,16 @@ const linkObject: LinkArray = {
 export const hi = "hi";
 
 // Export
-export default function BookList({ colorTheme, toggleModal, bookInfoData }: { colorTheme: Theme; toggleModal: () => void; bookInfoData?: (data: BookInfo) => void}) {
-	
-	<ProtectedPage />
+export default function BookList({
+	colorTheme,
+	toggleModal,
+	bookInfoData,
+}: {
+	colorTheme: Theme;
+	toggleModal: () => void;
+	bookInfoData?: (data: BookInfo) => void;
+}) {
+	<ProtectedPage />;
 	//refresh method
 	const { refresh } = useRouter();
 
@@ -134,11 +144,11 @@ export default function BookList({ colorTheme, toggleModal, bookInfoData }: { co
 	// Dropdown state
 	const [dropdown, setDropdown] = useState(false);
 
-	const [bookInfo,setBookInfo] = useState({});
+	const [bookInfo, setBookInfo] = useState({});
 
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
-	const theme:{[key: string]: ThemeColors} ={
+	const theme: { [key: string]: ThemeColors } = {
 		book: {
 			darkBg: " dark:bg-blue-800 ",
 			lightBg: " bg-blue-700 ",
@@ -171,7 +181,6 @@ export default function BookList({ colorTheme, toggleModal, bookInfoData }: { co
 			darkHover: " dark:hover:bg-green-700 ",
 			lightHover: " hover:bg-green-500 ",
 		},
-		
 	};
 	// Fetching data
 	useEffect(() => {
@@ -304,7 +313,6 @@ export default function BookList({ colorTheme, toggleModal, bookInfoData }: { co
 												theme[colorTheme.theme].darkFocus
 											} ${
 												theme[colorTheme.theme].lightFocus
-
 											}block w-full p-4 ps-10 text-sm border-gray-400 rounded-lg bg-gray-500  placeholder-gray-300 text-white border-2 outline-none`}
 											// On change set searchPhrase to input value
 											onChange={() =>
@@ -357,7 +365,19 @@ export default function BookList({ colorTheme, toggleModal, bookInfoData }: { co
 									<tr
 										onClick={() => {
 											toggleModal();
-											bookInfoData && bookInfoData({
+											bookInfoData?.({
+												id: book.id,
+												title: book.title,
+												author: book.author,
+												published: book.published,
+												invNr: book.invNr,
+												isbn: book.isbn,
+												bookImg: book.bookImg,
+												price: book.price,
+											});
+										}}
+										onKeyDown={() => {
+											bookInfoData?.({
 												id: book.id,
 												title: book.title,
 												author: book.author,
@@ -369,23 +389,17 @@ export default function BookList({ colorTheme, toggleModal, bookInfoData }: { co
 											});
 										}}
 										key={book.id}
-										className={`border-b ${
-											theme[colorTheme.theme].lightBg
-										}
-										${
-											theme[colorTheme.theme].darkBg
-										}
-										${
-											theme[colorTheme.theme].darkHover
-										}
-										${
-											theme[colorTheme.theme].lightHover
-										} border-gray-700`}
+										className={`border-b ${theme[colorTheme.theme].lightBg}
+										${theme[colorTheme.theme].darkBg}
+										${theme[colorTheme.theme].darkHover}
+										${theme[colorTheme.theme].lightHover} border-gray-700`}
 									>
 										<td className="px-6 py-4 font-medium text-white w-1/5 overflow-auto whitespace-pre-wrap max-w-12">
 											{books[index]?.title}
 										</td>
-										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">{books[index]?.author}</td>
+										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">
+											{books[index]?.author}
+										</td>
 										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">
 											{colorTheme.theme === "missing" ||
 											colorTheme.theme === "borrowed"
@@ -497,6 +511,5 @@ export default function BookList({ colorTheme, toggleModal, bookInfoData }: { co
 				</div>
 			) : null}
 		</div>
-		
 	);
 }

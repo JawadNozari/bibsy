@@ -1,7 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import BookList from "../component/BookList";
-import { redirect } from "next/navigation";
 import StaticModal from "../component/StaticModal";
 
 // Define your component
@@ -23,14 +22,14 @@ const Missing = () => {
 		lostFound: "Found",
 	};
 
-	const [bookInfo, setBookInfo]=useState<BookInfo | null>(null);
+	const [bookInfo, setBookInfo] = useState<BookInfo | null>(null);
 	const [showModal, setShowModal] = useState(false);
 	const toggleModal = () => {
 		setShowModal(!showModal);
-	  };
-	  const recieveBookInfo = (data: BookInfo) => {
+	};
+	const recieveBookInfo = (data: BookInfo) => {
 		setBookInfo(data);
-	  };
+	};
 	return (
 		<div
 			className="size-full h-dvh bg-gray-300 dark:bg-gray-900"
@@ -38,8 +37,12 @@ const Missing = () => {
 				height: "100edvh",
 			}}
 		>
-			<BookList colorTheme={colorTheme} toggleModal={toggleModal} bookInfoData={recieveBookInfo}/>
-			<StaticModal showModal={showModal} toggleModal={toggleModal}  />
+			<BookList
+				colorTheme={colorTheme}
+				toggleModal={toggleModal}
+				bookInfoData={recieveBookInfo}
+			/>
+			<StaticModal showModal={showModal} toggleModal={toggleModal} />
 		</div>
 	);
 };

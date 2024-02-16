@@ -1,5 +1,5 @@
 "use client";
-import React,{useState} from "react";
+import React, { useState } from "react";
 import BookList from "../component/BookList";
 import StaticModal from "../component/StaticModal";
 
@@ -20,14 +20,14 @@ const Available = () => {
 		fetchLink: "availableBooks",
 		lostFound: "Borrow",
 	};
-	const [bookInfo, setBookInfo]=useState<BookInfo | null>(null);
+	const [bookInfo, setBookInfo] = useState<BookInfo | null>(null);
 	const [showModal, setShowModal] = useState(false);
 	const toggleModal = () => {
 		setShowModal(!showModal);
-	  };
-	  const recieveBookInfo = (data: BookInfo) => {
+	};
+	const recieveBookInfo = (data: BookInfo) => {
 		setBookInfo(data);
-	  };
+	};
 	return (
 		<div
 			className="size-full h-dvh bg-gray-300 dark:bg-gray-900"
@@ -35,8 +35,11 @@ const Available = () => {
 				height: "100edvh",
 			}}
 		>
-			
-			<BookList colorTheme={colorTheme} toggleModal={toggleModal} bookInfoData={recieveBookInfo}/>
+			<BookList
+				colorTheme={colorTheme}
+				toggleModal={toggleModal}
+				bookInfoData={recieveBookInfo}
+			/>
 			<StaticModal showModal={showModal} toggleModal={toggleModal} />
 		</div>
 	);

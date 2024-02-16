@@ -1,11 +1,11 @@
 "use client";
-import React,{use, useState} from "react";
+import React, { useState } from "react";
 import BookList from "./component/BookList";
 import StaticModal from "./component/StaticModal";
 
 // Define your component
 const allBook = () => {
-	  interface BookInfo {
+	interface BookInfo {
 		id: number;
 		price: number;
 		title: string;
@@ -21,26 +21,28 @@ const allBook = () => {
 		type?: string;
 		lostFound?: string;
 	}
-	const [bookInfo, setBookInfo]=useState<BookInfo | null>(null);
+	const [bookInfo, setBookInfo] = useState<BookInfo | null>(null);
 	const [showModal, setShowModal] = useState(false);
 
 	//Toggle Modal
 	const toggleModal = () => {
 		setShowModal(!showModal);
-	  };
+	};
 
-	  const recieveBookInfo = (data: BookInfo) => {
+	const recieveBookInfo = (data: BookInfo) => {
 		setBookInfo(data);
-	  };
+	};
 	const colorTheme = {
 		theme: "book",
 		fetchLink: "registeredBooks",
-	};	
+	};
 	return (
-		<div
-			className="size-full h-dvh bg-gray-300 dark:bg-gray-900"
-		>
-			<BookList colorTheme={colorTheme as Theme} toggleModal={toggleModal} bookInfoData={recieveBookInfo}/>
+		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
+			<BookList
+				colorTheme={colorTheme as Theme}
+				toggleModal={toggleModal}
+				bookInfoData={recieveBookInfo}
+			/>
 			<StaticModal showModal={showModal} toggleModal={toggleModal} />
 		</div>
 	);
