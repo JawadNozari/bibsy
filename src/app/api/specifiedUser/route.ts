@@ -3,11 +3,11 @@ import { NextResponse, NextRequest } from "next/server";
 
 const prisma = new PrismaClient();
 
-const fetchUser = async (id: number, userType: string) => {
+const fetchUser = async (qrCode: string, userType: string) => {
 	try {
 			const user = await (prisma as any)[userType]
 				.findUnique({
-					where: { id: id },
+					where: { qrCode: qrCode },
 				});
 				return user;
 	} catch {
@@ -24,9 +24,9 @@ const fetchUser = async (id: number, userType: string) => {
 };
 export const POST = async (req: NextRequest) => {
 	try {
-		const { id, type } = await req.json();
-        const userType = type === "staffuser" ? "staff" : "student";
-		const userdata = await fetchUser(id, userType);
+		const { qrCode } = await req.json();
+        const userType = qrCode.slice(-5) === "staff" ? "staff" : "student";
+		const userdata = await fetchUser(qrCode, userType);
 		return NextResponse.json(userdata);
 	} catch (error) {
 		// If there is an error, return the error
