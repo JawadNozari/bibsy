@@ -1,22 +1,50 @@
-import React from "react";
-import BookList from "./Component/BookList";
+"use client";
+import React,{use, useState} from "react";
+import BookList from "./component/BookList";
+import StaticModal from "./component/StaticModal";
+
 // Define your component
-const Book = () => {
+const allBook = () => {
+	  interface BookInfo {
+		id: number;
+		price: number;
+		title: string;
+		author: string;
+		published: string;
+		invNr: number;
+		isbn: string;
+		bookImg: string;
+	}
+	interface Theme {
+		theme: string;
+		fetchLink: string;
+		type?: string;
+		lostFound?: string;
+	}
+	const [bookInfo, setBookInfo]=useState<BookInfo | null>(null);
+	const [showModal, setShowModal] = useState(false);
+
+	//Toggle Modal
+	const toggleModal = () => {
+		setShowModal(!showModal);
+	  };
+
+	  const recieveBookInfo = (data: BookInfo) => {
+		setBookInfo(data);
+	  };
 	const colorTheme = {
 		theme: "book",
 		fetchLink: "registeredBooks",
-	};
+	};	
 	return (
 		<div
-			className="size-full"
-			style={{
-				height: "100edvh",
-			}}
+			className="size-full h-dvh bg-gray-300 dark:bg-gray-900"
 		>
-			<BookList colorTheme={colorTheme} />
+			<BookList colorTheme={colorTheme as Theme} toggleModal={toggleModal} bookInfoData={recieveBookInfo}/>
+			<StaticModal showModal={showModal} toggleModal={toggleModal} />
 		</div>
 	);
 };
 
 // Export your component
-export default Book;
+export default allBook;
