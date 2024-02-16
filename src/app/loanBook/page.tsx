@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import axios from "axios";
 import Profile from "../../../public/img/img.jpg";
+// import Navgation from "../Navigation/page";
 
 interface User {
 	id: number;
@@ -47,6 +48,7 @@ export default function LoanBook() {
 	const userClickedRef = useRef(false); // Add this ref
 	const [invNr, setInvNr] = useState("");
 	const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+	
 
 	// * Fetch users from the API
 	useEffect(() => {
@@ -89,18 +91,6 @@ export default function LoanBook() {
 
 		fetchData();
 	}, []);
-	// []
-
-	//* Am gonna use it later
-	// const getCurrentUserId = () => {
-	// 	const token  = localStorage.getItem("token");
-
-	// 	if (token) {
-	// 		const payload = JSON.parse(atob(token.split(".")[1]));
-	// 		return payload.id;
-	// 	}
-	// 	return null;
-	// };
 
 	// * Handle search input change
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,6 +114,19 @@ export default function LoanBook() {
 		setSelectedBook(book || null);
 	};
 
+	//* Add this function to get the current user's ID from the token
+	// const getCurrentUserId = () => {
+	// 	const token = localStorage.getItem("token");
+  
+	// 	if (token) {
+	// 		const payload = JSON.parse(atob(token.split(".")[1]));
+	// 		// return payload.Value;
+	// 		return Number(payload.Value); // Convert the user ID to a number
+
+	// 	}
+	// 	return null;
+  	// };
+
 	// * Filter users based on search query
 	const filterUsers = (users: User[]) => {
 		// * If there is no search query, return all users
@@ -133,29 +136,26 @@ export default function LoanBook() {
 
 		// * Normalize search query and user names for case-insensitive search
 		const normalizedQuery = searchQuery.toLowerCase();
-
-		//** Am gonna use it for later
 		// const currentUserId = getCurrentUserId();
+		
 		return users.filter((user) => {
 			const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
 			return fullName.includes(normalizedQuery);
+
 		});
+
+		// return users.filter((user) => {
+		// 	const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+		// 	const isStudent = user.type === 'student';
+		// 	const isStaff = user.type === 'staff' && user.id === currentUserId;
+
+		// 	return fullName.includes(normalizedQuery) && (isStudent || isStaff);
+		// });
 	};
 
-	// * Filter users and staff based of who is logged in
-	// const filterUsers = (users: User[]) => {
-	// 	// If there is no search query, return all users
-	// 	if (!searchQuery) {
-	// 	  return users;
-	// 	}
 
-	// 	// Normalize search query and user names for case-insensitive search
-	// 	const normalizedQuery = searchQuery.toLowerCase();
-	// 	return users.filter((user) => {
-	// 	  const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-	// 	  return fullName.includes(normalizedQuery) && (user.type === 'student' || (user.type === 'staff' && user.id === currentUserId));
-	// 	});
-	// };
+	
+	
 
 	//* Handle user click event
 	const handleUserClick = (user: User) => {
@@ -201,14 +201,14 @@ export default function LoanBook() {
 
 	// * Render the page
 	return (
-		<main className="flex w-screen h-screen justify-center items-center bg-neutral-50 text-black">
-			<div className="flex justify-between ">
+		<main className="flex w-screen h-screen justify-center items-center bg-neutral-100 text-black dark:bg-gray-800">
+			<div className="flex justify-between  ">
 				{selectedUser && (
-					<div className="w-96 rounded card-normal mr-20 h-auto shadow-md">
+					<div className="w-96 rounded card-normal mr-20 h-auto shadow-md  bg-gray-800 text-neutral-50 dark:bg-neutral-50 dark:text-gray-500 " >
 						<div className=" text-center">
 							<button
 								type="button"
-								className="btn m-3 btn-wide btn-active btn-neutral"
+								className="btn m-3 btn-wide btn-active btn-neutral bg-neutral-50 text-gray-500 dark:bg-gray-700 dark:text-white"
 								onClick={() => setSelectedUser(null)}
 							>
 								Close
@@ -235,21 +235,21 @@ export default function LoanBook() {
 					</div>
 				)}
 
-				<div className=" flex justify-center  items-center w-96 h-[27rem] mx-auto   bg-neutral-200 rounded-md drop-shadow-2xl">
+				<div className=" flex justify-center  items-center w-96 h-[27rem] mx-auto dark:bg-neutral-50  bg-gray-800  rounded-lg drop-shadow-2xl">
 					<form
 						onSubmit={handleSubmit}
 						className="flex flex-col w-64"
 						autoComplete="off"
 					>
-						<div className="flex justify-center mb-10 items-center m-3 border">
-							<h1 className="text-4xl font-bold text-center">Loan Book</h1>
+						<div className="flex justify-center mb-10 items-center m-3 ">
+							<h1 className="text-4xl font-bold text-center text-neutral-50 dark:text-gray-700">Loan Book</h1>
 						</div>
 
 						<div>
 							<div className="flex flex-col w-full  max-w-md">
 								<label
 									htmlFor="Users"
-									className="mb-2  w-64 text-lg text-center font-medium"
+									className="mb-2  w-64 text-lg text-center font-semibold text-neutral-50 dark:text-gray-700 "
 								>
 									Member
 								</label>
@@ -261,7 +261,7 @@ export default function LoanBook() {
 									onFocus={() => setShowList(true)}
 									onBlur={handleFocusOut}
 									placeholder="Search User..."
-									className="rounded-md  input  bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									className="rounded-md  input font-medium bg-neutral-50  text-gray-700 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 								/>
 
 								<div>
@@ -326,7 +326,7 @@ export default function LoanBook() {
 						<div className="mt-5 ">
 							<label
 								htmlFor="invNr"
-								className="block mb-2 text-lg font-medium text-gray-900 text-center"
+								className="block mb-2 text-lg font-semibold text-gray-50 text-center dark:text-gray-700"
 							>
 								invNr
 							</label>
@@ -338,23 +338,30 @@ export default function LoanBook() {
 									placeholder="Enter InvNR..."
 									value={invNr}
 									onChange={handleinvNrChange}
-									className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									className="input bg-neutral-50  text-gray-700  font-medium text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 								/>
-								<i className="fa-solid fa-barcode ">
+								{/* <i className="fa-solid fa-barcode ">
 									<button
 										className=" rounded-r-lg bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 										type="button"
 									>
 										code
 									</button>
-								</i>
+								</i> */}
 							</div>
 						</div>
 
 						<div className="mt-10 mb-10 justify-center flex">
 							<button
+    							type="button"
+    							onClick={() => window.history.back()}
+   								className="btn block m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700 btn-active btn-neutral"
+ 							>
+  							 	Go Back
+ 							</button>
+							<button
 								type="submit"
-								className="btn block   m-3  dark:bg-gray-700  btn-active btn-neutral"
+								className="btn block   m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700  btn-active btn-neutral"
 							>
 								Loan
 							</button>
