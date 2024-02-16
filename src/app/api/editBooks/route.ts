@@ -22,10 +22,6 @@ export const POST = async (req: NextRequest) => {
 	const request: incomingData = await req.json();
 	const {bookImg ,id ,author  ,title  ,publishers  ,published  ,isbn  ,invNr  ,price } = (request as incomingData);
 
-
-	console.log("Hello");
-	console.log(bookImg);
-
 	// Checks if any variable is null and gives a response
 	if (
 		!id ||
