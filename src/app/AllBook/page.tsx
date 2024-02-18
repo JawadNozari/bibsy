@@ -43,7 +43,24 @@ const allBook = () => {
 				toggleModal={toggleModal}
 				bookInfoData={recieveBookInfo}
 			/>
-			<StaticModal showModal={showModal} toggleModal={toggleModal} />
+			<StaticModal
+				showModal={showModal}
+				toggleModal={toggleModal}
+				bookInfo={
+					bookInfo !== null
+						? bookInfo
+						: {
+								id: 0,
+								price: 0,
+								title: "",
+								author: "",
+								published: "",
+								invNr: 0,
+								isbn: "",
+								bookImg: "",
+						  }
+				}
+			/>
 		</div>
 	);
 };

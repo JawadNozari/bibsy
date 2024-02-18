@@ -407,7 +407,7 @@ export default function BookList({
 												  ${books[index]?.regDate.split("T")[1].split(".")[0]}`
 												: books[index]?.published.split("T")[0]}
 										</td>
-										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">{`${books[index]?.price} Kr`}</td>
+										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">{`${books[index]?.price};-`}</td>
 										{/*Ternary if available adds link to borrow else if book add corresponding availability else, add buttuns for post */}
 										<td className="px-6 py-4 flex justify-center items-center w-full h-full">
 											{colorTheme.theme === "available" ? (
