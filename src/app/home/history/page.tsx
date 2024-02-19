@@ -2,32 +2,16 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Staff, Student } from "@prisma/client";
-
-type Book = {
-    note: string;
-    staffId: number;
-    studentId: number;
-    bookId: number;
-    id: number;
-    title: string;
-    author: string;
-    isbn: string;
-    published: string;
-    regDate: string;
-    available: boolean;
-    borrowedBy: string;
-    bookImage: string;
-    invNr: string;
-};
+import { Staff, Student, Book, bookHistory } from "@prisma/client";
 
 const Page = () => {
     const router = useRouter();
-    const [history, setHistory] = React.useState<Book[]>([]);
+    const [history, setHistory] = React.useState<bookHistory[]>([]);
     const [books, setBooks] = React.useState<Book[]>([]);
-    const [students, setStudents] = React.useState<Array<[]>>([]);
-    const [staff, setStaff] = React.useState<Array<[]>>([]);
+    const [students, setStudents] = React.useState<Student[]>([]);
+    const [staff, setStaff] = React.useState<Staff[]>([]);
 
+    //* Gets all of the books and sets the state for each type of book (registered, history) and all of the users
     React.useEffect(() => {
         const getHistory = async () => {
             const response = await axios("/api/getHistory");
@@ -42,6 +26,50 @@ const Page = () => {
         };
         getHistory();
     }, []);
+
+    //* Returns the JSX for the page with the history of borrowed books and buttons to navigate to different pages
+    const runThroughBooks = () => {
+        return (history ? history.map((book) => {
+            return books.map((registeredBook) => {
+                if (book.bookId === registeredBook.id) {
+                    return (
+                        // biome-ignore lint/a11y/useKeyWithClickEvents: <Comment was needed to disable a biome error because its a false positive that used outdated code>
+                        <tr
+                            className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
+                            key={book.id}
+                            onClick={() =>
+                                router.push(`/home/bookDetails/${registeredBook.invNr}`)
+                            }
+                            tabIndex={0}
+                        >
+                            <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                            >{`${registeredBook.title}`}</th>
+                            <td className="px-6 py-4">{registeredBook.author}</td>
+                            <td className="px-6 py-4">{`${(book.regDate).toString().split("T")[0]
+                                } ${(book.regDate).toString().split("T")[1].split(".")[0]}`}</td>
+                            {/* //* Runs through the users to fetch their names */}
+                            <td className="px-6 py-4">{
+                                staff.map((staffMember) => {
+                                    if (staffMember.id === book.staffId) {
+                                        return `${staffMember.firstName} ${staffMember.lastName} | ID: ${staffMember.id}`;
+                                    }
+                                })
+                            }</td>
+                            <td className="px-6 py-4">{
+                                students.map((student) => {
+                                    if (student.id === book.studentId) {
+                                        return `${student.firstName} ${student.lastName} | ID: ${student.id}`;
+                                    }
+                                })
+                            }</td>
+                        </tr>
+                    );
+                }
+            });
+        }) : "");
+    };
 
     return (
         <div className="flex min-h-screen flex-col items-center justify-between  p-24 bg-neutral-50">
@@ -70,45 +98,7 @@ const Page = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {history ? history.map((book) => {
-                            return books.map((registeredBook) => {
-                                if (book.bookId === registeredBook.id) {
-                                    return (
-                                        <tr
-                                            className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
-                                            key={book.id}
-                                            onClick={() =>
-                                                router.push(`/home/bookDetails/${registeredBook.invNr}`)
-                                            }
-                                            onKeyPress={() => ("")} /* THIS IS DEPRICATED BUT BIOME WANTS IT!!!! */
-                                            tabIndex={0}
-                                        >
-                                            <th
-                                                scope="row"
-                                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                                            >{`${registeredBook.title}`}</th>
-                                            <td className="px-6 py-4">{registeredBook.author}</td>
-                                            <td className="px-6 py-4">{`${book.regDate.split("T")[0]
-                                                } ${book.regDate.split("T")[1].split(".")[0]}`}</td>
-                                            <td className="px-6 py-4">{
-                                                staff.map((staffMember: Staff) => {
-                                                    if (staffMember.id === book.staffId) {
-                                                        return `${staffMember.firstName} ${staffMember.lastName} | ID: ${staffMember.id}`;
-                                                    }
-                                                })
-                                            }</td>
-                                            <td className="px-6 py-4">{
-                                                students.map((student: Student) => {
-                                                    if (student.id === book.studentId) {
-                                                        return `${student.firstName} ${student.lastName} | ID: ${student.id}`;
-                                                    }
-                                                })
-                                            }</td>
-                                        </tr>
-                                    );
-                                }
-                            });
-                        }) : ""}
+                        {runThroughBooks()}
                     </tbody>
                 </table>
             </div>

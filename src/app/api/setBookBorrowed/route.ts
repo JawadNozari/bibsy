@@ -1,143 +1,88 @@
-//TODO: This code needs cleanup
 import { PrismaClient } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 /* export const GET = async () => {
 	return NextResponse.json({ message: "Hello World" });
 }; */
 
+// Declare Prisma Client
 const prisma = new PrismaClient();
 
-
-export const GET = async () => {
-	console.log("Here");
-	const userInvNr = 12318989;
-	const selectedUser = { userType: "studentUser", id: 1 };
-	const currentStaff = { id: 1 };
-};
-
-export const POST = async (req:NextRequest) => {
-	console.log("Grape");
-	
+export const POST = async (req: NextRequest) => {
+	// Extract data from the request
 	const data = await req.json();
-	console.log(data);
 	const userInvNr = parseInt(data.invNr);
-	console.log(userInvNr);
+	const selectedUserType = data.user.admin ? "staffUser" : "studentUser";
 
-	const selectedUser = { userType: "", id: data.user.id };
+	// Get current staff member
+	const currentStaffId = 1; // Hardcoded for now
+	//! MAX FIX THIS!!!!
+	// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
+	let staff;
 
-	if(Object.hasOwn(data, "admin")) {
-		selectedUser.userType = "staffUser";
-	} else {
-		selectedUser.userType = "studentUser";
+	try {
+		staff = await prisma.staff.findUnique({
+			where: { id: currentStaffId },
+		});
+	} catch (error) {
+		return NextResponse.json(
+			{ message: "Error locating staff member", error },
+			{ status: 500 },
+		);
 	}
 
-	const currentStaff = { id: 3 };
+	try {
+		// Update the book to be unavailable
+		const updatedBook = await prisma.book.update({
+			where: { invNr: userInvNr },
+			data: { available: false },
+		});
 
+		// Create a new borrowedBooks entry
+		const loanOut = await prisma.borrowedBooks.create({
+			data: {
+				bookId: updatedBook.id,
+				staffId: currentStaffId,
+				studentId:
+					selectedUserType === "studentUser" ? data.user.id : undefined,
+				note: `${staff?.firstName} ${staff?.lastName} has successfully loaned out a book.`,
+			},
+		});
 
-	// if the teacher is borrowing a book for self.
-	if (selectedUser.userType === "staffUser") {
-		try {
-			const updateBook = await prisma.book.update({
-				where: {
-					invNr: userInvNr,
-				},
-				data: {
-					available: false,
-				},
-			});
-			const loanOut = await prisma.borrowedBooks.create({
-				data: {
-					bookId: updateBook.id,
-					studentId: null,
-					note: "Borrowed by staff for self",
-					staffId: currentStaff.id,
-				},
-			});
-			const userUpdate = await prisma.staff.update({
-				where: {
-					id: currentStaff.id,
-				},
-				data: {
-					borrowed: {
-						connect: {
-							id: loanOut.id,
-						},
-					},
-				},
-			});
-			const historyUpdate = await prisma.bookHistory.create({
-				data: {
-					Book: {
-						connect: {
-							id: updateBook.id,
-						},
-					},
-					Staff: {
-						connect: {
-							id: currentStaff.id,
-						},
-					},
-				},
-			});
-			return NextResponse.json({ historyUpdate, userUpdate, loanOut });
-		} catch (error) {
-			console.log(error);
-			return NextResponse.json({ message: error });
-		}
-	} else if (selectedUser.userType === "studentUser") {
-		try {
-			const updateBook = await prisma.book.update({
-				where: {
-					invNr: userInvNr,
-				},
-				data: {
-					available: false,
-				},
-			});
-			const loanOut = await prisma.borrowedBooks.create({
-				data: {
-					bookId: updateBook.id,
-					studentId: selectedUser.id,
-					note: "Borrowed by student NEW",
-					staffId: currentStaff.id,
-				},
-			});
-			const userUpdate = await prisma.student.update({
-				where: {
-					id: selectedUser.id,
-				},
-				data: {
-					borrowed: {
-						connect: {
-							id: loanOut.id,
-						},
-					},
-				},
-			});
-			const historyUpdate = await prisma.bookHistory.create({
-				data: {
-					Book: {
-						connect: {
-							id: updateBook.id,
-						},
-					},
-					Staff: {
-						connect: {
-							id: currentStaff.id,
-						},
-					},
-					Student: {
-						connect: {
-							id: selectedUser.id,
-						},
-					},
-				},
-			});
-			return NextResponse.json({ historyUpdate, userUpdate, loanOut });
-		} catch (error) {
-			console.log(error);
-			return NextResponse.json({ message: error });
-		}
+		// Update the user (staff or student) to have the borrowed book
+		const connectField = selectedUserType === "staffUser" ? "staff" : "student";
+		//! MAX FIX THIS!!!!
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		await (prisma as any)[connectField].update({
+			where: { id: data.user.id },
+			data: { borrowed: { connect: { id: loanOut.id } } },
+		});
+
+		// Create a new bookHistory entry
+		await prisma.bookHistory.create({
+			data: {
+				Book: { connect: { id: updatedBook.id } },
+				Staff: { connect: { id: currentStaffId } },
+				...(selectedUserType === "studentUser" && {
+					Student: { connect: { id: data.user.id } },
+				}),
+			},
+		});
+
+		// Return success response
+		return NextResponse.json({
+			message: `Successfully loaned out a book to ${
+				selectedUserType === "studentUser" ? "student" : "staff"
+			} ${data.user.firstName} ${data.user.lastName}.`,
+		});
+	} catch (error) {
+		console.error("Error:", error);
+		return NextResponse.json(
+			{ message: "Internal server error", error },
+			{ status: 500 },
+		);
+	} finally {
+		// Disconnect from the database
+		await prisma.$disconnect();
 	}
 };

@@ -1,42 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
-import { writeFile, mkdir } from "fs/promises";
-import { PrismaClient } from "@prisma/client";
 
-export const GET = async () => {
-	return NextResponse.json({ message: "Hello World" });
-};
+import { PrismaClient, Book } from "@prisma/client";
 
 const prisma = new PrismaClient();
+type incomingData = Book & { file: File | undefined };
 
 export const POST = async (req: NextRequest) => {
-	const formData = await req.formData();
-	const file = formData.get("file");
+	// Get form data from the request
+	const request: incomingData = await req.json();
+	if (!request)
+		return NextResponse.json({ message: "Invalid request" }, { status: 400 });
+	const { bookImg, title, publishers, author, published, isbn, invNr, price } =
+		request as incomingData;
 
-	if (!file) {
-		return NextResponse.json({ error: "No files received." }, { status: 400 });
-	}
-
-	const buffer = Buffer.from(await (file as File).arrayBuffer());
-	const filename = (file as File).name.replaceAll(" ", "_");
-
-	const title = formData.get("title") as string;
-	const author = formData.get("author") as string;
-	const publishers = formData.get("publishers") as string;
-	const published = new Date(formData.get("published") as unknown as string);
-	const isbn = Number(formData.get("isbn"));
-	const invNr = Number(formData.get("invNr"));
-	const price = Number(formData.get("price"));
-	const uploadDirectory = path.join(process.cwd(), "public/UploadedImage");
-
-	// Create the directory if it doesn't exist
-	await mkdir(uploadDirectory, { recursive: true });
-	await writeFile(path.join(uploadDirectory, filename), buffer);
-	// Save file and form data to the database using Prisma
+	// Save file and form data to the database
 	const resp = await prisma.book
 		.create({
 			data: {
-				bookImg: `UploadedImage/${filename}`,
+				bookImg: bookImg,
 				title,
 				author,
 				publishers,
@@ -47,18 +28,25 @@ export const POST = async (req: NextRequest) => {
 			},
 		})
 		.then((book) => {
+			// Disconnect Prisma client after successful creation
 			prisma.$disconnect();
 			return {
-				Message: `${filename} and form data saved successfully`,
+				Message: "Form data saved successfully",
 				status: 201,
 				book,
 			};
 		})
-		.catch((error: unknown) => {
-			return { Message: error, status: 500 };
+		.catch((error: Error) => {
+			// Handle errors
+			console.debug(error);
+			return {
+				Message: "Looks like this invNr is already Registered",
+				status: 405,
+			};
 		})
 		.finally(() => {
 			prisma.$disconnect();
 		});
+
 	return NextResponse.json(resp);
 };

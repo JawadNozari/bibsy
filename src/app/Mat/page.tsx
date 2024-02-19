@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import Image from "next/image";
 export default function Page() {
 	const [currentLunch, setCurrentLunch] = useState<string | null>(null);
 	const [currentVegetarian, setCurrentVegetarian] = useState<string | null>(
@@ -9,6 +9,8 @@ export default function Page() {
 	);
 	const [closingTime, setClosingTime] = useState<Date | null>(null);
 	const [currentTime, setCurrentTime] = useState<string>("");
+	
+	// eslint-disable-next-line no-unused-vars
 	const [lunchTime, setLunchTime] = useState<string | null>(null);
 	const [closingIn, setClosingIn] = useState<string | JSX.Element>(
 		"Currently closed",
@@ -92,17 +94,20 @@ export default function Page() {
 					</div>
 
 					<div className="flex flex-row place-content-center items-end h-1/4 gap-2 pb-6">
-						<img className="w-8" src="./icons/timer.png" alt="timer icon" />
+						<Image className="w-8" src="./icons/timer.png" alt="timer icon" />
 						<h4 className="text-xl">Closing in:</h4>
 						<h3 className="text-xl">{closingIn}</h3>
 					</div>
 				</div>
 				<div className="flex flex-col rounded-lg shadow-lg h-3/4 bg-white text-violet-500 w-3/5 items-center">
 					<div className="flex flex-col items-center h-1/4 gap-10 pt-8 ">
-						<img
+						<Image
 							className="w-1/2"
 							src="./icons/nti_logo.png"
 							alt="Nti gymnasiet logo"
+							width={200}
+							height={200}
+
 						/>
 						<h2 className="text-3xl -mt-1">Last Check In</h2>
 					</div>
@@ -115,7 +120,7 @@ export default function Page() {
 						</div>
 					</div>
 					<div className="flex flex-row h-1/4 text-xl gap-2 items-end pb-6">
-						<img
+						<Image
 							className="w-8"
 							src="./icons/checkmark.png"
 							alt="checkmark icon"

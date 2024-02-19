@@ -7,28 +7,84 @@ import { Book } from "@prisma/client";
 const Page = () => {
 	const router = useRouter();
 	const [books, setBooks] = React.useState([]);
+
+	//* Get all registered books
 	React.useEffect(() => {
 		const getBooks = async () => {
 			try {
 				const response = await axios.get("/api/registeredBooks");
 				setBooks(response.data.books);
 			} catch (err) {
-				console.log(err);
+				console.error(err);
 			}
 		};
 		getBooks();
 	}, []);
 
+	//* Handle search for books by title
 	const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const bookTitle = (event.currentTarget[0] as HTMLInputElement).value;
-		console.log(bookTitle);
 		const response = await axios.post("/api/searchForBooks", {
 			bookTitle,
 			listType: "allbooks",
 		});
 		setBooks(response.data.books);
 	};
+
+	//* Set the book to deleted (Temp function)
+	const temp = async (e: React.MouseEvent<HTMLButtonElement>, bookId: number) => {
+		e.preventDefault();
+		await axios.post("/api/setBookDeleted", {
+			bookId,
+			listType: "registered",
+		});
+	};
+
+	//* Run through all books and render them in a table
+	const runThroughBooks = () => {
+		return (
+			books.map((book: Book) => {
+				return (
+					// biome-ignore lint/a11y/useKeyWithClickEvents: <Biome wanted to use depricated code so error is here to stop that>
+					<tr
+						className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
+						key={book.invNr}
+						onClick={() => router.push(`/home/bookDetails/${book.invNr}`)}
+						style={{ zIndex: 1 }}
+					>
+						<th
+							scope="row"
+							className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+						>{`${book.title}`}</th>
+						<td className="px-6 py-4">{`${book.author}`}</td>
+						<td className="px-6 py-4">{`${book.publishers}`}</td>
+						<td className="px-6 py-4">{`${book.isbn}`}</td>
+						<td className="px-6 py-4">{`${`${(book.regDate).toString().split("T")[0]
+							} ${(book.regDate).toString().split("T")[1].split(".")[0]}`}`}</td>
+						<td className="px-6 py-4">{`${(book.published).toString().split("T")[0]
+							}`}</td>
+						{book.available ? (
+							<td className="px-6 py-4" style={{ backgroundColor: "lightgreen", color: "black" }}>Yes</td>
+						) : (
+							<td className="px-6 py-4" style={{ backgroundColor: "tomato", color: "black" }}>No</td>
+						)}
+						<td className="px-6 py-4">
+							<button
+								type="button"
+								onClick={(e) => temp(e, book.id)}
+								className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+								style={{ zIndex: 2 }}
+							>
+								DELETE
+							</button>
+						</td>
+					</tr>
+				);
+			})
+		);
+	};
+
 	return (
 		<div className="flex min-h-screen flex-col items-center justify-between  p-24 bg-neutral-50">
 			<div className=" overflow-x-auto shadow-md sm:rounded-lg overflow-scroll w-4/5 h-[38rem] dark:bg-gray-600">
@@ -72,33 +128,7 @@ const Page = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{books.map((book: Book) => {
-							return (
-								// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
-								<tr
-									className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
-									key={book.invNr}
-									onClick={() => router.push(`/home/bookDetails/${book.invNr}`)}
-								>
-									<th
-										scope="row"
-										className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-									>{`${book.title}`}</th>
-									<td className="px-6 py-4">{`${book.author}`}</td>
-									<td className="px-6 py-4">{`${book.publishers}`}</td>
-									<td className="px-6 py-4">{`${book.isbn}`}</td>
-									<td className="px-6 py-4">{`${`${book.regDate.split("T")[0]
-										} ${book.regDate.split("T")[1].split(".")[0]}`}`}</td>
-									<td className="px-6 py-4">{`${book.published.split("T")[0]
-										}`}</td>
-									{book.available ? (
-										<td className="px-6 py-4" style={{ backgroundColor: "lightgreen", color: "black" }}>Yes</td>
-									) : (
-										<td className="px-6 py-4" style={{ backgroundColor: "tomato", color: "black" }}>No</td>
-									)}
-								</tr>
-							);
-						})}
+						{runThroughBooks()}
 					</tbody>
 				</table>
 			</div>
