@@ -9,18 +9,12 @@ export const GET = async () => {
 };
 
 const prisma = new PrismaClient();
-type incomingData = Student & { file: File | undefined };
 
 // Handler function for handling student registration
 export const POST = async (req: NextRequest) => {
 	// Get the student data from the request body
-	const request: incomingData = await req.json();
-	if (!request)
-		return NextResponse.json({ message: "Invalid request" }, { status: 400 });
 	const { password, firstName, lastName, email, phone, image, classroom, qrCode } =
-		request as incomingData;
-	// We have to await the request body to get the data
-	
+		(await req.json()) as Student; // We have to await the request body to get the data
 
 	return await prisma.student
 		.create({
@@ -30,10 +24,10 @@ export const POST = async (req: NextRequest) => {
 				lastName,
 				email,
 				phone,
-				image: image,
+				image,
 				classroom,
-				qrCode, // Add the qrCode property with a default value
-			} as incomingData,
+				qrCode,
+			} as Student,
 		})
 		.then((student) => {
 			return NextResponse.json(student, { status: 201 });

@@ -2,14 +2,13 @@
 import { useState } from "react";
 import axios from "axios";
 import bcrypt from "bcryptjs";
-import ProtectedPage from "../protectedPage/page";
 
 export default function Page() {
 	const [password, setPassword] = useState("");
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [phone, setPhone] = useState("");
-	const [email, setEmail] = useState("@elev.ntig.se");
+	const [email] = useState("@elev.ntig.se");
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [classroom, setClassroom] = useState("");
 
@@ -103,3 +102,4 @@ export default function Page() {
 		</form>
 	);
 };
+

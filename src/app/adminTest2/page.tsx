@@ -8,7 +8,7 @@ export default function Page() {
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [phone, setPhone] = useState("");
-	const [email, setEmail] = useState("@ntig.se");
+	const [email] = useState("@ntig.se");
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [admin, setAdmin] = useState(false);
 	const [role] = useState("Staff");
