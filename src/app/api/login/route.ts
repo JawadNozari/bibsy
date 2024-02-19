@@ -1,10 +1,10 @@
 import { PrismaClient, Staff, Student } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+
 
 const prisma = new PrismaClient();
-
-//TODO: 1. Implement 'remember me' feature
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -25,34 +25,22 @@ export const POST = async (req: NextRequest) => {
     return prisma.staff.findFirst({
       where: {
         AND: [
-          { email: userInfo.username },
-          { password: userInfo.password },
+          { email: userInfo.username }
         ]
       }
     }).then((staffUser: Staff | null) => {
 
-      // * Staff (non-admin)
-      if (staffUser && body.remember) { // Remember me
+      // * Staff
+      if (staffUser) {
+        // * Compare hashed password with stored hashed password
+        const passwordMatch = bcrypt.compareSync(userInfo.password, staffUser.password);
 
-        const token = jwt.sign({ user: staffUser, role: "Staff" }, secretKey, { expiresIn: "7d" });
-        return new NextResponse(JSON.stringify({ token }), { status: 200 });
-
-      } if (staffUser && !body.remember) { // Do not remember me
-
-        const token = jwt.sign({ user: staffUser, role: "Staff" }, secretKey);
-        return new NextResponse(JSON.stringify({ token }), { status: 200 });
-
-        // * Staff (admin)
-      } if (staffUser && staffUser.admin === true && body.remember) { // Remember me
-
-        const token = jwt.sign({ user: staffUser, role: "Admin" }, secretKey, { expiresIn: "7d" });
-        return new NextResponse(JSON.stringify({ token }), { status: 200 });
-
-      } if (staffUser?.admin && !body.remember) { // Do not remember me
-
-        const token = jwt.sign({ user: staffUser, role: "Admin" }, secretKey);
-        return new NextResponse(JSON.stringify({ token }), { status: 200 });
-
+        if (passwordMatch) {
+          // * Passwords match, proceed with generating the token
+          const role = staffUser.admin ? "Admin" : "Staff";
+          const token = jwt.sign({ user: staffUser, role }, secretKey, body.remember ? { expiresIn: "7d" } : { expiresIn: "1d"});
+          return new NextResponse(JSON.stringify({ token }), { status: 200 });
+        }
       }
 
         // * If not found in staff, check in student * //
@@ -63,24 +51,23 @@ export const POST = async (req: NextRequest) => {
         return prisma.student.findFirst({
           where: {
             AND: [
-              { email: userInfo.username },
-              { password: userInfo.password }
+              { email: userInfo.username }
             ]
           }
         }).then((studentUser: Student | null) => {
 
           // * Student
-          if (studentUser && body.remember) { // Remember me
-
-            const token = jwt.sign({ user: studentUser, role: "Student" }, secretKey, { expiresIn: "7d" });
-            return new NextResponse(JSON.stringify({ token }), { status: 200 });
-
-          } if (studentUser && !body.remember) { // Do not remember me
-
-            const token = jwt.sign({ user: studentUser, role: "Student" }, secretKey);
-            return new NextResponse(JSON.stringify({ token }), { status: 200 });
-
+          if (studentUser) {
+            // * Compare hashed password with stored hashed password
+            const passwordMatch = bcrypt.compareSync(userInfo.password, studentUser.password);
+  
+            if (passwordMatch) {
+              // * Passwords match, generate the token
+              const token = jwt.sign({ user: studentUser, role: "Student" }, secretKey, body.remember ? { expiresIn: "7d" } : { expiresIn: "1d" });
+              return new NextResponse(JSON.stringify({ token }), { status: 200 });
+            }
           }
+
             return new NextResponse(JSON.stringify({ error: "Invalid username or password" }), { status: 401 });
         });
     }).catch((error: Error) => {
@@ -91,8 +78,4 @@ export const POST = async (req: NextRequest) => {
   } catch (error) {
     return new NextResponse(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
   }
-};
-
-export const GET = async () => {
-
 };
