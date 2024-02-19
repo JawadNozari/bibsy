@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Staff } from "@prisma/client";
 import { NextResponse, NextRequest } from "next/server";
 
 /* export const GET = async () => {
@@ -16,9 +16,7 @@ export const POST = async (req: NextRequest) => {
 
 	// Get current staff member
 	const currentStaffId = 1; // Hardcoded for now
-	//! MAX FIX THIS!!!!
-	// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
-	let staff;
+	let staff: Staff | null = null;
 
 	try {
 		staff = await prisma.staff.findUnique({
