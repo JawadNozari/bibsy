@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import BookList from "../component/BookList";
 import { redirect } from "next/navigation";

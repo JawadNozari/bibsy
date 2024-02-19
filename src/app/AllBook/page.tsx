@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import BookList from "./component/BookList";
 import StaticModal from "./component/StaticModal";
-import Navigation from "../Navigation/page";
+import Navigation from "../components/navigation";
 import { redirect } from "next/navigation";
 
 // Define your component

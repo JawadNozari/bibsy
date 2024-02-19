@@ -1,3 +1,6 @@
+//! FIX UNUSED VARS
+/* eslint-disable no-unused-vars */
+
 "use client";
 import React, { useState, useEffect } from "react";
 import { redirect, useRouter } from "next/navigation";

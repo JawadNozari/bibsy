@@ -1,4 +1,4 @@
-import { Book, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async () => {
@@ -6,7 +6,6 @@ export const GET = async () => {
 };
 
 const prisma = new PrismaClient();
-type incomingData = Book & { bookImg: File | undefined };
 export const POST = async (req: NextRequest) => {
 	const data = await req.json();
 	if (data === undefined) {
@@ -15,7 +14,7 @@ export const POST = async (req: NextRequest) => {
 			{ status: 400 },
 		);
 	}
-	const { id, title, author, publisher, invNr, price, image, isbn } = data;
+	const { id, title, author, publisher, invNr, price, image, isbn, published } = data;
 
 	if (
 		!id ||
@@ -24,7 +23,7 @@ export const POST = async (req: NextRequest) => {
 		!publisher ||
 		!invNr ||
 		!price ||
-		!bookImg ||
+		!image ||
 		!isbn ||
 		!published
 	) {

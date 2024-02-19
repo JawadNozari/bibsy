@@ -1,3 +1,6 @@
+//! FIX UNUSED VARS
+/* eslint-disable no-unused-vars */
+
 import React, { useState } from "react";
 import Image from "next/image";
 import StudentEditModal from "./StudentEditModal";

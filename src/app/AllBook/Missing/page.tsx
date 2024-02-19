@@ -1,11 +1,10 @@
-import React,{useState, useEffect} from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import BookList from "../component/BookList";
 import ProtectedPage from "../../protectedPage/page";
 import Navigation from "../../components/navigation";
 import { redirect } from "next/navigation";
 import StaticModal from "../component/StaticModal";
-
-
 
 // Define your component
 const Missing = () => {

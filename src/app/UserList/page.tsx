@@ -8,7 +8,7 @@ import StaticModal from "./component/StaticModal"; // Import the StaticModal com
 import axios from "axios";
 import "../globals.css";
 import { useSpring, animated } from "react-spring"; // Import react-spring library
-import Navigation from "../Navigation/page";
+import Navigation from "../components/navigation"; // Import the Navigation component
 
 // Define interfaces for User and ApiResponse
 interface User {
@@ -87,7 +87,7 @@ export default function Home() {
 			<div>
 				<Navigation />
 			</div>
-			<div className ="flex items-center h-screen justify-around w-full">
+			<div className="flex items-center h-screen justify-around w-full">
 				{showUserDetails && (
 					// Conditionally show user details based on state
 					<animated.div
@@ -226,7 +226,7 @@ export default function Home() {
 							/>
 						</div>
 					</div>
-					<div >
+					<div>
 						<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
 							{apiData && (
 								// Conditionally render user list based on API data
