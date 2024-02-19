@@ -59,7 +59,7 @@ export const POST = async (req: NextRequest) => {
           // * Student
           if (studentUser) {
             // * Compare hashed password with stored hashed password
-            const passwordMatch = bcrypt.compareSync(userInfo.password, studentUser.password);
+            const passwordMatch = bcrypt.compareSync(userInfo?.password, studentUser.password);
   
             if (passwordMatch) {
               // * Passwords match, generate the token
