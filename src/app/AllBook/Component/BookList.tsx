@@ -184,6 +184,18 @@ export default function BookList({
 			lightHover: " hover:bg-green-500 ",
 		},
 	};
+
+	//* Gets logged in user type
+	const [userType, setUserType] = React.useState();
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (token) {
+			const decodedToken = JSON.parse(atob(token.split(".")[1]));
+			console.log(decodedToken);
+			setUserType(decodedToken.role);
+		}
+	});
+
 	// Fetching data
 	useEffect(() => {
 		fetch(`/api/${colorTheme.fetchLink}`)

@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import BookList from "./component/BookList";
 import StaticModal from "./component/StaticModal";
+import Navigation from "../Navigation/page";
 
 // Define your component
 const allBook = () => {
@@ -38,6 +39,7 @@ const allBook = () => {
 	};
 	return (
 		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
+			<Navigation />
 			<BookList
 				colorTheme={colorTheme as Theme}
 				toggleModal={toggleModal}

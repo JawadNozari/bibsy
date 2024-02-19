@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import BookList from "../component/BookList";
 import StaticModal from "../component/StaticModal";
+import Navigation from "../../Navigation/page";
 
 // Define your component
 const Available = () => {
@@ -35,6 +36,9 @@ const Available = () => {
 				height: "100edvh",
 			}}
 		>
+			<div className="z-50 w-full">
+				<Navigation />
+			</div>
 			<BookList
 				colorTheme={colorTheme}
 				toggleModal={toggleModal}
