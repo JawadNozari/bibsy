@@ -12,6 +12,7 @@ const allBook = () => {
 		title: string;
 		author: string;
 		published: string;
+		publishers: string;
 		invNr: number;
 		isbn: string;
 		bookImg: string;
@@ -57,6 +58,7 @@ const allBook = () => {
 								title: "",
 								author: "",
 								published: "",
+								publishers: "",
 								invNr: 0,
 								isbn: "",
 								bookImg: "",

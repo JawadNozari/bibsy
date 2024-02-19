@@ -12,6 +12,7 @@ const Borrowed = () => {
 		title: string;
 		author: string;
 		published: string;
+		publishers: string;
 		invNr: number;
 		isbn: string;
 		bookImg: string;
@@ -31,12 +32,7 @@ const Borrowed = () => {
 		setBookInfo(data);
 	};
 	return (
-		<div
-			className="size-full h-dvh bg-gray-300 dark:bg-gray-900"
-			style={{
-				height: "100edvh",
-			}}
-		>
+		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
 			<Navigation />
 			<BookList
 				colorTheme={colorTheme}
@@ -55,6 +51,7 @@ const Borrowed = () => {
 								title: "",
 								author: "",
 								published: "",
+								publishers: "",
 								invNr: 0,
 								isbn: "",
 								bookImg: "",

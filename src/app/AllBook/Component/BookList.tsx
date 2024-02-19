@@ -12,6 +12,20 @@ interface BookListProps {
 	};
 	toggleModal: () => void; // Function to toggle modal visibility
 }
+interface UserToken {
+	iat: number;
+	role: string;
+	user: {
+		admin: boolean;
+		email: string;
+		firstName: string;
+		id: number;
+		lastName: string;
+		password: string;
+		phone: string;
+		qrCode: string;
+	};
+}
 interface Book {
 	id: number;
 	price: number;
@@ -49,6 +63,7 @@ interface Links {
 	name: string;
 	link: string;
 	color: string;
+	token: string;
 }
 interface Theme {
 	theme: string;
@@ -83,31 +98,33 @@ const linkObject: LinkArray = {
 		{
 			key: "book",
 			name: "Book",
-			link: "/allBook",
+			link: "/AllBook",
 			color: " dark:bg-blue-800 bg-blue-700 ",
+			token: "Student",
 		},
 		{
 			key: "available",
 			name: "Available",
-			link: "/allBook/available",
+			link: "/AllBook/Available",
 			color: " dark:bg-green-600 bg-green-500 ",
+			token: "Student",
 		},
 		{
 			key: "missing",
 			name: "Missing",
-			link: "/allBook/missing",
+			link: "/AllBook/Missing",
 			color: " dark:bg-red-600 bg-red-500 ",
+			token: "Staff",
 		},
 		{
 			key: "borrowed",
 			name: "Borrowed",
-			link: "/allBook/borrowed",
+			link: "/AllBook/Borrowed",
 			color: " dark:bg-yellow-600 bg-yellow-500 ",
+			token: "Staff",
 		},
 	],
 };
-export const hi = "hi";
-
 // Export
 export default function BookList({
 	colorTheme,
@@ -141,12 +158,10 @@ export default function BookList({
 	const lostFound = colorTheme.lostFound;
 	// searchphrase to be compered to
 	const [searchPhrase, setSearchPhrase] = useState("");
-	// User cookie
-	const [userCookie, setUserCookie] = useState();
+	// Filter id
+	const [filterState, setFilterState] = useState(false);
 	// Dropdown state
 	const [dropdown, setDropdown] = useState(false);
-
-	const [bookInfo, setBookInfo] = useState({});
 
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
@@ -186,15 +201,17 @@ export default function BookList({
 	};
 
 	//* Gets logged in user type
-	const [userType, setUserType] = React.useState();
+	const [userType, setUserType] = useState<UserToken>();
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (token) {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
 			console.log(decodedToken);
-			setUserType(decodedToken.role);
+			setUserType(decodedToken);
+		} else {
+			console.log("no token");
 		}
-	});
+	}, []);
 
 	// Fetching data
 	useEffect(() => {
@@ -254,6 +271,7 @@ export default function BookList({
 		});
 		console.log(response.data);
 	};
+	console.log(bookState);
 	return (
 		// TableTemplate edited
 		<div className="size-9/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap">
@@ -264,15 +282,17 @@ export default function BookList({
 					{linkObject?.links
 						.slice(0)
 						.reverse()
-						.map((link: Links) => (
-							<a
-								key={link.key}
-								href={link.link}
-								className={`h-4/5 transform hover:scale-100 scale-95 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 transition-colors rounded-t-3xl border-gray-600 dark:border-gray-700 border-b-0`}
-							>
-								{link.name}
-							</a>
-						))}
+						.map((link: Links) =>
+							userType?.role === link.token || userType?.role === "Staff" ? (
+								<a
+									key={link.key}
+									href={link.link}
+									className={`h-4/5 transform hover:scale-100 scale-95 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 transition-colors rounded-t-3xl border-gray-600 dark:border-gray-700 border-b-0`}
+								>
+									{link.name}
+								</a>
+							) : null,
+						)}
 					{/* spaceDiv */}
 					{colorTheme.theme === "missing" || colorTheme.theme === "borrowed" ? (
 						<div className="size-1/12" />
@@ -373,8 +393,8 @@ export default function BookList({
 									book.title
 										.toLowerCase()
 										.includes(searchPhrase.toLowerCase()) &&
-									(userCookie && state.bookId
-										? userCookie === state.studentId
+									(filterState && state.bookId
+										? userType?.user.id === state.staffId
 										: true) ? (
 									<tr
 										onClick={() => {
@@ -519,7 +539,12 @@ export default function BookList({
 								: "z-2 p-2 rounded-lg shadow w-28 bg-gray-600 dark:bg-gray-700 translate-y-5 flex justify-around items-center"
 						}
 					>
-						<input type="checkBox" name="myBooks" id="myBooks" />
+						<input
+							type="checkBox"
+							name="myBooks"
+							id="myBooks"
+							onClick={() => setFilterState(!filterState)}
+						/>
 						<label htmlFor="myBooks" className="text-xs text-white">
 							My books
 						</label>

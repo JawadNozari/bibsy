@@ -12,6 +12,7 @@ const Available = () => {
 		title: string;
 		author: string;
 		published: string;
+		publishers: string;
 		invNr: number;
 		isbn: string;
 		bookImg: string;
@@ -30,12 +31,7 @@ const Available = () => {
 		setBookInfo(data);
 	};
 	return (
-		<div
-			className="size-full h-dvh bg-gray-300 dark:bg-gray-900"
-			style={{
-				height: "100edvh",
-			}}
-		>
+		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
 			<div className="z-50 w-full">
 				<Navigation />
 			</div>
@@ -56,6 +52,7 @@ const Available = () => {
 								title: "",
 								author: "",
 								published: "",
+								publishers: "",
 								invNr: 0,
 								isbn: "",
 								bookImg: "",
