@@ -147,6 +147,8 @@ export default function BookList({
 	const [filterState, setFilterState] = useState(false);
 	// Dropdown state
 	const [dropdown, setDropdown] = useState(false);
+	//Cookie
+	const [userType, setUserType] = useState<UserToken>();
 
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
@@ -186,7 +188,6 @@ export default function BookList({
 	};
 
 	//* Gets logged in user type
-	const [userType, setUserType] = useState<UserToken>();
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (token) {
@@ -328,6 +329,7 @@ export default function BookList({
 										<input
 											type="search"
 											id="default-search"
+											autoComplete="off"
 											className={`${
 												// Dynamic color
 												theme[colorTheme.theme].darkFocus

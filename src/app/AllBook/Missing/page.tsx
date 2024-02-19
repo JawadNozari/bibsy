@@ -1,11 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BookList from "../component/BookList";
 import StaticModal from "../component/StaticModal";
 import Navigation from "../../Navigation/page";
+import { redirect } from "next/navigation";
+import ProtectedPage from "../../protectedPage/page";
 
 // Define your component
 const Missing = () => {
+	<ProtectedPage />;
 	interface BookInfo {
 		id: number;
 		price: number;
@@ -32,8 +35,19 @@ const Missing = () => {
 	const recieveBookInfo = (data: BookInfo) => {
 		setBookInfo(data);
 	};
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (token) {
+			const decodedToken = JSON.parse(atob(token.split(".")[1]));
+			console.log(decodedToken);
+			decodedToken.role !== "Staff" ? redirect("/login") : null;
+		} else {
+			redirect("/login");
+		}
+	}, []);
 	return (
 		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
+			<ProtectedPage />
 			<Navigation />
 
 			<BookList
