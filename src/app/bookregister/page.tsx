@@ -112,17 +112,16 @@ export default function Home() {
 
 			// Post form data to backend
 			const response = await axios.post("/api/bookReg", userData);
-            setStatus(response.data.status);
+			setStatus(response.data.status);
 			setMessage(response.data.Message);
 
-            // if (status === 405){
-            //     setGotError(true);
-            //     setMessage("Looks like this InvNr is already Registered");
-            // }
-
+			// if (status === 405){
+			//     setGotError(true);
+			//     setMessage("Looks like this InvNr is already Registered");
+			// }
 		} catch (error) {
-				setMessage("An error occurred while registering the book");
-				console.error(error);
+			setMessage("An error occurred while registering the book");
+			console.error(error);
 		}
 	};
 
@@ -238,6 +237,9 @@ export default function Home() {
 					Submit
 				</button>
 			</div>
+
+			{/* Display book saved  message */}
+			{message && <div>{message}</div>}
 
 			{/* Display available book details */}
 			{bookData?.items?.[0] && (
