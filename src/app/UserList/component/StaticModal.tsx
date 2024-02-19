@@ -35,13 +35,13 @@ const StaticModal: React.FC<StaticModalProps> = ({
     <>
       {/* Modal overlay */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 ">
           {/* Modal content */}
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+          <div className="bg-white  dark:bg-gray-800 rounded-lg shadow-lg p-8 max-w-md w-full">
             {/* Modal header */}
             <div className="flex items-center justify-between mb-4">
               <h3>NTI</h3>
-              <h3 className="text-xl font-semibold text-gray-900">School Card</h3>
+              <h3 className="text-xl font-semibold text-gray-300">School Card</h3>
               <button type="button" onClick={toggleModal} className="flex justify-self-end text-gray-500 hover:text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <title>Close</title>
@@ -50,7 +50,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
               </button>
             </div>
             {/* Modal body */}
-            <div className="flex justify-center" ref={elementRef}>
+            <div className="  dark:bg-gray-800 flex justify-center" ref={elementRef}>
               <div
                 className="p-8 bg-white shadow-lg rounded-lg"
                 style={{
