@@ -35,12 +35,12 @@ export default function Home() {
 					<td className="px-6 py-4">{student.phone}</td>
 					<td className="px-6 py-4">
 						<div className="flex items-center">
-							<div className="h-4 w-0.5"></div> {student.class}
+							<div className="h-4 w-0.5"> {student.class}</div>
 						</div>
 					</td>
 					<td className="px-6 py-4">
 						<a
-							href="#"
+							href="/"
 							className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
 						>
 							Edit user
