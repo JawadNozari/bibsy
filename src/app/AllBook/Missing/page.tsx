@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import BookList from "../component/BookList";
 import StaticModal from "../component/StaticModal";
+import Navigation from "../../Navigation/page";
 
 // Define your component
 const Missing = () => {
@@ -37,12 +38,17 @@ const Missing = () => {
 				height: "100edvh",
 			}}
 		>
+			<Navigation />
+
 			<BookList
 				colorTheme={colorTheme}
 				toggleModal={toggleModal}
 				bookInfoData={recieveBookInfo}
 			/>
-			<StaticModal showModal={showModal} toggleModal={toggleModal} bookInfo={
+			<StaticModal
+				showModal={showModal}
+				toggleModal={toggleModal}
+				bookInfo={
 					bookInfo !== null
 						? bookInfo
 						: {
@@ -55,7 +61,8 @@ const Missing = () => {
 								isbn: "",
 								bookImg: "",
 						  }
-				} />
+				}
+			/>
 		</div>
 	);
 };

@@ -1,7 +1,8 @@
 "use client";
-import React,{useState} from "react";
+import React, { useState } from "react";
 import BookList from "../component/BookList";
 import StaticModal from "../component/StaticModal";
+import Navigation from "../../Navigation/page";
 
 // Define your component
 const Borrowed = () => {
@@ -22,23 +23,30 @@ const Borrowed = () => {
 		lostFound: "Lost Return",
 	};
 	const [showModal, setShowModal] = useState(false);
-	const [bookInfo, setBookInfo]=useState<BookInfo | null>(null);
+	const [bookInfo, setBookInfo] = useState<BookInfo | null>(null);
 	const toggleModal = () => {
 		setShowModal(!showModal);
-	  };
-	  const recieveBookInfo = (data: BookInfo) => {
+	};
+	const recieveBookInfo = (data: BookInfo) => {
 		setBookInfo(data);
-	  };
+	};
 	return (
-		
 		<div
 			className="size-full h-dvh bg-gray-300 dark:bg-gray-900"
 			style={{
 				height: "100edvh",
 			}}
 		>
-			<BookList colorTheme={colorTheme} toggleModal={toggleModal} bookInfoData={recieveBookInfo}/>
-			<StaticModal showModal={showModal} toggleModal={toggleModal} bookInfo={
+			<Navigation />
+			<BookList
+				colorTheme={colorTheme}
+				toggleModal={toggleModal}
+				bookInfoData={recieveBookInfo}
+			/>
+			<StaticModal
+				showModal={showModal}
+				toggleModal={toggleModal}
+				bookInfo={
 					bookInfo !== null
 						? bookInfo
 						: {
@@ -51,7 +59,8 @@ const Borrowed = () => {
 								isbn: "",
 								bookImg: "",
 						  }
-				}/>
+				}
+			/>
 		</div>
 	);
 };
