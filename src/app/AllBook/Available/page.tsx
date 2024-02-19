@@ -1,11 +1,26 @@
 "use client";
-import React, { useState } from "react";
-import BookList from "../component/BookList";
+import React, { useState, useEffect } from "react";
+import BookList from "./component/BookList";
+import Navigation from "../../components/navigation";
 import StaticModal from "../component/StaticModal";
-import Navigation from "../../Navigation/page";
+import { redirect } from "next/navigation";
 
 // Define your component
 const Available = () => {
+	interface UserToken {
+		iat: number;
+		role: string;
+		user: {
+			admin: boolean;
+			email: string;
+			firstName: string;
+			id: number;
+			lastName: string;
+			password: string;
+			phone: string;
+			qrCode: string;
+		};
+	}
 	interface BookInfo {
 		id: number;
 		price: number;
@@ -24,6 +39,18 @@ const Available = () => {
 	};
 	const [bookInfo, setBookInfo] = useState<BookInfo | null>(null);
 	const [showModal, setShowModal] = useState(false);
+	const [userInfo, setUserInfo] = useState<UserToken | null>(null);
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (token) {
+			const decodedToken = JSON.parse(atob(token.split(".")[1]));
+			console.log(decodedToken);
+			setUserInfo(decodedToken);
+		} else {
+			console.log("no token");
+			redirect("/login");
+		}
+	}, []);
 	const toggleModal = () => {
 		setShowModal(!showModal);
 	};
@@ -56,6 +83,24 @@ const Available = () => {
 								invNr: 0,
 								isbn: "",
 								bookImg: "",
+						  }
+				}
+				userInfo={
+					userInfo !== null
+						? userInfo
+						: {
+								iat: 0,
+								role: "none",
+								user: {
+									admin: false,
+									email: "none",
+									firstName: "none",
+									id: -20,
+									lastName: "none",
+									password: "none",
+									phone: "none",
+									qrCode: "none",
+								},
 						  }
 				}
 			/>

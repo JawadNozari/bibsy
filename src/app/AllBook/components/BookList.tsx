@@ -118,6 +118,7 @@ export default function BookList({
 }: {
 	colorTheme: Theme;
 	toggleModal: () => void;
+
 	bookInfoData?: (data: BookInfo) => void;
 }) {
 	<ProtectedPage />;
@@ -365,10 +366,7 @@ export default function BookList({
 								Price
 							</th>
 
-							<th
-								scope="col"
-								className="px-6 py-3 flex justify-center items-center w-full h-full"
-							>
+							<th scope="col" className="px-6 py-3">
 								{colorTheme.theme !== "book" ? "Action" : "Availability"}
 							</th>
 						</tr>

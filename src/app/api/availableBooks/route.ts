@@ -3,14 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 export const GET = async () => {
+	//* If request is GET runs this that gets all of the registered books that are available from the DB and sends them all back to the client
 	return await prisma.book
 		.findMany({
 			where: {
 				available: true,
 			},
 		})
-		.then((books: { id: number; bookImg: string; title: string | null; author: string | null; publishers: string | null; published: Date; regDate: Date; isbn: number; invNr: number; price: number; available: boolean; }[]) => {
-			// Sorts book by largest id
+		.then((books: Book[]) => {
+			//* Sorts book by largest id
 			books.sort((a: Book, b: Book) => {
 				return b.id - a.id;
 			});
@@ -28,6 +29,7 @@ export const POST = async (req: NextRequest) => {
 	const request = await req.json();
 	const title = request.bookTitle;
 
+	//* Finds the books where the title matches the requested
 	return await prisma.book
 		.findMany({
 			where: {
@@ -38,8 +40,8 @@ export const POST = async (req: NextRequest) => {
 				}
 			},
 		})
-		.then((books: { id: number; bookImg: string; title: string | null; author: string | null; publishers: string | null; published: Date; regDate: Date; isbn: number; invNr: number; price: number; available: boolean; }[]) => {
-			// Sorts book by largest id
+		.then((books: Book[]) => {
+			//* Sorts book by largest id
 			books.sort((a: Book, b: Book) => {
 				return b.id - a.id;
 			});
