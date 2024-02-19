@@ -5,11 +5,10 @@ const prisma = new PrismaClient();
 
 const fetchUser = async (qrCode: string, userType: string) => {
 	try {
-			const user = await (prisma as any)[userType]
-				.findUnique({
-					where: { qrCode: qrCode },
-				});
-				return user;
+		const user = await (prisma as any)[userType].findUnique({
+			where: { qrCode: qrCode },
+		});
+		return user;
 	} catch {
 		// Extra error checking
 		console.debug(Error);
@@ -25,7 +24,7 @@ const fetchUser = async (qrCode: string, userType: string) => {
 export const POST = async (req: NextRequest) => {
 	try {
 		const { qrCode } = await req.json();
-        const userType = qrCode.slice(-5) === "staff" ? "staff" : "student";
+		const userType = qrCode.slice(-5) === "staff" ? "staff" : "student";
 		const userdata = await fetchUser(qrCode, userType);
 		return NextResponse.json(userdata);
 	} catch (error) {
