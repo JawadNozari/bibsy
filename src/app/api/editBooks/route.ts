@@ -14,17 +14,12 @@ export const GET = async () => {
 //* Main function for uppdateing book data in the database
 const prisma = new PrismaClient();
 type incomingData = Book & { bookImg: File | undefined };
-console.log("Tetet");
 export const POST = async (req: NextRequest) => {
 	
 
 	// Setting upp variables for the data from the post
 	const request: incomingData = await req.json();
 	const {bookImg ,id ,author  ,title  ,publishers  ,published  ,isbn  ,invNr  ,price } = (request as incomingData);
-
-
-	console.log("Hello");
-	console.log(bookImg);
 
 	// Checks if any variable is null and gives a response
 	if (
@@ -46,34 +41,36 @@ export const POST = async (req: NextRequest) => {
 		);
 	}
 	//* Prisma function to uppdate the user
-	return await prisma.book
-		.update({
-			where: { id: id },
-			data: {
-				title: title,
-				author: author,
-				publishers: publishers,
-				published: published,
-				invNr: invNr,
-				price: price,
-				isbn: isbn,
-				bookImg: `UploadedImage/${bookImg}`,
-			},
-		}) // gives a satus 200 response
-		.then((edit) => {
-			return NextResponse.json(edit, { status: 200 });
-		}) // Error handling
-		.catch((error:Error) => {
-			console.debug(error);
-			return NextResponse.json(
-				{
-					message:
-						"Validation Error. This can be cuased becuase of mallformed Data (Check Data Type)",
+	try {
+
+		return await prisma.book
+			.update({
+				where: { id: id },
+				data: {
+					title: title,
+					author: author,
+					publishers: publishers,
+					published: new Date(published),
+					invNr: invNr,
+					price: price,
+					isbn: isbn,
+					bookImg: `UploadedImage/${bookImg}`,
 				},
-				{ status: 500 },
-			);
-		}) // Closes the prisma session
-		.finally(() => {
-			prisma.$disconnect();
-		});
+			});
+	}
+	catch{
+		// Extra error checking
+		console.error(Error);
+		return NextResponse.json(
+			{
+				message:
+					"Type Error. This can be caused because of malformed Data (Check Data Type)",
+			},
+			{ status: 500 },
+		);
+	}
+	finally{
+		prisma.$disconnect();
+		return NextResponse.json({ status: 200 });
+	}
 };

@@ -1,9 +1,13 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
-
+//! Change the name of the function to have a large first letter, and use it as the component name
+//! PLEASE USE BIOME AND YARN LINT!!!!!!!!!!!!!
 export default function page() {
+	//! Remove this comment when the error is gone
+	const router = useRouter();
 	// Phone menu
 
 	// const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +31,12 @@ export default function page() {
 	// 		document.removeEventListener("mousedown", handleClickOutside);
 	// 	};
 	// }, []);
+
+	const logOutUser = (event: React.MouseEvent<HTMLElement>) => {
+		event.preventDefault();
+		localStorage.removeItem("token");
+		router.push("/login");
+	};
 
 	return (
 		//Phone menu
@@ -166,7 +176,11 @@ export default function page() {
 			</div>
 
 			<div className="flex justify-end flex-col h-full w-14 gap-8 items-center mb-6">
-				<div className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-[240px] group-hover:ml-[200px]">
+				{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+				<div
+					className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-[240px] group-hover:ml-[200px]"
+					onClick={(e) => { logOutUser(e); }}
+				>
 					<Image
 						className="w-10"
 						src="/Navbar_img/LogoutRoundedLeft.png"
