@@ -36,7 +36,7 @@ export const POST = async (req: NextRequest) => {
 			.update({
 				where: { id: Number(id) },
 				data: {
-					image: `UploadedImage/${image}`,
+					image: image,
 					firstName: firstName,
 					lastName: lastName,
 					password: password,
