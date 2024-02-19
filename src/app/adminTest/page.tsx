@@ -9,7 +9,7 @@ export default function Page() {
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [phone, setPhone] = useState("");
-	const [email, setEmail] = useState("");
+	const [email, setEmail] = useState("@elev.ntig.se");
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [classroom, setClassroom] = useState("");
 
@@ -39,7 +39,7 @@ export default function Page() {
 			password: hashedPassword,
 			firstName: firstName,
 			lastName: lastName,
-			email: email,
+			email: `${firstName}.${lastName}${email}`,
 			phone: phone,
 			image: imagePath.slice(7),
 			classroom: classroom,
@@ -97,14 +97,6 @@ export default function Page() {
 					placeholder="Class"
 					name="classroom"
 					id="classroom"
-				/>
-				<input
-					type="text"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					placeholder="email"
-					name="email"
-					id="email"
 				/>
 			</div>
 			<button type="submit">Register</button>

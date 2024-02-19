@@ -8,7 +8,7 @@ export default function Page() {
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [phone, setPhone] = useState("");
-	const [email, setEmail] = useState("");
+	const [email, setEmail] = useState("@ntig.se");
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [admin, setAdmin] = useState(false);
 	const [role] = useState("Staff");
@@ -39,7 +39,7 @@ export default function Page() {
 			password: hashedPassword,
 			firstName: firstName,
 			lastName: lastName,
-			email: email,
+			email: `${firstName}.${lastName}${email}`,
 			phone: phone,
 			image: imagePath.slice(7),
 			admin: Boolean(admin),
@@ -96,14 +96,6 @@ export default function Page() {
 					placeholder="admin"
 					name="admin"
 					id="admin"
-				/>
-				<input
-					type="text"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					placeholder="email"
-					name="email"
-					id="email"
 				/>
 			</div>
 			<button type="submit">Register</button>
