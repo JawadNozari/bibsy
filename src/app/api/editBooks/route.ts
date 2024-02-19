@@ -20,7 +20,6 @@ export const POST = async (req: NextRequest) => {
 	// Setting upp variables for the data from the post
 	const request: incomingData = await req.json();
 	const {bookImg ,id ,author  ,title  ,publishers  ,published  ,isbn  ,invNr  ,price } = (request as incomingData);
-
 	// Checks if any variable is null and gives a response
 	if (
 		!id ||
@@ -54,7 +53,7 @@ export const POST = async (req: NextRequest) => {
 					invNr: invNr,
 					price: price,
 					isbn: isbn,
-					bookImg: `UploadedImage/${bookImg}`,
+					bookImg: bookImg.slice(7),
 				},
 			});
 	}

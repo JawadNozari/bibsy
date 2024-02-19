@@ -14,7 +14,6 @@ const prisma = new PrismaClient();
 export const POST = async (req: NextRequest) => {
 	const {userType, id, image, firstName, lastName, password, email, phone, admin, studentclass} =
 	(await req.json()) ; // We have to await the request body to get the data
-	const teacher = "staff";
 
 	if (
 		!id ||
@@ -44,7 +43,7 @@ export const POST = async (req: NextRequest) => {
 					email: email,
 					phone: phone, 
 					...(userType === "staff" && {admin: Boolean(admin)}),
-					...(userType === "staff" && {qrCode: firstName + lastName + teacher}),
+					...(userType === "staff" && {qrCode: firstName + lastName + userType}),
 					...(userType === "student" && {classroom: studentclass}),
 					...(userType === "student" && {qrCode: firstName + lastName + studentclass}),
 				},
