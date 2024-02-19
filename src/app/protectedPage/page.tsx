@@ -47,7 +47,7 @@ const ProtectedPage = () => {
     const [encodedHeader, encodedPayload, signature] = codedToken.split(".");
 
     // * Create a string to verify: header + '.' + payload
-    const stringToVerify = encodedHeader + "." + encodedPayload;
+    const stringToVerify = `${encodedHeader}.${encodedPayload}`;
 
     // * Decode the signature from base64
     const decodedSignature = Buffer.from(signature, "base64");
@@ -58,6 +58,7 @@ const ProtectedPage = () => {
                       .update(stringToVerify)
                       .digest("base64");
 
+
     //* If no token found, redirect to login page
     if (!exists) {
       router.push("/login");
@@ -65,7 +66,7 @@ const ProtectedPage = () => {
       //* Authorization for user roles begin here
     } else if (token.role === "Student" && pathname !== "/") { // Only allow access to main page if student
       router.push("/");
-    } else if (token.role === "Staff" && token.user.admin == false && pathname === "/adminTest") { // Go back if not admin
+    } else if (token.role === "Staff" && token.user.admin === false && pathname === "/adminTest") { // Go back if not admin
       router.back();
     } else if (hash !== decodedSignature.toString("base64")) { // Not valid token
       router.push("/login");
@@ -73,7 +74,7 @@ const ProtectedPage = () => {
 
     }
 
-  }, [router, pathname]);
+  }, [router, pathname, secretKey]);
 
 
   return (
