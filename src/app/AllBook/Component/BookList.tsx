@@ -1,17 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import ProtectedPage from "@/app/protectedPage/page";
 import axios from "axios";
 
 // Interfaces
-interface BookListProps {
-	colorTheme: {
-		theme: string;
-		fetchLink: string;
-	};
-	toggleModal: () => void; // Function to toggle modal visibility
-}
 interface UserToken {
 	iat: number;
 	role: string;
@@ -70,14 +63,6 @@ interface Theme {
 	fetchLink: string;
 	type?: string;
 	lostFound?: string;
-}
-
-/**
- * Represents a theme object.
- * @interface ThemeObject
- */
-interface ThemeObject {
-	[key: string]: string;
 }
 interface ThemeColors {
 	darkBg: string;
@@ -210,6 +195,7 @@ export default function BookList({
 			setUserType(decodedToken);
 		} else {
 			console.log("no token");
+			redirect("/login");
 		}
 	}, []);
 
@@ -387,7 +373,7 @@ export default function BookList({
 					</thead>
 					<tbody>
 						{/* Map of fetched data which prints out table-row */}
-						{bookState?.map((state, index) =>
+						{bookState?.map((state) =>
 							books?.map((book, index) => {
 								return (state.bookId === book.id || !colorTheme.type) &&
 									book.title
@@ -445,7 +431,7 @@ export default function BookList({
 										</td>
 										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">{`${books[index]?.price};-`}</td>
 										{/*Ternary if available adds link to borrow else if book add corresponding availability else, add buttuns for post */}
-										<td className="px-6 py-4 flex justify-center items-center w-full h-full">
+										<td className="px-6 py-4">
 											{colorTheme.theme === "available" ? (
 												// borrow button
 												<a

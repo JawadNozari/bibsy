@@ -5,7 +5,7 @@ import StaticModal from "./component/StaticModal";
 import Navigation from "../Navigation/page";
 
 // Define your component
-const allBook = () => {
+const AllBook = () => {
 	interface BookInfo {
 		id: number;
 		price: number;
@@ -70,4 +70,4 @@ const allBook = () => {
 };
 
 // Export your component
-export default allBook;
+export default AllBook;
