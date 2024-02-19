@@ -1,7 +1,18 @@
 import React from "react";
+import BookList from "../components/BookList";
+
 // Define your component
 const Borrowed = () => {
-	return <div>Borrowed</div>;
+	return (
+		<div
+			className="size-full bg-white"
+			style={{
+				height: "100edvh",
+			}}
+		>
+			<BookList colorTheme={"borrowed"} />
+		</div>
+	);
 };
 
 // Export your component

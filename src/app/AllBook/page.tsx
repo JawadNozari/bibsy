@@ -1,5 +1,5 @@
 import React from "react";
-import BookList from "./Component/BookList";
+import BookList from "./components/BookList";
 // Define your component
 const Book = () => {
 	return (
@@ -9,7 +9,7 @@ const Book = () => {
 				height: "100edvh",
 			}}
 		>
-			<BookList />
+			<BookList colorTheme={"book"} />
 		</div>
 	);
 };

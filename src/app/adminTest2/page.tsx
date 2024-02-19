@@ -1,3 +1,5 @@
+//! FIX UNUSED VARS
+/* eslint-disable no-unused-vars */
 "use client";
 import { useState } from "react";
 import axios from "axios";
@@ -8,7 +10,7 @@ export default function Page() {
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [phone, setPhone] = useState("");
-	const [email] = useState("@ntig.se");
+	const [email, setEmail] = useState("@ntig.se");
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [admin, setAdmin] = useState(false);
 	const [role] = useState("Staff");
