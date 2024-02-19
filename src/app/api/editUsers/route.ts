@@ -12,14 +12,13 @@ export const GET = async () => {
 //* Main function for uppdateing book data in the database
 const prisma = new PrismaClient();
 export const POST = async (req: NextRequest) => {
-	const {userType, id, image, firstName, lastName, password, email, phone, admin, studentclass} =
+	const {userType, id, image, firstName, lastName, email, phone, admin, studentclass} =
 	(await req.json()) ; // We have to await the request body to get the data
 
 	if (
 		!id ||
 		!firstName ||
 		!lastName ||
-		!password ||
 		!email ||
 		!phone
 	) {
@@ -39,7 +38,6 @@ export const POST = async (req: NextRequest) => {
 					image: `UploadedImage/${image}`,
 					firstName: firstName,
 					lastName: lastName,
-					password: password,
 					email: email,
 					phone: phone, 
 					qrCode: firstName + firstName + studentclass,

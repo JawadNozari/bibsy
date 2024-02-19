@@ -33,10 +33,8 @@ export default function Page() {
 				})
 				.catch((error: Error) => {
 					console.debug(error);
-					console.log("there is issue when getting path from uploader ");
 				});
 		}
-            console.log(file?.name);
 			const userData = {
                 userType: userType,
 				id: id,

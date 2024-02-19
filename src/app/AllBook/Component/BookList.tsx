@@ -1,18 +1,47 @@
 "use client";
-import React, { useState, useEffect, use } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { redirect, useRouter } from "next/navigation";
+import ProtectedPage from "@/app/protectedPage/page";
 import axios from "axios";
 
 // Interfaces
+interface UserToken {
+	iat: number;
+	role: string;
+	user: {
+		admin: boolean;
+		email: string;
+		firstName: string;
+		id: number;
+		lastName: string;
+		password: string;
+		phone: string;
+		qrCode: string;
+	};
+}
 interface Book {
 	id: number;
 	price: number;
 	title: string;
 	author: string;
+	publishers: string;
 	published: string;
 	available: boolean;
 	invNr: number;
 	regDate: string;
+	isbn: string;
+	bookImg: string;
+}
+interface BookInfo {
+	id: number;
+	price: number;
+	title: string;
+	author: string;
+	publishers: string;
+	published: string;
+	invNr: number;
+	isbn: string;
+	bookImg: string;
 }
 interface BookState {
 	id: number;
@@ -27,6 +56,7 @@ interface Links {
 	name: string;
 	link: string;
 	color: string;
+	token: string;
 }
 interface Theme {
 	theme: string;
@@ -34,23 +64,14 @@ interface Theme {
 	type?: string;
 	lostFound?: string;
 }
-
-/**
- * Represents a theme object.
- * @interface ThemeObject
- */
-interface ThemeObject {
-	[key: string]: string;
-}
 interface ThemeColors {
-	darkBg: String;
-	lightBg: String;
-	darkFocus: String;
-	lightFocus: String;
-	darkHover: String;
-	lightHover: String;
-  }
-  
+	darkBg: string;
+	lightBg: string;
+	darkFocus: string;
+	lightFocus: string;
+	darkHover: string;
+	lightHover: string;
+}
 
 interface LinkArray {
 	links: Links[];
@@ -59,29 +80,47 @@ interface LinkArray {
 // Link object for mapping(save space)
 const linkObject: LinkArray = {
 	links: [
-		{ key: "book", name: "Book", link: "/allBook", color: " dark:bg-blue-800 bg-blue-700 " },
+		{
+			key: "book",
+			name: "Book",
+			link: "/AllBook",
+			color: " dark:bg-blue-800 bg-blue-700 ",
+			token: "Student",
+		},
 		{
 			key: "available",
 			name: "Available",
-			link: "/allBook/available",
+			link: "/AllBook/Available",
 			color: " dark:bg-green-600 bg-green-500 ",
+			token: "Student",
 		},
 		{
 			key: "missing",
 			name: "Missing",
-			link: "/allBook/missing",
+			link: "/AllBook/Missing",
 			color: " dark:bg-red-600 bg-red-500 ",
+			token: "Staff",
 		},
 		{
 			key: "borrowed",
 			name: "Borrowed",
-			link: "/allBook/borrowed",
+			link: "/AllBook/Borrowed",
 			color: " dark:bg-yellow-600 bg-yellow-500 ",
+			token: "Staff",
 		},
 	],
 };
 // Export
-export default function BookList({ colorTheme }: { colorTheme: Theme }) {
+export default function BookList({
+	colorTheme,
+	toggleModal,
+	bookInfoData,
+}: {
+	colorTheme: Theme;
+	toggleModal: () => void;
+	bookInfoData?: (data: BookInfo) => void;
+}) {
+	<ProtectedPage />;
 	//refresh method
 	const { refresh } = useRouter();
 
@@ -104,13 +143,14 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 	const lostFound = colorTheme.lostFound;
 	// searchphrase to be compered to
 	const [searchPhrase, setSearchPhrase] = useState("");
-	// User cookie
-	const [userCookie, setUserCookie] = useState();
+	// Filter id
+	const [filterState, setFilterState] = useState(false);
 	// Dropdown state
 	const [dropdown, setDropdown] = useState(false);
+
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
-	const theme:{[key: string]: ThemeColors} ={
+	const theme: { [key: string]: ThemeColors } = {
 		book: {
 			darkBg: " dark:bg-blue-800 ",
 			lightBg: " bg-blue-700 ",
@@ -143,8 +183,22 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 			darkHover: " dark:hover:bg-green-700 ",
 			lightHover: " hover:bg-green-500 ",
 		},
-		
 	};
+
+	//* Gets logged in user type
+	const [userType, setUserType] = useState<UserToken>();
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (token) {
+			const decodedToken = JSON.parse(atob(token.split(".")[1]));
+			console.log(decodedToken);
+			setUserType(decodedToken);
+		} else {
+			console.log("no token");
+			redirect("/login");
+		}
+	}, []);
+
 	// Fetching data
 	useEffect(() => {
 		fetch(`/api/${colorTheme.fetchLink}`)
@@ -163,6 +217,7 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 			: null;
 	}, [colorTheme.type]);
 
+	// Modal toggle
 	//* On missing button press, set the book to missing and remove it from the array and db
 	const setBookMissing = async (
 		event: React.MouseEvent<HTMLElement>,
@@ -181,7 +236,6 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 		});
 		console.log(response.data);
 	};
-
 	//* On return button press, set the book to available and remove it from the array and db
 	const setBookAvailable = async (
 		event: React.MouseEvent<HTMLElement>,
@@ -203,9 +257,10 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 		});
 		console.log(response.data);
 	};
+	console.log(bookState);
 	return (
 		// TableTemplate edited
-		<div className="size-9/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap ">
+		<div className="size-9/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap">
 			<div className="size-2/12 w-full">
 				{/* link container */}
 				<div className="w-full h-full flex justify-center items-end">
@@ -213,15 +268,17 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 					{linkObject?.links
 						.slice(0)
 						.reverse()
-						.map((link: Links) => (
-							<a
-								key={link.key}
-								href={link.link}
-								className={`h-4/5 transform hover:scale-100 scale-95 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 transition-colors rounded-t-3xl border-gray-600 dark:border-gray-700 border-b-0`}
-							>
-								{link.name}
-							</a>
-						))}
+						.map((link: Links) =>
+							userType?.role === link.token || userType?.role === "Staff" ? (
+								<a
+									key={link.key}
+									href={link.link}
+									className={`h-4/5 transform hover:scale-100 scale-95 origin-bottom hover:z-20 transition-transform ease-in-out duration-300 ${link?.color} flex justify-center text-gray-300 items-center w-1/5 border-8 transition-colors rounded-t-3xl border-gray-600 dark:border-gray-700 border-b-0`}
+								>
+									{link.name}
+								</a>
+							) : null,
+						)}
 					{/* spaceDiv */}
 					{colorTheme.theme === "missing" || colorTheme.theme === "borrowed" ? (
 						<div className="size-1/12" />
@@ -276,7 +333,6 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 												theme[colorTheme.theme].darkFocus
 											} ${
 												theme[colorTheme.theme].lightFocus
-
 											}block w-full p-4 ps-10 text-sm border-gray-400 rounded-lg bg-gray-500  placeholder-gray-300 text-white border-2 outline-none`}
 											// On change set searchPhrase to input value
 											onChange={() =>
@@ -317,38 +373,65 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 					</thead>
 					<tbody>
 						{/* Map of fetched data which prints out table-row */}
-						{bookState?.map((state, index) =>
+						{bookState?.map((state) =>
 							books?.map((book, index) => {
 								return (state.bookId === book.id || !colorTheme.type) &&
 									book.title
 										.toLowerCase()
 										.includes(searchPhrase.toLowerCase()) &&
-									(userCookie && state.bookId
-										? userCookie === state.studentId
+									(filterState && state.bookId
+										? userType?.user.id === state.staffId
 										: true) ? (
 									<tr
+										onClick={() => {
+											toggleModal();
+											bookInfoData?.({
+												id: book.id,
+												title: book.title,
+												author: book.author,
+												publishers: book.publishers,
+												published: book.published,
+												invNr: book.invNr,
+												isbn: book.isbn,
+												bookImg: book.bookImg,
+												price: book.price,
+											});
+										}}
+										onKeyDown={() => {
+											bookInfoData?.({
+												id: book.id,
+												title: book.title,
+												author: book.author,
+												publishers: book.publishers,
+												published: book.published,
+												invNr: book.invNr,
+												isbn: book.isbn,
+												bookImg: book.bookImg,
+												price: book.price,
+											});
+										}}
 										key={book.id}
-										className={`border-b ${
-											theme[colorTheme.theme].lightBg
-										}
-										${
-											theme[colorTheme.theme].darkBg
-										} border-gray-700`}
+										className={`border-b ${theme[colorTheme.theme].lightBg}
+										${theme[colorTheme.theme].darkBg}
+										${theme[colorTheme.theme].darkHover}
+										${theme[colorTheme.theme].lightHover} border-gray-700`}
 									>
-										<td className="px-6 py-4 font-medium whitespace-nowrap text-white w-1/5 overflow-auto">
+										<td className="px-6 py-4 font-medium text-white w-1/5 overflow-auto whitespace-pre-wrap max-w-12">
 											{books[index]?.title}
 										</td>
-										<td className="px-6 py-4">{books[index]?.author}</td>
-										<td className="px-6 py-4">
+										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">
+											{books[index]?.author}
+										</td>
+										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">
 											{colorTheme.theme === "missing" ||
 											colorTheme.theme === "borrowed"
 												? `${books[index]?.regDate.split("T")[0]} 
 												  ${books[index]?.regDate.split("T")[1].split(".")[0]}`
 												: books[index]?.published.split("T")[0]}
 										</td>
-										<td className="px-6 py-4">{`${books[index]?.price} Kr`}</td>
+										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">{`${books[index]?.price};-`}</td>
 										{/*Ternary if available adds link to borrow else if book add corresponding availability else, add buttuns for post */}
-										<td className="px-6 py-4 flex justify-center items-center w-full h-full">
+										<td className="px-6 py-4">
 											{colorTheme.theme === "available" ? (
 												// borrow button
 												<a
@@ -442,7 +525,12 @@ export default function BookList({ colorTheme }: { colorTheme: Theme }) {
 								: "z-2 p-2 rounded-lg shadow w-28 bg-gray-600 dark:bg-gray-700 translate-y-5 flex justify-around items-center"
 						}
 					>
-						<input type="checkBox" name="myBooks" id="myBooks" />
+						<input
+							type="checkBox"
+							name="myBooks"
+							id="myBooks"
+							onClick={() => setFilterState(!filterState)}
+						/>
 						<label htmlFor="myBooks" className="text-xs text-white">
 							My books
 						</label>

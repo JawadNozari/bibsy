@@ -201,7 +201,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 										<Image
 											src={
 												imagePreview !== null
-													? imagePreview
+													? `/images/${imagePreview}`
 													: "/default-image.png"
 											} // Set a default image if there is no preview
 											alt="Full size"

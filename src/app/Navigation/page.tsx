@@ -50,6 +50,12 @@ export default function Page() {
 	// 	};
 	// }, []);
 
+	const logOutUser = (event: React.MouseEvent<HTMLElement>) => {
+		event.preventDefault();
+		localStorage.removeItem("token");
+		router.push("/login");
+	};
+
 	return (
 		//Phone menu
 		// ! Don't touch !
