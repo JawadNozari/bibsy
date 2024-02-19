@@ -43,17 +43,17 @@ export const POST = async (req: NextRequest) => {
         return new NextResponse(JSON.stringify({ token }), { status: 200 });
 
         // * Staff (admin)
-      } if (staffUser && staffUser.admin == true && body.remember) { // Remember me
+      } if (staffUser && staffUser.admin === true && body.remember) { // Remember me
 
         const token = jwt.sign({ user: staffUser, role: "Admin" }, secretKey, { expiresIn: "7d" });
         return new NextResponse(JSON.stringify({ token }), { status: 200 });
 
-      } if (staffUser && staffUser.admin && !body.remember) { // Do not remember me
+      } if (staffUser?.admin && !body.remember) { // Do not remember me
 
         const token = jwt.sign({ user: staffUser, role: "Admin" }, secretKey);
         return new NextResponse(JSON.stringify({ token }), { status: 200 });
 
-      } else {
+      }
 
         // * If not found in staff, check in student * //
 
@@ -80,11 +80,9 @@ export const POST = async (req: NextRequest) => {
             const token = jwt.sign({ user: studentUser, role: "Student" }, secretKey);
             return new NextResponse(JSON.stringify({ token }), { status: 200 });
 
-          } else {
-            return new NextResponse(JSON.stringify({ error: "Invalid username or password" }), { status: 401 });
           }
+            return new NextResponse(JSON.stringify({ error: "Invalid username or password" }), { status: 401 });
         });
-      }
     }).catch((error: Error) => {
       return new NextResponse(JSON.stringify({ error: error.message }), { status: 500 });
     }).finally(() => {
