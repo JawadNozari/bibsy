@@ -1,6 +1,6 @@
 //! FIX UNUSED VARS
 /* eslint-disable no-unused-vars */
-
+//
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import imgJpg from "/public/img/content.jpeg";
