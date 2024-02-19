@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-export default function page() {
+export default function Page() {
 	const router = useRouter();
 
 	function AllBooksRedirect() {
@@ -23,7 +23,7 @@ export default function page() {
 	}
 
 	function ProfileRedirect() {
-		router.push("/studentPage/studentUsers/1");
+		router.push("/studentPage");
 	}
 
 	// Phone menu
