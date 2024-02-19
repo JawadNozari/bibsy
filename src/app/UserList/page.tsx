@@ -2,9 +2,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Staff from "./Components/Staff";
-import Student from "./Components/Student";
-import StaticModal from "./Components/StaticModal"; // Import the StaticModal component
+import Staff from "./component/Staff";
+import Student from "./component/Student";
+import StaticModal from "./component/StaticModal"; // Import the StaticModal component
 import axios from "axios";
 import "../globals.css";
 import { useSpring, animated } from "react-spring"; // Import react-spring library
