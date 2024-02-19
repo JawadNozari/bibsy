@@ -57,6 +57,15 @@ const Page = () => {
     });
   };
 
+  //* Removes the book from the array and db (TEMP FUNCTION)
+  const temp = async (event: React.MouseEvent<HTMLElement>, bookId: number) => {
+    //* Deletes the book
+    await axios.post("/api/setBookDeleted", {
+      bookId,
+      listType: "borrowed",
+    });
+  };
+
   //* On return button press, set the book to available and remove it from the array and db
   const setBookAvailable = async (event: React.MouseEvent<HTMLElement>, bookId: number) => {
     event.stopPropagation();
@@ -146,8 +155,19 @@ const Page = () => {
                     type="button"
                     onClick={(e) => setBookAvailable(e, borrowedBook.bookId)}
                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                    style={{ zIndex: 2 }}
                   >
                     RETURNED
+                  </button>
+                </td>
+                <td className="px-6 py-4">
+                  <button
+                    type="button"
+                    onClick={(e) => temp(e, borrowedBook.bookId)}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    style={{ zIndex: 2 }}
+                  >
+                    DELETE
                   </button>
                 </td>
               </tr>

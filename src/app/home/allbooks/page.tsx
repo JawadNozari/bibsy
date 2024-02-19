@@ -32,6 +32,15 @@ const Page = () => {
 		setBooks(response.data.books);
 	};
 
+	//* Set the book to deleted (Temp function)
+	const temp = async (e: React.MouseEvent<HTMLButtonElement>, bookId: number) => {
+		e.preventDefault();
+		await axios.post("/api/setBookDeleted", {
+			bookId,
+			listType: "registered",
+		});
+	};
+
 	//* Run through all books and render them in a table
 	const runThroughBooks = () => {
 		return (
@@ -42,6 +51,7 @@ const Page = () => {
 						className="bg-white border-b dark:bg-gray-600 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 cursor-pointer active:bg-gray-200 dark:active:bg-gray-700"
 						key={book.invNr}
 						onClick={() => router.push(`/home/bookDetails/${book.invNr}`)}
+						style={{ zIndex: 1 }}
 					>
 						<th
 							scope="row"
@@ -59,6 +69,16 @@ const Page = () => {
 						) : (
 							<td className="px-6 py-4" style={{ backgroundColor: "tomato", color: "black" }}>No</td>
 						)}
+						<td className="px-6 py-4">
+							<button
+								type="button"
+								onClick={(e) => temp(e, book.id)}
+								className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+								style={{ zIndex: 2 }}
+							>
+								DELETE
+							</button>
+						</td>
 					</tr>
 				);
 			})

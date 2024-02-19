@@ -28,6 +28,15 @@ const Page = () => {
 		setAvailableBooks(response.data);
 	};
 
+	//* Set the book to deleted (Temp function)
+	const temp = async (e: React.MouseEvent<HTMLButtonElement>, bookId: number) => {
+		e.preventDefault();
+		await axios.post("/api/setBookDeleted", {
+			bookId,
+			listType: "available",
+		});
+	};
+
 	//* Run through all available books and render them in a table
 	const runThroughBooks = () => {
 		return (
@@ -47,6 +56,16 @@ const Page = () => {
 						}`}</td>
 					<td className="px-6 py-4">{`${`${(book.regDate).toString().split("T")[0]} ${(book.regDate).toString().split("T")[1].split(".")[0]
 						}`}`}</td>
+					<td className="px-6 py-4">
+						<button
+							type="button"
+							onClick={(e) => temp(e, book.id)}
+							className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+							style={{ zIndex: 2 }}
+						>
+							DELETE
+						</button>
+					</td>
 				</tr>
 			)));
 	};

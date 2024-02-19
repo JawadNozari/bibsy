@@ -9,27 +9,29 @@ export const GET = async () => {
 const prisma = new PrismaClient();
 
 //* If request is POST then set selected book to available and send the book back to the client
+//* The data required is the bookId and the listType
 export const POST = async (req: NextRequest) => {
 	const request = await req.json();
 
 	//* Get the bookId and listType from the request
 	const { bookId, listType }: { bookId: number; listType: string } = request;
+	if (!bookId || !listType) {
+		return NextResponse.json(
+			{ message: "bookId and listType are required" },
+			{ status: 400 },
+		);
+	}
 	switch (listType) {
 		case "missing":
 			//* Remove the book from the missing list if it is found
-			await prisma.book
-				.delete({
-					where: {
-						id: bookId,
-					},
-				})
-				.then(async (book) => {
-					//* Remove the book from the missing list if it is found
-					await prisma.missingBooks
-						.deleteMany({ where: { bookId: book.id } })
-						.then((book) => {
-							return NextResponse.json({ book: book }, { status: 200 });
-						});
+			await prisma.missingBooks
+				.deleteMany({ where: { bookId: bookId } })
+				.then(async () => {
+					await prisma.book.delete({
+						where: {
+							id: bookId,
+						},
+					});
 				})
 				//* Catch the error
 				.catch((error: Error) => {
@@ -46,21 +48,17 @@ export const POST = async (req: NextRequest) => {
 
 		case "borrowed":
 			//* Remove the book from the borrowed list if it is found
-			console.log("borrowed", bookId);
-			//! WHY IS THIS NOT WORKING ??
-			await prisma.book
-				.delete({
-					where: {
-						id: bookId,
-					},
-				})
-				.then(async (book) => {
-					//* Remove the book from the missing list if it is found
-					await prisma.borrowedBooks
-						.deleteMany({ where: { bookId: book.id } })
-						.then((book) => {
-							console.log("book", book);
-							return NextResponse.json({ book: book }, { status: 200 });
+			await prisma.borrowedBooks
+				.deleteMany({ where: { bookId: bookId } })
+				.then(async () => {
+					await prisma.book
+						.delete({
+							where: {
+								id: bookId,
+							},
+						})
+						.catch((error: Error) => {
+							return NextResponse.json({ message: error }, { status: 200 });
 						});
 				})
 				//* Catch the error
@@ -69,7 +67,6 @@ export const POST = async (req: NextRequest) => {
 				})
 				//* Disconnect from prisma and return a message
 				.finally(() => {
-					console.log("finally");
 					prisma.$disconnect();
 				});
 			//* Return a message to the client
