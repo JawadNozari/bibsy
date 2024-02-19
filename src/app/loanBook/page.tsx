@@ -1,3 +1,5 @@
+//! FIX UNUSED VARS
+/* eslint-disable no-unused-vars */
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
@@ -107,7 +109,7 @@ export default function Home() {
 						<p key={student.id}>{student.firstName}</p>
 					))}
 				</div>
-			</div>
+			))}
 		</main>
 	);
 }

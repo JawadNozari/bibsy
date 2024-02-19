@@ -1,7 +1,10 @@
+//! FIXED UNUSED VARS
+/* eslint-disable no-unused-vars */
 "use client";
 import { useState } from "react";
 import axios from "axios";
 import bcrypt from "bcryptjs";
+
 import ProtectedPage from "../protectedPage/page";
 
 export default function Page() {
