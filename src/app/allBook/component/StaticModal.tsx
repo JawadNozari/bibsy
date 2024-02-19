@@ -18,13 +18,41 @@ interface StaticModalProps {
 		isbn: string;
 		bookImg: string;
 	};
-	
+	userInfo: {
+		iat: number;
+		role: string;
+		user: {
+			admin: boolean;
+			email: string;
+			firstName: string;
+			id: number;
+			lastName: string;
+			password: string;
+			phone: string;
+			qrCode: string;
+		};
+	};
+}
+interface userInfo {
+	iat: number;
+	role: string;
+	user: {
+		admin: boolean;
+		email: string;
+		firstName: string;
+		id: number;
+		lastName: string;
+		password: string;
+		phone: string;
+		qrCode: string;
+	};
 }
 
 const StaticModal: React.FC<StaticModalProps> = ({
 	showModal,
 	toggleModal,
 	bookInfo,
+	userInfo,
 }) => {
 	useEffect(() => {
 		setBookInfoState(bookInfo);
@@ -33,50 +61,49 @@ const StaticModal: React.FC<StaticModalProps> = ({
 	const [switchDiv2, setSwitchDiv2] = useState("block");
 	const [bookInfoState, setBookInfoState] = useState(bookInfo);
 	const [file, setFile] = useState<File | undefined>(undefined);
+	const [user, setUser] = useState<userInfo | null>(null);
+
 	const switchingDiv = () => {
 		switchDiv === "block" ? setSwitchDiv("none") : setSwitchDiv("block");
 		switchDiv2 === "block" ? setSwitchDiv2("none") : setSwitchDiv2("block");
 	};
 
-
 	const handleSubmit = async (e: React.SyntheticEvent) => {
-	e.preventDefault();
-	const formData = new FormData();
-	let imagePath = "";
-	if (file !== undefined) {
-		formData.append("file", file || undefined);
-		formData.append("path", "bookImage");
-		imagePath = await axios
-			.post("/api/uploader", formData, {
-				headers: { "Content-Type": "multipart/form-data" },
-			})
-			.then((res) => {
-				return res.data.path;
-			})
-			.catch((error: Error) => {
-				console.debug(error);
-			});
-	}
-	const userData: Book = {
-		id: bookInfo.id,
-		bookImg: imagePath,
-		title: bookInfo.title,
-		author: bookInfo.author,
-		publishers: bookInfo.publishers,
-		published: new Date(bookInfo.published),
-		regDate: new Date(),
-		isbn: bookInfo.isbn,
-		invNr: bookInfo.invNr,
-		price: bookInfo.price,
-		available: true,
-	};
-
+		e.preventDefault();
+		const formData = new FormData();
+		let imagePath = "";
+		if (file !== undefined) {
+			formData.append("file", file || undefined);
+			formData.append("path", "bookImage");
+			imagePath = await axios
+				.post("/api/uploader", formData, {
+					headers: { "Content-Type": "multipart/form-data" },
+				})
+				.then((res) => {
+					return res.data.path;
+				})
+				.catch((error: Error) => {
+					console.debug(error);
+				});
+		}
+		const userData: Book = {
+			id: bookInfo.id,
+			bookImg: imagePath,
+			title: bookInfo.title,
+			author: bookInfo.author,
+			publishers: bookInfo.publishers,
+			published: new Date(bookInfo.published),
+			regDate: new Date(),
+			isbn: bookInfo.isbn,
+			invNr: bookInfo.invNr,
+			price: bookInfo.price,
+			available: true,
+		};
 
 		// Post form data to backend
-		await axios
-			.post("/api/editBooks", userData, {
-				headers: { "Content-Type": "application/json" },
-			});
+		await axios.post("/api/editBooks", userData, {
+			headers: { "Content-Type": "application/json" },
+		});
 	};
 	return (
 		<>
@@ -290,9 +317,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												setFile(e.target.files?.[0]);
 											}}
 										/>
-										<button type="submit">
-											Submit
-										</button>
+										<button type="submit">Submit</button>
 									</div>
 								</div>
 							</div>
@@ -300,13 +325,15 @@ const StaticModal: React.FC<StaticModalProps> = ({
 
 						{/* Modal footer */}
 						<div className="mt-4 flex justify-between">
-							<button
-								onClick={switchingDiv}
-								className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
-								type="button"
-							>
-								Edit
-							</button>
+							{
+								<button
+									onClick={switchingDiv}
+									className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+									type="button"
+								>
+									Edit
+								</button>
+							}
 							<button
 								onClick={() => {
 									toggleModal();
