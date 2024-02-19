@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import imgJpg from "/public/img/content.jpeg";
+import axios from "axios";
+import { Book } from "@prisma/client";
 
 interface StaticModalProps {
 	showModal: boolean; // Prop to determine whether the modal should be displayed
@@ -10,11 +12,13 @@ interface StaticModalProps {
 		price: number;
 		title: string;
 		author: string;
+		publishers: string;
 		published: string;
 		invNr: number;
 		isbn: string;
 		bookImg: string;
 	};
+	
 }
 
 const StaticModal: React.FC<StaticModalProps> = ({
@@ -28,9 +32,51 @@ const StaticModal: React.FC<StaticModalProps> = ({
 	const [switchDiv, setSwitchDiv] = useState("none");
 	const [switchDiv2, setSwitchDiv2] = useState("block");
 	const [bookInfoState, setBookInfoState] = useState(bookInfo);
+	const [file, setFile] = useState<File | undefined>(undefined);
 	const switchingDiv = () => {
 		switchDiv === "block" ? setSwitchDiv("none") : setSwitchDiv("block");
 		switchDiv2 === "block" ? setSwitchDiv2("none") : setSwitchDiv2("block");
+	};
+
+
+	const handleSubmit = async (e: React.SyntheticEvent) => {
+	e.preventDefault();
+	const formData = new FormData();
+	let imagePath = "";
+	if (file !== undefined) {
+		formData.append("file", file || undefined);
+		formData.append("path", "bookImage");
+		imagePath = await axios
+			.post("/api/uploader", formData, {
+				headers: { "Content-Type": "multipart/form-data" },
+			})
+			.then((res) => {
+				return res.data.path;
+			})
+			.catch((error: Error) => {
+				console.debug(error);
+			});
+	}
+	const userData: Book = {
+		id: bookInfo.id,
+		bookImg: imagePath,
+		title: bookInfo.title,
+		author: bookInfo.author,
+		publishers: bookInfo.publishers,
+		published: new Date(bookInfo.published),
+		regDate: new Date(),
+		isbn: bookInfo.isbn,
+		invNr: bookInfo.invNr,
+		price: bookInfo.price,
+		available: true,
+	};
+
+
+		// Post form data to backend
+		await axios
+			.post("/api/editBooks", userData, {
+				headers: { "Content-Type": "application/json" },
+			});
 	};
 	return (
 		<>
@@ -101,7 +147,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 							</div>
 						</div>
 						{/* Modal Edit Body */}
-						<form action="">
+						<form onSubmit={handleSubmit} method="POST">
 							<div style={{ display: switchDiv }}>
 								<div className="flex justify-center items-center bg-gray-100">
 									<div className="p-2 bg-white shadow-lg rounded-lg">
@@ -143,6 +189,25 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												setBookInfoState((prevState) => ({
 													...prevState,
 													author: event.target.value,
+												}))
+											}
+										/>
+										<label
+											htmlFor={"editPublishers"}
+											className="text-black font-semibold"
+										>
+											Publishers:{" "}
+										</label>
+										<input
+											type="text"
+											name="bookUpdatePublishers"
+											id={"editPublishers"}
+											value={bookInfoState.publishers}
+											className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700"
+											onChange={(event) =>
+												setBookInfoState((prevState) => ({
+													...prevState,
+													publishers: event.target.value,
 												}))
 											}
 										/>
@@ -221,13 +286,13 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											name="bookUpdatebookImg"
 											id={"editbookImg"}
 											className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700"
-											onChange={(event) =>
-												setBookInfoState((prevState) => ({
-													...prevState,
-													bookImg: event.target.value,
-												}))
-											}
+											onChange={(e) => {
+												setFile(e.target.files?.[0]);
+											}}
 										/>
+										<button type="submit">
+											Submit
+										</button>
 									</div>
 								</div>
 							</div>

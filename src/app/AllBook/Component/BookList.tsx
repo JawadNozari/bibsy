@@ -17,6 +17,7 @@ interface Book {
 	price: number;
 	title: string;
 	author: string;
+	publishers: string;
 	published: string;
 	available: boolean;
 	invNr: number;
@@ -29,6 +30,7 @@ interface BookInfo {
 	price: number;
 	title: string;
 	author: string;
+	publishers: string;
 	published: string;
 	invNr: number;
 	isbn: string;
@@ -369,6 +371,7 @@ export default function BookList({
 												id: book.id,
 												title: book.title,
 												author: book.author,
+												publishers: book.publishers,
 												published: book.published,
 												invNr: book.invNr,
 												isbn: book.isbn,
@@ -381,6 +384,7 @@ export default function BookList({
 												id: book.id,
 												title: book.title,
 												author: book.author,
+												publishers: book.publishers,
 												published: book.published,
 												invNr: book.invNr,
 												isbn: book.isbn,
