@@ -9,24 +9,27 @@ interface StaticModalProps {
   selectedUser: Staff | Student | null; // Selected user data
 }
 
-const StaticModal: React.FC<StaticModalProps> = ({ showModal, toggleModal, selectedUser }) => {
-  const elementRef = useRef<HTMLDivElement>(null);
+const StaticModal: React.FC<StaticModalProps> = ({
+	showModal,
+	toggleModal,
+	selectedUser,
+}) => {
+	const elementRef = useRef<HTMLDivElement>(null);
 
-  const htmlToImageConvert = () => {
-    if (elementRef.current) {
-      toPng(elementRef.current, { cacheBust: false })
-        .then((dataUrl) => {
-          const link = document.createElement("a");
-          link.download = "my-image-name.png";
-          link.href = dataUrl;
-          link.click();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
-  
+	const htmlToImageConvert = () => {
+		if (elementRef.current) {
+			toPng(elementRef.current, { cacheBust: false })
+				.then((dataUrl) => {
+					const link = document.createElement("a");
+					link.download = "my-image-name.png";
+					link.href = dataUrl;
+					link.click();
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
 
   return (
     <>

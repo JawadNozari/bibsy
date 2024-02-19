@@ -1,17 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import ProtectedPage from "@/app/protectedPage/page";
 import axios from "axios";
 
 // Interfaces
-interface BookListProps {
-	colorTheme: {
-		theme: string;
-		fetchLink: string;
-	};
-	toggleModal: () => void; // Function to toggle modal visibility
-}
 interface UserToken {
 	iat: number;
 	role: string;
@@ -70,14 +63,6 @@ interface Theme {
 	fetchLink: string;
 	type?: string;
 	lostFound?: string;
-}
-
-/**
- * Represents a theme object.
- * @interface ThemeObject
- */
-interface ThemeObject {
-	[key: string]: string;
 }
 interface ThemeColors {
 	darkBg: string;
@@ -162,6 +147,8 @@ export default function BookList({
 	const [filterState, setFilterState] = useState(false);
 	// Dropdown state
 	const [dropdown, setDropdown] = useState(false);
+	//Cookie
+	const [userType, setUserType] = useState<UserToken>();
 
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
@@ -201,7 +188,6 @@ export default function BookList({
 	};
 
 	//* Gets logged in user type
-	const [userType, setUserType] = useState<UserToken>();
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (token) {
@@ -210,6 +196,7 @@ export default function BookList({
 			setUserType(decodedToken);
 		} else {
 			console.log("no token");
+			redirect("/login");
 		}
 	}, []);
 
@@ -342,6 +329,7 @@ export default function BookList({
 										<input
 											type="search"
 											id="default-search"
+											autoComplete="off"
 											className={`${
 												// Dynamic color
 												theme[colorTheme.theme].darkFocus
@@ -387,7 +375,7 @@ export default function BookList({
 					</thead>
 					<tbody>
 						{/* Map of fetched data which prints out table-row */}
-						{bookState?.map((state, index) =>
+						{bookState?.map((state) =>
 							books?.map((book, index) => {
 								return (state.bookId === book.id || !colorTheme.type) &&
 									book.title
@@ -445,7 +433,7 @@ export default function BookList({
 										</td>
 										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">{`${books[index]?.price};-`}</td>
 										{/*Ternary if available adds link to borrow else if book add corresponding availability else, add buttuns for post */}
-										<td className="px-6 py-4 flex justify-center items-center w-full h-full">
+										<td className="px-6 py-4">
 											{colorTheme.theme === "available" ? (
 												// borrow button
 												<a

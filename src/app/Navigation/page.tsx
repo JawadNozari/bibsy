@@ -3,11 +3,29 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-//! Change the name of the function to have a large first letter, and use it as the component name
-//! PLEASE USE BIOME AND YARN LINT!!!!!!!!!!!!!
-export default function page() {
-	//! Remove this comment when the error is gone
+export default function Page() {
 	const router = useRouter();
+
+	function AllBooksRedirect() {
+		router.push("/AllBook");
+	}
+
+	function DashboardRedirect() {
+		router.push("/home");
+	}
+
+	function MembersRedirect() {
+		router.push("/UserList");
+	}
+
+	function ReturnedRedirect() {
+		router.push("/Returned");
+	}
+
+	function ProfileRedirect() {
+		router.push("/studentPage");
+	}
+
 	// Phone menu
 
 	// const [isOpen, setIsOpen] = useState(false);
@@ -89,9 +107,13 @@ export default function page() {
 		// </div>
 
 		// Desltop menu
-		<div className="group flex justify-between items-start flex-col h-[100dvh] bg-violet-950 w-16 transition-all ease-in-out duration-200 pl-[2px] hover:w-80">
+		<div className="group flex justify-between items-start flex-col h-screen relative bg-zinc-400 dark:bg-zinc-700 w-16 transition-all ease-in-out duration-200 pl-1 cursor-pointer z-50 hover:w-72">
 			<div className="flex justify-start items-center flex-col h-full w-14 gap-8 mt-6">
-				<div className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-[240px] group-hover:ml-[200px]">
+				<div
+					onClick={ProfileRedirect}
+					onKeyDown={ProfileRedirect}
+					className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+				>
 					<Image
 						className="rounded-full w-10"
 						src="/Navbar_img/pfp.jpg"
@@ -104,11 +126,15 @@ export default function page() {
 					</p>
 				</div>
 
-				<span className="w-8 h-4 border border-t-2 border-l-0 border-r-0 border-b-0 rounded-sm transistion-all duration-200 group-hover:w-[230px] group-hover:ml-[198px]">
+				<span className="w-8 h-4 border border-t-2 border-l-0 border-r-0 border-b-0 rounded-sm transistion-all duration-200 group-hover:w-56 group-hover:ml-52">
 					{""}
 				</span>
 
-				<div className="flex flex-row items-center gap-10 w-10 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-[240px] group-hover:ml-[204px] focus:bg-slate-600">
+				<div
+					onClick={DashboardRedirect}
+					onKeyDown={DashboardRedirect}
+					className="flex flex-row items-center gap-10 w-10 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+				>
 					<Image
 						className="w-9"
 						src="/Navbar_img/table.png"
@@ -121,34 +147,45 @@ export default function page() {
 					</p>
 				</div>
 
-				<div className="flex flex-row items-center gap-10 w-10 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-[240px] group-hover:ml-[204px]">
-					<Image className="w-9" src="/Navbar_img/People.png" alt="Members icon" width={36} height={36} />
+				<div
+					onClick={MembersRedirect}
+					onKeyDown={MembersRedirect}
+					className="flex flex-row items-center gap-10 w-10 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+				>
+					<Image
+						className="w-9"
+						src="/Navbar_img/People.png"
+						alt="Members icon"
+						width={36}
+						height={36}
+					/>
 					<p className="text-lg transition-all !duration-150 ease-in-out hidden group-hover:block">
 						Members
 					</p>
 				</div>
 
-				<div className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-[240px] group-hover:ml-[200px]">
-					<Image className="w-10" src="/Navbar_img/Book.png" alt="Books icon" width={36} height={36} />
+				<div
+					onClick={AllBooksRedirect}
+					onKeyDown={AllBooksRedirect}
+					className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+				>
+					<Image
+						className="w-10"
+						src="/Navbar_img/Book.png"
+						alt="Books icon"
+						width={36}
+						height={36}
+					/>
 					<p className="text-lg transition-all !duration-150 ease-in-out hidden group-hover:block">
 						Books
 					</p>
 				</div>
 
-				<div className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-[240px] group-hover:ml-[200px]">
-					<Image
-						className="w-10"
-						src="/Navbar_img/BoxImportant.png"
-						alt="Not Returned icon"
-						width={36}
-						height={36}
-					/>
-					<p className="text-lg transition-all !duration-150 ease-in-out whitespace-nowrap hidden group-hover:block">
-						Missing
-					</p>
-				</div>
-
-				<div className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-[240px] group-hover:ml-[200px]">
+				<div
+					onClick={ReturnedRedirect}
+					onKeyDown={ReturnedRedirect}
+					className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+				>
 					<Image
 						className="w-10"
 						src="/Navbar_img/ReturnBook.png"
@@ -161,7 +198,7 @@ export default function page() {
 					</p>
 				</div>
 
-				<div className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-[240px] group-hover:ml-[200px]">
+				<div className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52">
 					<Image
 						className="w-10"
 						src="/Navbar_img/DeliveryTime.png"
@@ -176,11 +213,7 @@ export default function page() {
 			</div>
 
 			<div className="flex justify-end flex-col h-full w-14 gap-8 items-center mb-6">
-				{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-				<div
-					className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-[240px] group-hover:ml-[200px]"
-					onClick={(e) => { logOutUser(e); }}
-				>
+				<div className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52">
 					<Image
 						className="w-10"
 						src="/Navbar_img/LogoutRoundedLeft.png"

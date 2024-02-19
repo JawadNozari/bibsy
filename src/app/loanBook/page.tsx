@@ -53,6 +53,14 @@ export default function LoanBook() {
 	// * Fetch users from the API
 	useEffect(() => {
 		const invNr = new URLSearchParams(window.location.search).get("invNr");
+		const token = localStorage.getItem("token");
+  
+		if (token) {
+			const payload = JSON.parse(atob(token.split(".")[1]));
+			// return payload.Value;
+			console.log(payload);
+		}
+
 		if (invNr) {
 			setInvNr(invNr); // Update the state with the passed invNr
 		}
@@ -115,17 +123,22 @@ export default function LoanBook() {
 	};
 
 	//* Add this function to get the current user's ID from the token
-	// const getCurrentUserId = () => {
-	// 	const token = localStorage.getItem("token");
+	const getCurrentUserId = () => {
+		const token = localStorage.getItem("token");
   
-	// 	if (token) {
-	// 		const payload = JSON.parse(atob(token.split(".")[1]));
-	// 		// return payload.Value;
-	// 		return Number(payload.Value); // Convert the user ID to a number
+		if (token) {
+			const payload = JSON.parse(atob(token.split(".")[1]));
+			// return payload.Value;
+			console.log(payload);
+			return Number(payload.Value); // Convert the user ID to a number
 
-	// 	}
-	// 	return null;
-  	// };
+
+		}
+		console.error("No token found");
+		
+		return null;
+		
+  	};
 
 	// * Filter users based on search query
 	const filterUsers = (users: User[]) => {
@@ -136,26 +149,22 @@ export default function LoanBook() {
 
 		// * Normalize search query and user names for case-insensitive search
 		const normalizedQuery = searchQuery.toLowerCase();
-		// const currentUserId = getCurrentUserId();
+		const currentUserId = getCurrentUserId();
 		
-		return users.filter((user) => {
-			const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-			return fullName.includes(normalizedQuery);
-
-		});
-
 		// return users.filter((user) => {
 		// 	const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-		// 	const isStudent = user.type === 'student';
-		// 	const isStaff = user.type === 'staff' && user.id === currentUserId;
+		// 	return fullName.includes(normalizedQuery);
 
-		// 	return fullName.includes(normalizedQuery) && (isStudent || isStaff);
 		// });
+
+		return users.filter((user) => {
+			const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+			const isStudent = user.type === "student";
+			const isStaff = user.type === "staff" && user.id === currentUserId;
+
+			return fullName.includes(normalizedQuery) && (isStudent || isStaff);
+		});
 	};
-
-
-	
-	
 
 	//* Handle user click event
 	const handleUserClick = (user: User) => {
@@ -340,14 +349,6 @@ export default function LoanBook() {
 									onChange={handleinvNrChange}
 									className="input bg-neutral-50  text-gray-700  font-medium text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 								/>
-								{/* <i className="fa-solid fa-barcode ">
-									<button
-										className=" rounded-r-lg bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-										type="button"
-									>
-										code
-									</button>
-								</i> */}
 							</div>
 						</div>
 
@@ -355,13 +356,13 @@ export default function LoanBook() {
 							<button
     							type="button"
     							onClick={() => window.history.back()}
-   								className="btn block m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700 btn-active btn-neutral"
+   								className="btn block m-3 bg-neutral-50  hover:text-gray-50 text-gray-500 dark:bg-gray-700 btn-active btn-neutral"
  							>
   							 	Go Back
  							</button>
 							<button
 								type="submit"
-								className="btn block   m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700  btn-active btn-neutral"
+								className="btn block   m-3 bg-neutral-50  hover:text-gray-50  text-gray-500 dark:bg-gray-700  btn-active btn-neutral"
 							>
 								Loan
 							</button>

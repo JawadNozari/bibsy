@@ -11,7 +11,7 @@ module.exports = {
 		return config;
 	},
 	images: {
-		domains: ['pbs.twimg.com',"www.gravatar.com",]
+		domains: ['pbs.twimg.com',"www.gravatar.com", "books.google.com"]
 	  },
 };
   

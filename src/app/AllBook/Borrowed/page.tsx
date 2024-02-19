@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BookList from "../component/BookList";
 import StaticModal from "../component/StaticModal";
 import Navigation from "../../Navigation/page";
-
+import ProtectedPage from "../../protectedPage/page";
+import { redirect } from "next/navigation";
 // Define your component
 const Borrowed = () => {
 	interface BookInfo {
@@ -31,8 +32,19 @@ const Borrowed = () => {
 	const recieveBookInfo = (data: BookInfo) => {
 		setBookInfo(data);
 	};
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (token) {
+			const decodedToken = JSON.parse(atob(token.split(".")[1]));
+			console.log(decodedToken);
+			decodedToken.role !== "Staff" ? redirect("/login") : null;
+		} else {
+			redirect("/login");
+		}
+	}, []);
 	return (
 		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
+			<ProtectedPage />
 			<Navigation />
 			<BookList
 				colorTheme={colorTheme}
