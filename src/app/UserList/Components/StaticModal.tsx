@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import QRCode from "qrcode.react";
 import { Staff, Student } from "@prisma/client";
-import htmlToImage from "html-to-image"; // Import html-to-image library
 import { toPng } from "html-to-image";
 
 interface StaticModalProps {
@@ -11,7 +10,6 @@ interface StaticModalProps {
 }
 
 const StaticModal: React.FC<StaticModalProps> = ({ showModal, toggleModal, selectedUser }) => {
-  const modalBodyRef = useRef<HTMLDivElement>(null);
   const elementRef = useRef(null);
 
   const htmlToImageConvert = () => {
