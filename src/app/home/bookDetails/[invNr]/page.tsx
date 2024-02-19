@@ -3,27 +3,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import React from "react";
 import axios from "axios";
-
-type Book = {
-    note: string;
-    staffId: number;
-    studentId: number;
-    bookId: number;
-    id: number;
-    title: string;
-    author: string;
-    isbn: string;
-    published: string;
-    regDate: string;
-    available: boolean;
-    borrowedBy: string;
-    bookImage: string;
-};
+import { Book } from "@prisma/client";
 
 const BookDetails = ({ params }: { params: { invNr: string } }) => {
     const router = useRouter();
     const [book, setBook] = React.useState<Book>();
 
+    //* Get the book details by inventory number
     React.useEffect(() => {
         const getBooks = async () => {
             const response = await axios.post("/api/registeredBooks", {
@@ -36,23 +22,25 @@ const BookDetails = ({ params }: { params: { invNr: string } }) => {
         getBooks();
     }, [params.invNr]);
 
+    //* Returns the JSX to render
     return (
         <div>
             <h1 style={{ color: "white" }}>{params.invNr}</h1>
+            {/* //* If there is a book then render, else render "book not found" */}
             {book ? (
                 (
                     <div>
                         <h1 style={{ color: "white" }}>Title: {book.title}</h1>
                         <h1 style={{ color: "white" }}>Author: {book.author}</h1>
                         <h1 style={{ color: "white" }}>ISBN: {book.isbn}</h1>
-                        <h1 style={{ color: "white" }}>Published: {book.published}</h1>
-                        <h1 style={{ color: "white" }}>Registered: {book.regDate}</h1>
+                        <h1 style={{ color: "white" }}>Published: {book.published.toString()}</h1>
+                        <h1 style={{ color: "white" }}>Registered: {book.regDate.toString()}</h1>
                         <h1 style={{ color: "white" }}>
                             Available: {book.available ? "Yes" : "No"}
                         </h1>
                         <Image
-                            src={book.bookImage}
-                            alt={book.title}
+                            src={`/${book.bookImg}`}
+                            alt={book.title ?? "image"}
                             width={200}
                             height={300}
                         />

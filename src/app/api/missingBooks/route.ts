@@ -1,10 +1,11 @@
-import { PrismaClient, missingBooks } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextResponse, NextRequest } from "next/server";
 
+//* On get request get all of the missing books from DB and send them to the client
 export const GET = async () => {
 	return await prisma.missingBooks
 		.findMany()
-		.then((response: missingBooks[]) => { // Update the type of the response parameter
+		.then((response: missingBooks) => {
 			console.log("response", response);
 			return NextResponse.json({ books: response }, { status: 200 });
 		})
@@ -18,28 +19,32 @@ export const GET = async () => {
 
 const prisma = new PrismaClient();
 
+
+//* On post request take in search and sort all books by type of list and search query
 export const POST = async (req: NextRequest) => {
-	// get the userId and userType from the request body
+	//* gets the userId and userType from the request body
 	const request = await req.json();
 	const userId: number = parseInt(request.userId);
 	const userType: string = request.userType;
 
-	// Make sure the user is a staff
+	//* Makes sure the user is a staff
 	if (userType !== "staff") {
 		return NextResponse.json({ message: "Unauthorized" }, { status: 200 });
 	}
 
-	// Check if the userId is undefined
+	//* Checks if the userId is undefined
 	if (userId === undefined) {
 		return NextResponse.json(
 			{ message: "Malformed request syntax, Invalid request message framing" },
 			{ status: 400 },
 		);
 	}
-	if (Number.isNaN(userId) || userId === undefined) {
+
+	//* Checks such that the user id is a number
+	if (Number.isNaN(userId)) {
 		return await prisma.missingBooks
 			.findMany()
-			.then((missing: missingBooks[]) => { // Update the type of the missing parameter
+			.then((missing: missingBooks) => {
 				return NextResponse.json({ books: missing }, { status: 200 });
 			})
 			.catch((error: Error) => {
@@ -49,14 +54,14 @@ export const POST = async (req: NextRequest) => {
 				prisma.$disconnect();
 			});
 	}
-	// Get the borrowed books based on staffId from the database
+	//* Get the borrowed books based on staffId from the database
 	return await prisma.missingBooks
 		.findMany({
 			where: {
 				staffId: userId,
 			},
 		})
-		.then((Borrowed: { id: number; regDate: Date; note: string; bookId: number | null; staffId: number | null; studentId: number | null; }[]) => {
+		.then((Borrowed: []) => {
 			return NextResponse.json({ books: Borrowed }, { status: 200 });
 		})
 		.catch((error: Error) => {

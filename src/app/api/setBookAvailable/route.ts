@@ -11,6 +11,8 @@ const prisma = new PrismaClient();
 //* If request is POST then set selected book to available and send the book back to the client
 export const POST = async (req: NextRequest) => {
 	const request = await req.json();
+
+	//* Get the bookId and listType from the request
 	const { bookId, listType }: { bookId: number; listType: string } = request;
 	if (listType === "missing") {
 		//* Update the books status to available
@@ -38,12 +40,7 @@ export const POST = async (req: NextRequest) => {
 			//* Disconnect from prisma and return a message
 			.finally(() => {
 				prisma.$disconnect();
-				return NextResponse.json(
-					{ message: "Check setBookAvialable for more info" },
-					{ status: 200 },
-				);
 			});
-		//? I dont know why this is the one that is being sent
 		return NextResponse.json("Book has been set to available!", {
 			status: 200,
 		});
@@ -89,8 +86,6 @@ export const POST = async (req: NextRequest) => {
 	console.debug(
 		"\n\n\n We have not any other listType than 'missing' for now. Please check the code. and add the other listType.\n\n\n",
 	);
-
-	//* Disconnect from prisma and return a message	
 	return NextResponse.json(
 		{ message: "Check setBookAvialable for more info" },
 		{ status: 200 },

@@ -1,10 +1,10 @@
-"use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import BookList from "../component/BookList";
-import StaticModal from "../component/StaticModal";
-import Navigation from "../../Navigation/page";
-import ProtectedPage from "../../protectedPage/page";
 import { redirect } from "next/navigation";
+import Navigation from "@/app/components/navigation";
+import StaticModal from "../component/StaticModal";
+import ProtectedPage from "../../protectedPage/page";
+
 // Define your component
 const Borrowed = () => {
 	interface BookInfo {

@@ -1,8 +1,7 @@
-"use client";
 import React, { useState } from "react";
 import BookList from "../component/BookList";
+import Navigation from "../../components/navigation";
 import StaticModal from "../component/StaticModal";
-import Navigation from "../../Navigation/page";
 
 // Define your component
 const Available = () => {
