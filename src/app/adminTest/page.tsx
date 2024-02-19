@@ -41,7 +41,7 @@ export default function Page() {
 			lastName: lastName,
 			email: email,
 			phone: phone,
-			image: imagePath,
+			image: imagePath.slice(7),
 			classroom: classroom,
 			qrCode: firstName + lastName + classroom,
 		});
@@ -51,7 +51,6 @@ export default function Page() {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<ProtectedPage />
 			<input
 				type="text"
 				value={firstName}

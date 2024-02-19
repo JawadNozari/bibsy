@@ -20,7 +20,7 @@ export default function Page() {
 		const formData = new FormData();
 		let imagePath = "";
 		if (file !== undefined) {
-			formData.append("file", file || undefined);
+			formData.append("file", file);
 			formData.append("path", "StaffPFP");
 			imagePath = await axios
 				.post("/api/uploader", formData, {
@@ -41,7 +41,7 @@ export default function Page() {
 			lastName: lastName,
 			email: email,
 			phone: phone,
-			image: imagePath,
+			image: imagePath.slice(7),
 			admin: Boolean(admin),
 			qrCode: firstName + lastName + role,
 		});
