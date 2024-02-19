@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import QRCode from "qrcode.react";
 import { Staff, Student } from "@prisma/client";
-import html2canvas from "html2canvas"; // Import html2canvas library
+import htmlToImage from "html-to-image"; // Import html-to-image library
+import { toPng } from "html-to-image";
 
 interface StaticModalProps {
   showModal: boolean; // Prop to determine whether the modal should be displayed
@@ -11,28 +12,21 @@ interface StaticModalProps {
 
 const StaticModal: React.FC<StaticModalProps> = ({ showModal, toggleModal, selectedUser }) => {
   const modalBodyRef = useRef<HTMLDivElement>(null);
+  const elementRef = useRef(null);
 
-  const downloadImage = async () => {
-    if (!modalBodyRef.current) return;
-
-    try {
-      // Use html2canvas to render the modal body as an image
-      const canvas = await html2canvas(modalBodyRef.current);
-      
-      // Convert the canvas to a data URL
-      const dataURL = canvas.toDataURL("image/png");
-
-      // Create a temporary anchor element to trigger the download
-      const downloadLink = document.createElement("a");
-      downloadLink.href = dataURL;
-      downloadLink.download = "modal_body.png";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-    } catch (error) {
-      console.error("Error generating image:", error);
-    }
+  const htmlToImageConvert = () => {
+    toPng(elementRef.current, { cacheBust: false })
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.download = "my-image-name.png";
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+  
 
   return (
     <>
@@ -53,7 +47,7 @@ const StaticModal: React.FC<StaticModalProps> = ({ showModal, toggleModal, selec
               </button>
             </div>
             {/* Modal body */}
-            <div className="flex justify-center" ref={modalBodyRef}>
+            <div className="flex justify-center" ref={elementRef}>
               <div
                 className="p-8 bg-white shadow-lg rounded-lg"
                 style={{
@@ -100,7 +94,7 @@ const StaticModal: React.FC<StaticModalProps> = ({ showModal, toggleModal, selec
             </div>
             {/* Modal footer */}
             <div className="mt-4 flex justify-center">
-              <button onClick={downloadImage} className="px-4 py-2 mr-2 bg-green-500 text-white rounded-md hover:bg-blue-600" type="button">
+              <button onClick={htmlToImageConvert} className="px-4 py-2 mr-2 bg-green-500 text-white rounded-md hover:bg-blue-600" type="button">
                 Download
               </button>
               <button onClick={toggleModal} className="px-4 py-2 ml-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" type="button">
