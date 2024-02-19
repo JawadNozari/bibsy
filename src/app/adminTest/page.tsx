@@ -4,7 +4,6 @@
 import { useState } from "react";
 import axios from "axios";
 import bcrypt from "bcryptjs";
-import ProtectedPage from "../protectedPage/page";
 
 export default function Page() {
 	const [password, setPassword] = useState("");

@@ -61,6 +61,6 @@ export const POST = async (req: NextRequest) => {
 
   }finally{
 	prisma.$disconnect();
-	return NextResponse.json({ status: 200 });
+	 NextResponse.json({ status: 200 });
   }
 };
