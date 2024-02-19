@@ -7,7 +7,7 @@ export const GET = async () => {
 	return await prisma.book
 		.findMany()
 		.then((books) => {
-			//* Sorts books by largest id
+			// Sorts book by largest id
 			books.sort((a, b) => {
 				return b.id - a.id;
 			});

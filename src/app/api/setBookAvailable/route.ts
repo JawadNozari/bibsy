@@ -41,7 +41,6 @@ export const POST = async (req: NextRequest) => {
 			.finally(() => {
 				prisma.$disconnect();
 			});
-		//* Return a message to the client
 		return NextResponse.json("Book has been set to available!", {
 			status: 200,
 		});
@@ -87,8 +86,6 @@ export const POST = async (req: NextRequest) => {
 	console.debug(
 		"\n\n\n We have not any other listType than 'missing' for now. Please check the code. and add the other listType.\n\n\n",
 	);
-
-	//* Disconnect from prisma and return a message
 	return NextResponse.json(
 		{ message: "Check setBookAvialable for more info" },
 		{ status: 200 },

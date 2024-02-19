@@ -1,0 +1,452 @@
+{
+    "staffUsers": [
+    {
+    "id": 3,
+    "admin": true,
+    "password": "Admin",
+    "firstName": "Admin",
+    "lastName": "Admin",
+    "email": "admin@admin.se",
+    "phone": "12345",
+    "image": "image/testBild.png",
+    "qrCode": "12345",
+    "borrowed": []
+    },
+    {
+    "id": 1,
+    "admin": false,
+    "password": "1",
+    "firstName": "Tom",
+    "lastName": "Stylin",
+    "email": "tom.styling@gmail.com",
+    "phone": "2",
+    "image": "yeah.jpg",
+    "qrCode": "2",
+    "borrowed": [
+    {
+    "id": 62,
+    "regDate": "2024-02-06T14:53:28.223Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 63,
+    "regDate": "2024-02-06T14:55:35.801Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 64,
+    "regDate": "2024-02-07T08:32:16.604Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 65,
+    "regDate": "2024-02-07T08:57:28.848Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 66,
+    "regDate": "2024-02-07T09:57:15.700Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 67,
+    "regDate": "2024-02-07T09:59:02.864Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 68,
+    "regDate": "2024-02-07T10:39:00.905Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 69,
+    "regDate": "2024-02-07T10:49:22.689Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 70,
+    "regDate": "2024-02-07T11:39:38.688Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 71,
+    "regDate": "2024-02-07T13:55:09.461Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 72,
+    "regDate": "2024-02-07T15:11:24.239Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 73,
+    "regDate": "2024-02-08T09:06:48.758Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    }
+    ]
+    },
+    {
+    "id": 4,
+    "admin": false,
+    "password": "NameAdmin",
+    "firstName": "hello",
+    "lastName": "My",
+    "email": "test.admin@gmail.com",
+    "phone": "2143543t",
+    "image": "BigAdmin.png",
+    "qrCode": "214353",
+    "borrowed": []
+    },
+    {
+    "id": 6,
+    "admin": true,
+    "password": "Josfwjfjwe",
+    "firstName": "Jonatan",
+    "lastName": "Bjorklin",
+    "email": "jonatan.bjorklin@gmail.com",
+    "phone": "02402042",
+    "image": "BigAdmin.png",
+    "qrCode": "325r423t24",
+    "borrowed": []
+    },
+    {
+    "id": 7,
+    "admin": true,
+    "password": "Myname",
+    "firstName": "hello",
+    "lastName": "there",
+    "email": "albin@gmail.com",
+    "phone": "2030204",
+    "image": "fgrgrge.png",
+    "qrCode": "hellothere",
+    "borrowed": []
+    },
+    {
+    "id": 8,
+    "admin": true,
+    "password": "123456",
+    "firstName": "Jonatan",
+    "lastName": "Bjorklin",
+    "email": "jonatan.bjorklin@hotmail.com",
+    "phone": "64534231234",
+    "image": "pfp.png",
+    "qrCode": "JonatanBjorklin",
+    "borrowed": []
+    },
+    {
+    "id": 9,
+    "admin": false,
+    "password": "342551",
+    "firstName": "Rolan",
+    "lastName": "Hello",
+    "email": "rolan.hello@gmail.com",
+    "phone": "134253675",
+    "image": "pfp.png",
+    "qrCode": "RolanHelloStaff",
+    "borrowed": []
+    }
+    ],
+    "studentUsers": [
+    {
+    "id": 2,
+    "password": "123",
+    "firstName": "Adam",
+    "lastName": "Smasher",
+    "email": "adam.smasher@gmail.com",
+    "phone": "073112911",
+    "image": "guy.jpg",
+    "qrCode": "826145424",
+    "classroom": null,
+    "borrowed": []
+    },
+    {
+    "id": 3,
+    "password": "123",
+    "firstName": "Dave",
+    "lastName": "Giant",
+    "email": "dave.giant@gmail.com",
+    "phone": "073921378",
+    "image": "guy.jpg",
+    "qrCode": "512412321",
+    "classroom": null,
+    "borrowed": []
+    },
+    {
+    "id": 4,
+    "password": "123",
+    "firstName": "Dave",
+    "lastName": "Neighbor",
+    "email": "dave.neighbor@gmail.com",
+    "phone": "073847193",
+    "image": "guy.jpg",
+    "qrCode": "821367321",
+    "classroom": null,
+    "borrowed": []
+    },
+    {
+    "id": 6,
+    "password": "123",
+    "firstName": "Bond",
+    "lastName": "Shahriar Alam",
+    "email": "bond.shahriaralam@gmail.com",
+    "phone": "0739481299",
+    "image": "guy.jpg",
+    "qrCode": "123456789009dfghb87543212345678987654rdfghjkmnbhg",
+    "classroom": null,
+    "borrowed": []
+    },
+    {
+    "id": 5,
+    "password": "123",
+    "firstName": "Jaeff",
+    "lastName": "Bezoz",
+    "email": "jaeff.bezoz@gmail.com",
+    "phone": "073999999",
+    "image": "guy.jpg",
+    "qrCode": "845648956",
+    "classroom": null,
+    "borrowed": []
+    },
+    {
+    "id": 7,
+    "password": "345",
+    "firstName": "John",
+    "lastName": "Breaker",
+    "email": "John.Breaker@gmail.com",
+    "phone": "073984675",
+    "image": "yeah.jpg",
+    "qrCode": "754675756",
+    "classroom": null,
+    "borrowed": []
+    },
+    {
+    "id": 8,
+    "password": "123",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@gmail.com",
+    "phone": "1234567890",
+    "image": "TestBild.png",
+    "qrCode": "",
+    "classroom": null,
+    "borrowed": []
+    },
+    {
+    "id": 11,
+    "password": "123",
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.lo@gmail.com",
+    "phone": "2243",
+    "image": "TestBild.png",
+    "qrCode": "1234567890",
+    "classroom": null,
+    "borrowed": []
+    },
+    {
+    "id": 12,
+    "password": "how",
+    "firstName": "hello",
+    "lastName": "there",
+    "email": "hello.there@gmail.se",
+    "phone": "303003",
+    "image": "you",
+    "qrCode": "342245",
+    "classroom": null,
+    "borrowed": []
+    },
+    {
+    "id": 34,
+    "password": "123",
+    "firstName": "csJohn",
+    "lastName": "Dcscsoe",
+    "email": "jocshn.doe@gmail.com",
+    "phone": "122334567890",
+    "image": "TestB42ild.png",
+    "qrCode": "6456",
+    "classroom": "3A",
+    "borrowed": []
+    },
+    {
+    "id": 1,
+    "password": "1",
+    "firstName": "Max",
+    "lastName": "Power",
+    "email": "max.power@ntig.se",
+    "phone": "2",
+    "image": "guy.jpg",
+    "qrCode": "2",
+    "classroom": "2",
+    "borrowed": [
+    {
+    "id": 62,
+    "regDate": "2024-02-06T14:53:28.223Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 63,
+    "regDate": "2024-02-06T14:55:35.801Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 64,
+    "regDate": "2024-02-07T08:32:16.604Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 65,
+    "regDate": "2024-02-07T08:57:28.848Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 66,
+    "regDate": "2024-02-07T09:57:15.700Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 67,
+    "regDate": "2024-02-07T09:59:02.864Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 68,
+    "regDate": "2024-02-07T10:39:00.905Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 69,
+    "regDate": "2024-02-07T10:49:22.689Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 70,
+    "regDate": "2024-02-07T11:39:38.688Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 71,
+    "regDate": "2024-02-07T13:55:09.461Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 72,
+    "regDate": "2024-02-07T15:11:24.239Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    },
+    {
+    "id": 73,
+    "regDate": "2024-02-08T09:06:48.758Z",
+    "note": "Borrowed by student",
+    "bookId": 42,
+    "staffId": 1,
+    "studentId": 1
+    }
+    ]
+    },
+    {
+    "id": 36,
+    "password": "ookie",
+    "firstName": "jawad",
+    "lastName": "pookie",
+    "email": "jawad@coomenter.com",
+    "phone": "4567876545676",
+    "image": "243wegrfefgfdbgfseaw",
+    "qrCode": "2345432435",
+    "classroom": "efgefge",
+    "borrowed": []
+    },
+    {
+    "id": 42,
+    "password": "tersgw23",
+    "firstName": "hello",
+    "lastName": "test",
+    "email": "hello.bye@gmail.com",
+    "phone": "23546432",
+    "image": "test2",
+    "qrCode": "35264574",
+    "classroom": "432",
+    "borrowed": []
+    },
+    {
+    "id": 43,
+    "password": "132435",
+    "firstName": "Albin",
+    "lastName": "Lundström",
+    "email": "albin@jmail.com",
+    "phone": "9250345",
+    "image": "pfp.png",
+    "qrCode": "AlbinLundströmTek4",
+    "classroom": "Tek4",
+    "borrowed": []
+    }
+    ]
+    }

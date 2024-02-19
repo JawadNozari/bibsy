@@ -66,8 +66,10 @@ export const POST = async (req: NextRequest) => {
 		})
 		.catch((error: Error) => {
 			return NextResponse.json({ message: error }, { status: 200 });
-		})
-		.finally(() => {
-			prisma.$disconnect();
 		});
+		try {
+			// code inside the finally block
+		} catch (error) {
+			// handle the error
+		}
 };

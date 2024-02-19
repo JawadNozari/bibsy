@@ -1,4 +1,4 @@
-import { PrismaClient} from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -9,7 +9,7 @@ export const GET = async () => {
 		.then((staff) => {
 			return NextResponse.json(staff, { status: 200 });
 		})
-		.catch((error:Error) => {
+		.catch((error: Error) => {
 			return NextResponse.json({ error: error }, { status: 500 });
 		})
 		.finally(() => {

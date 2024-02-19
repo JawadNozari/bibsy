@@ -6,6 +6,7 @@ export const GET = async () => {
 	return await prisma.missingBooks
 		.findMany()
 		.then((response) => {
+			console.log("response", response);
 			return NextResponse.json({ books: response }, { status: 200 });
 		})
 		.catch((error: Error) => {
@@ -17,7 +18,6 @@ export const GET = async () => {
 };
 
 const prisma = new PrismaClient();
-
 
 //* On post request take in search and sort all books by type of list and search query
 export const POST = async (req: NextRequest) => {
