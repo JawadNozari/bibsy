@@ -1,11 +1,21 @@
 "use client";
-import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SelectComponent from "./SelectComponent";
 
 export default function RegisterMember() {
 	const [role, setRole] = useState<string>("");
 	const [, setAdmin] = useState<boolean>(false);
+
+	const [selectedOption, setSelectedOption] = useState("CSVUser");
+	const [isSingleUser, setIsSingleUser] = useState(true);
+
+	useEffect(() => {
+		// Uppdatera gränssnittet baserat på vald option
+		setIsSingleUser(
+			selectedOption === "CSVSingleUser" ||
+				selectedOption === "CSVMultipleUsers",
+		);
+	}, [selectedOption]);
 
 	const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const selectedRole = event.target.value;
@@ -121,12 +131,35 @@ export default function RegisterMember() {
 							</div>
 						</div>
 					</form>
-					<button
-						type="submit"
-						className=" btn block bg-neutral-50  hover:text-gray-100 hover:bg-gray-800  text-gray-500 dark:bg-gray-700  btn-active "
-					>
-						Register
-					</button>
+					<div className="flex justify-around">
+						<button
+							type="submit"
+							className=" btn block bg-neutral-50  hover:text-gray-100 hover:bg-gray-800  text-gray-500 dark:bg-gray-700  btn-active "
+						>
+							Register
+						</button>
+
+						<div className="relative z-0 mb-5 group">
+							<input
+								type="file"
+								name="fileUploader"
+								id="fileUploader"
+								className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+
+								style={{ display: isSingleUser ? "block" : "none" }} // Visa endast om isSingleUser är true
+							/>
+							<select
+								className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+								name="CSVUser"
+								id="CSVUser"
+								onChange={(e) => setSelectedOption(e.target.value)}
+							>
+								<option value="CSVUser">Välj CSV</option>
+								<option value="CSVSingleUser">CSV SingleUser</option>
+								<option value="CSVMultipleUsers">CSV MultipleUsers</option>
+							</select>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
