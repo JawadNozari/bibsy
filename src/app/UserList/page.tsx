@@ -96,11 +96,11 @@ export default function Home() {
 						style={detailsAnimation} // Set animation style
 					>
 						<Image
-							className="w-10 h-10 rounded-full "
+							className="w-56 h-56 rounded-full "
 							width={200}
 							height={200}
 							src={
-								selectedUser.image.includes(".") ? `/${selectedUser.image}` : "/img/img.jpg"
+								selectedUser.image.includes(".") && selectedUser.image != null ? `/${selectedUser.image}` : "/pfp.jpg"
 							}
 							alt={`${selectedUser?.firstName} ${selectedUser?.lastName}`} // Add null check for selectedUser
 						/>

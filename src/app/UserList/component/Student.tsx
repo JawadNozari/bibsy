@@ -215,7 +215,7 @@ const StudentList: React.FC<StudentListProps> = ({
 								width={10}
 								height={10}
 								src={
-									user.image.includes(".") ? `/${user.image}` : "/img/img.jpg"
+									user.image.includes(".") ? `/${user.image}` : "/pfp.jpg"
 								}
 								alt={`${user.firstName} ${user.lastName}`}
 							/>
