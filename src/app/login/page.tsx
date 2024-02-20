@@ -55,7 +55,7 @@ const Page = () => {
         const decodedToken = JSON.parse(atob(responseData.token.split(".")[1])); // * Decode JWT to get user details
 
         if (decodedToken.user.admin === true) {
-          router.push("/adminTest");
+          router.push("/");
         } else {
           router.push("/protectedPage");
         }
