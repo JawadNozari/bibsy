@@ -203,7 +203,9 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 								className="w-10 h-10 rounded-full"
 								width={10}
 								height={10}
-								src={`/StaffPFP/${user.image}`}
+								src={
+									user.image.includes(".") ? `/${user.image}` : "/img/img.jpg"
+								}
 								alt={`${user.firstName} ${user.lastName}`}
 							/>
 							<div className="ps-3">

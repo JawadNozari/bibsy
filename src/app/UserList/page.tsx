@@ -99,7 +99,9 @@ export default function Home() {
 							className="w-10 h-10 rounded-full "
 							width={200}
 							height={200}
-							src={`/${pathofimg}/${selectedUser?.image}`} // Add null check for selectedUser
+							src={
+								selectedUser.image.includes(".") ? `/${selectedUser.image}` : "/img/img.jpg"
+							}
 							alt={`${selectedUser?.firstName} ${selectedUser?.lastName}`} // Add null check for selectedUser
 						/>
 						<div className="p-2 max-h-screen ">
