@@ -73,7 +73,6 @@ const StaticModal: React.FC<StaticModalProps> = ({
 
 	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
-		console.log(bookInfo);
 		const formData = new FormData();
 		let imagePath = "";
 		if (file !== undefined) {
