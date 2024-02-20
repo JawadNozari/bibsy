@@ -1,3 +1,6 @@
+//! FIX UNUSED VARS
+/* eslint-disable no-unused-vars */
+
 import React, { useState } from "react"; // Import React and useState hook from React library
 import Image from "next/image"; // Import Image component from Next.js library for displaying images
 import StaffEditModal from "./StaffEditModal"; // Import StaffEditModal component from another file
@@ -77,8 +80,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					...updatedUsers[index],
 					userType: "staff",
 				};
-				await axios
-				.post("/api/editUsers", user, {
+				await axios.post("/api/editUsers", user, {
 					headers: { "Content-Type": "application/json" },
 				});
 			}

@@ -1,3 +1,6 @@
+//! FIX UNUSED VARS
+/* eslint-disable no-unused-vars */
+
 import React from "react"; // Import React library for using React components
 import Image from "next/image"; // Import Image component from Next.js for optimized image loading
 
@@ -226,8 +229,8 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 										<Image
 											src={
 												imagePreview !== null
-												? `/images/${imagePreview}`
-												: "/default-image.png"
+													? `/images/${imagePreview}`
+													: "/default-image.png"
 											} // Provide a default image
 											alt="Full size"
 											layout="intrinsic"
@@ -237,9 +240,10 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 										/>
 										<span
 											className="absolute top-2 right-2 text-white cursor-pointer"
-											onClick={() => setShowFullImage(false)} 
-											onKeyDown={(event) => { 
-												if (event.key === "Enter" || event.key === "Space") { // Close full-size image on Enter or Space key
+											onClick={() => setShowFullImage(false)}
+											onKeyDown={(event) => {
+												if (event.key === "Enter" || event.key === "Space") {
+													// Close full-size image on Enter or Space key
 													setShowFullImage(false);
 												}
 											}}

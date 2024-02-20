@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { Book } from "@prisma/client";
-import Navigation from "../Navigation/page";
+import Navigation from "../components/navigation";
 
 interface VolumeInfo {
 	title: string;
@@ -136,7 +136,7 @@ export default function Home() {
   return (
     <div className="flex justify-center items-center  md: h-screen bg-white gap-11 w-full "> 
     <div>
-    <Navigation />
+      <Navigation />
     </div>
       <div className="flex items-center justify-center  md:flex-row md:items-start w-full">
         <div className="shadow-2xl  shadow-black bg-gray-800  text-neutral-50 p-6 rounded-2xl max-w-2xl  w-10/12">

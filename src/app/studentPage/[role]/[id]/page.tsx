@@ -4,7 +4,7 @@ import Image from "next/image";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { Staff, Student, borrowedBooks } from "@prisma/client";
-import Navigation from "../../../Navigation/page";
+import Navigation from "../../../components/navigation";
 
 type UserModal = {
 	phone: ReactNode;

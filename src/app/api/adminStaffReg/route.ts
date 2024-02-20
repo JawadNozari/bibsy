@@ -1,4 +1,5 @@
 //TODO: Check if the user already exists before creating a new user (ERROR handling)
+//TODO: Comment the code
 
 import { PrismaClient, Staff } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
@@ -15,9 +16,6 @@ export const POST = async (req: NextRequest) => {
 	const { password, firstName, lastName, email, phone, image, qrCode, admin} =
 		(await req.json()) as Staff; // We have to await the request body to get the data
 
-	console.log(` \n\n\nUsers Email:${email}`); 
-	// Create a new Staff record using Prisma client
-	
 	return await prisma.staff
 		.create({
 			data: {

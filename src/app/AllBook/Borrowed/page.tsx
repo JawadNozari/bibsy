@@ -1,12 +1,27 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import BookList from "../component/BookList";
-import StaticModal from "../component/StaticModal";
-import Navigation from "../../Navigation/page";
-import ProtectedPage from "../../protectedPage/page";
 import { redirect } from "next/navigation";
+import Navigation from "@/app/components/navigation";
+import StaticModal from "../component/StaticModal";
+import ProtectedPage from "../../protectedPage/page";
+
 // Define your component
 const Borrowed = () => {
+	interface UserToken {
+		iat: number;
+		role: string;
+		user: {
+			admin: boolean;
+			email: string;
+			firstName: string;
+			id: number;
+			lastName: string;
+			password: string;
+			phone: string;
+			qrCode: string;
+		};
+	}
 	interface BookInfo {
 		id: number;
 		price: number;
@@ -26,6 +41,7 @@ const Borrowed = () => {
 	};
 	const [showModal, setShowModal] = useState(false);
 	const [bookInfo, setBookInfo] = useState<BookInfo | null>(null);
+	const [userInfo, setUserInfo] = useState<UserToken | null>(null);
 	const toggleModal = () => {
 		setShowModal(!showModal);
 	};
@@ -37,6 +53,7 @@ const Borrowed = () => {
 		if (token) {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
 			console.log(decodedToken);
+			setUserInfo(decodedToken);
 			decodedToken.role !== "Staff" ? redirect("/login") : null;
 		} else {
 			redirect("/login");
@@ -67,6 +84,24 @@ const Borrowed = () => {
 								invNr: 0,
 								isbn: "",
 								bookImg: "",
+						  }
+				}
+				userInfo={
+					userInfo !== null
+						? userInfo
+						: {
+								iat: 0,
+								role: "none",
+								user: {
+									admin: false,
+									email: "none",
+									firstName: "none",
+									id: -20,
+									lastName: "none",
+									password: "none",
+									phone: "none",
+									qrCode: "none",
+								},
 						  }
 				}
 			/>

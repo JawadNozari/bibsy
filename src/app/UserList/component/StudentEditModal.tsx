@@ -1,3 +1,7 @@
+//! FIX UNUSED VARS
+/* eslint-disable no-unused-vars */
+
+
 import React from "react";
 import Image from "next/image";
 import SelectComponent from "./SelectComponent"; // Importing the SelectComponent component

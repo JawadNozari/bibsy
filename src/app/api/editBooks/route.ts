@@ -1,35 +1,29 @@
-//* EDIT BOOK 
-
-// Imports
-import { PrismaClient, Book } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-
-// Respons for a get request
 export const GET = async () => {
 	return NextResponse.json({ message: "This Method is not Allowed" });
 };
 
-
-//* Main function for uppdateing book data in the database
 const prisma = new PrismaClient();
-type incomingData = Book & { bookImg: File | undefined };
 export const POST = async (req: NextRequest) => {
-	
+	const data = await req.json();
+	if (data === undefined) {
+		return NextResponse.json(
+			{ message: "Malformed request syntax, Invalid request message framing" },
+			{ status: 400 },
+		);
+	}
+	const { id, title, author, publisher, invNr, price, image, isbn, published } = data;
 
-	// Setting upp variables for the data from the post
-	const request: incomingData = await req.json();
-	const {bookImg ,id ,author  ,title  ,publishers  ,published  ,isbn  ,invNr  ,price } = (request as incomingData);
-
-	// Checks if any variable is null and gives a response
 	if (
 		!id ||
 		!title ||
 		!author ||
-		!publishers ||
+		!publisher ||
 		!invNr ||
 		!price ||
-		!bookImg ||
+		!image ||
 		!isbn ||
 		!published
 	) {
@@ -40,37 +34,34 @@ export const POST = async (req: NextRequest) => {
 			{ status: 400 },
 		);
 	}
-	//* Prisma function to uppdate the user
-	try {
 
-		return await prisma.book
-			.update({
-				where: { id: id },
-				data: {
-					title: title,
-					author: author,
-					publishers: publishers,
-					published: new Date(published),
-					invNr: invNr,
-					price: price,
-					isbn: isbn,
-					bookImg: `UploadedImage/${bookImg}`,
-				},
-			});
-	}
-	catch{
-		// Extra error checking
-		console.error(Error);
-		return NextResponse.json(
-			{
-				message:
-					"Type Error. This can be caused because of malformed Data (Check Data Type)",
+	return await prisma.book
+		.update({
+			where: { id: id },
+			data: {
+				title: title,
+				author: author,
+				publishers: publisher,
+				invNr: invNr,
+				price: price,
+				isbn: isbn, // ISBN Max Length is 9
+				bookImg: image,
 			},
-			{ status: 500 },
-		);
-	}
-	finally{
-		prisma.$disconnect();
-		return NextResponse.json({ status: 200 });
-	}
+		})
+		.then((edit) => {
+			return NextResponse.json(edit, { status: 200 });
+		})
+		.catch((error:Error) => {
+			console.debug(error);
+			return NextResponse.json(
+				{
+					message:
+						"Validation Error. This can be cuased becuase of mallformed Data (Check Data Type)",
+				},
+				{ status: 500 },
+			);
+		})
+		.finally(() => {
+			prisma.$disconnect();
+		});
 };

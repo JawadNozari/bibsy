@@ -1,14 +1,28 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import BookList from "../component/BookList";
-import StaticModal from "../component/StaticModal";
-import Navigation from "../../Navigation/page";
-import { redirect } from "next/navigation";
 import ProtectedPage from "../../protectedPage/page";
+import Navigation from "../../components/navigation";
+import { redirect } from "next/navigation";
+import StaticModal from "../component/StaticModal";
 
 // Define your component
 const Missing = () => {
 	<ProtectedPage />;
+	interface UserToken {
+		iat: number;
+		role: string;
+		user: {
+			admin: boolean;
+			email: string;
+			firstName: string;
+			id: number;
+			lastName: string;
+			password: string;
+			phone: string;
+			qrCode: string;
+		};
+	}
 	interface BookInfo {
 		id: number;
 		price: number;
@@ -29,6 +43,8 @@ const Missing = () => {
 
 	const [bookInfo, setBookInfo] = useState<BookInfo | null>(null);
 	const [showModal, setShowModal] = useState(false);
+	const [userInfo, setUserInfo] = useState<UserToken | null>(null);
+
 	const toggleModal = () => {
 		setShowModal(!showModal);
 	};
@@ -40,6 +56,7 @@ const Missing = () => {
 		if (token) {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
 			console.log(decodedToken);
+			setUserInfo(decodedToken);
 			decodedToken.role !== "Staff" ? redirect("/login") : null;
 		} else {
 			redirect("/login");
@@ -71,6 +88,24 @@ const Missing = () => {
 								invNr: 0,
 								isbn: "",
 								bookImg: "",
+						  }
+				}
+				userInfo={
+					userInfo !== null
+						? userInfo
+						: {
+								iat: 0,
+								role: "none",
+								user: {
+									admin: false,
+									email: "none",
+									firstName: "none",
+									id: -20,
+									lastName: "none",
+									password: "none",
+									phone: "none",
+									qrCode: "none",
+								},
 						  }
 				}
 			/>
