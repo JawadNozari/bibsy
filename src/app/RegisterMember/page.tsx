@@ -1,20 +1,30 @@
 "use client";
 import { useState, useEffect } from "react";
 import SelectComponent from "./SelectComponent";
+import axios from "axios";
+import Papa from "papaparse";
+
+type PapaData = {
+	data: string[];
+};
 
 export default function RegisterMember() {
 	const [role, setRole] = useState<string>("");
 	const [, setAdmin] = useState<boolean>(false);
+	const [selectedValue, setSelectedValue] = useState("students");
 
 	const [selectedOption, setSelectedOption] = useState("CSVUser");
 	const [isSingleUser, setIsSingleUser] = useState(true);
+	const [isMultipleUsers, setIsMultipleUsers] = useState(false);
+
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [phone, setPhone] = useState("");
 
 	useEffect(() => {
 		// Uppdatera gränssnittet baserat på vald option
-		setIsSingleUser(
-			selectedOption === "CSVSingleUser" ||
-				selectedOption === "CSVMultipleUsers",
-		);
+		setIsSingleUser(selectedOption === "CSVSingleUser");
+		setIsMultipleUsers(selectedOption === "CSVMultipleUsers");
 	}, [selectedOption]);
 
 	const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -23,6 +33,42 @@ export default function RegisterMember() {
 		if (selectedRole !== "staff") {
 			setAdmin(false);
 		}
+	};
+
+	const handleRadioChange = (value: string) => {
+		setSelectedValue(value);
+	};
+
+	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files[0];
+
+		//* Checks if its a multiple user file or a single user file, if its a multiple user file, then it sends the data to the server
+		if (isMultipleUsers) {
+			Papa.parse(file, {
+				complete: (result) => {
+					axios.post("/api/createUsersCSV", {
+						data: result.data,
+						userType: selectedValue,
+					});
+				},
+			});
+			alert("File uploaded");
+		} 
+		//* If its a single user file, then it parses the data and sets the state of the input fields
+		else if (isSingleUser) {
+			Papa.parse(file, {
+				//* The type PapaData is defined at the top of this file, and is used to define the type of the result of the parse function
+				complete: (result: PapaData) => {
+					if (result.data) {
+						setFirstName(result.data[0][0]);
+						setLastName(result.data[0][1]);
+						setPhone(result.data[0][2]);
+					}
+				},
+			});
+		}
+		//* Resets the input field to be empty
+		event.target.value = "";
 	};
 
 	return (
@@ -38,6 +84,8 @@ export default function RegisterMember() {
 									id="First Name"
 									className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
 									placeholder=" "
+									value={firstName}
+									onChange={(e) => setFirstName(e.target.value)}
 									required
 								/>
 								<label
@@ -54,6 +102,8 @@ export default function RegisterMember() {
 									id="Last Name"
 									className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
 									placeholder=" "
+									value={lastName}
+									onChange={(e) => setLastName(e.target.value)}
 									required
 								/>
 								<label
@@ -70,6 +120,8 @@ export default function RegisterMember() {
 									id="Phone"
 									className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
 									placeholder=" "
+									value={phone}
+									onChange={(e) => setPhone(e.target.value)}
 									required
 								/>
 								<label
@@ -140,14 +192,27 @@ export default function RegisterMember() {
 						</button>
 
 						<div className="relative z-0 mb-5 group">
-							<input
-								type="file"
-								name="fileUploader"
-								id="fileUploader"
-								className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-
-								style={{ display: isSingleUser ? "block" : "none" }} // Visa endast om isSingleUser är true
-							/>
+							<div style={{ display: isSingleUser || isMultipleUsers ? "block" : "none" }}>
+								<input
+									type="file"
+									name="fileUploader"
+									id="fileUploader"
+									className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+									accept=".csv"
+									onChange={(e) => { handleFileUpload(e); }}
+								/>
+								<div style={{ display: isMultipleUsers ? "block" : "none" }}>
+									<label htmlFor="students">
+										<input type="radio" value="students" onChange={() => handleRadioChange("students")} checked={selectedValue === "students"} />
+										Students
+									</label>
+									<br />
+									<label htmlFor="staff">
+										<input type="radio" name="staff" onChange={() => handleRadioChange("staff")} value="staff" checked={selectedValue === "staff"} />
+										Staff
+									</label>
+								</div>
+							</div>
 							<select
 								className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
 								name="CSVUser"
