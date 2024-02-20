@@ -76,6 +76,16 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					admin: editedAdmin === "true", // Convert the string to boolean and update the admin status
 					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one is selected
 				};
+				const formData = new FormData();
+				let imagePath = "";
+				if (selectedImage !== undefined) {
+				formData.append("file", selectedImage || undefined);
+				formData.append("path", "bookImage");
+				imagePath = await axios
+				.post("/api/uploader", formData, {
+					headers: { "Content-Type": "multipart/form-data" },
+				});
+				}
 				const user = {
 					...updatedUsers[index],
 					userType: "staff",
