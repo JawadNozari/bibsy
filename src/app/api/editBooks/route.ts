@@ -2,7 +2,6 @@
 
 // Imports
 import { PrismaClient, Book } from "@prisma/client";
-import { publicDecrypt } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 // Respons for a get request
