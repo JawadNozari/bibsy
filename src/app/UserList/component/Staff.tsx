@@ -76,16 +76,16 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					admin: editedAdmin === "true", // Convert the string to boolean and update the admin status
 					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one is selected
 				};
+				if (selectedImage !== null && selectedImage !== undefined) {
 				const formData = new FormData();
 				let imagePath = "";
-				if (selectedImage !== undefined) {
 				formData.append("file", selectedImage || undefined);
-				formData.append("path", "bookImage");
+				formData.append("path", "StaffPFP");
 				imagePath = await axios
 				.post("/api/uploader", formData, {
 					headers: { "Content-Type": "multipart/form-data" },
 				});
-				}
+			    }
 				const user = {
 					...updatedUsers[index],
 					userType: "staff",
@@ -203,7 +203,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 								className="w-10 h-10 rounded-full"
 								width={10}
 								height={10}
-								src={`/image/${user.image}`}
+								src={`/StaffPFP/${user.image}`}
 								alt={`${user.firstName} ${user.lastName}`}
 							/>
 							<div className="ps-3">

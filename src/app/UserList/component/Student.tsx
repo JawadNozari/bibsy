@@ -83,6 +83,15 @@ const StudentList: React.FC<StudentListProps> = ({
 					classroom: editedClassroom,
 					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one has been selected
 				};
+				if (selectedImage !== null && selectedImage !== undefined) {
+					const formData = new FormData();
+					formData.append("file", selectedImage || undefined);
+					formData.append("path", "StudentPFP");
+					await axios
+					.post("/api/uploader", formData, {
+						headers: { "Content-Type": "multipart/form-data" },
+					});
+				}
 				const user = {
 					...updatedUsers[index],
 					userType: "student",
@@ -205,7 +214,7 @@ const StudentList: React.FC<StudentListProps> = ({
 								className="w-10 h-10 rounded-full"
 								width={10}
 								height={10}
-								src={`/image/${user.image}`}
+								src={`/StudentPFP/${user.image}`}
 								alt={`${user.firstName} ${user.lastName}`}
 							/>
 							<div className="ps-3">

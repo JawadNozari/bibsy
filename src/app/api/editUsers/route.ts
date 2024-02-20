@@ -31,8 +31,8 @@ export const POST = async (req: NextRequest) => {
 		);
 	}
 	try {
-			// Update for staff
-			await (prisma as any)[userType]
+			// Update for users
+			const updatedUser = await (prisma as any)[userType]
 			.update({
 				where: { id: Number(id) },
 				data: {
@@ -47,7 +47,9 @@ export const POST = async (req: NextRequest) => {
 					...(userType === "student" && {classroom: studentclass}),
 					...(userType === "student" && {qrCode: firstName + lastName + studentclass}),
 				},
+				
 			});
+			return NextResponse.json({ user: updatedUser }, { status: 200 });
 	}catch {
 		// Extra error checking
 		console.error(Error);
@@ -58,9 +60,5 @@ export const POST = async (req: NextRequest) => {
 			},
 			{ status: 500 },
 		);
-
-  }finally{
-	prisma.$disconnect();
-	 NextResponse.json({ status: 200 });
   }
 };
