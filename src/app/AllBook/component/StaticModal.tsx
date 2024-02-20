@@ -90,16 +90,16 @@ const StaticModal: React.FC<StaticModalProps> = ({
 				});
 		}
 		const userData: Book = {
-			id: bookInfo.id,
+			id: bookInfoState.id,
 			bookImg: imagePath,
-			title: bookInfo.title,
-			author: bookInfo.author,
-			publishers: bookInfo.publishers,
-			published: new Date(bookInfo.published),
+			title: bookInfoState.title,
+			author: bookInfoState.author,
+			publishers: bookInfoState.publishers,
+			published: new Date(bookInfoState.published),
 			regDate: new Date(),
-			isbn: bookInfo.isbn,
-			invNr: bookInfo.invNr,
-			price: bookInfo.price,
+			isbn: bookInfoState.isbn,
+			invNr: bookInfoState.invNr,
+			price: bookInfoState.price,
 			available: true,
 		};
 

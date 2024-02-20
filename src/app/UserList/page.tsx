@@ -80,7 +80,7 @@ export default function Home() {
 		transform: "translateX(-100%)", // Hide user details off-screen
 		config: { mass: 1, tension: 170, friction: 26 }, // Set animation configuration
 	}));
-
+	const pathofimg = selectedUser?.classroom === undefined ? "StaffPFP" : "StudentPFP";
 	// Return the user list page
 	return (
 		<main className="flex items-center h-screen  bg-neutral-200 dark:bg-gray-800 justify-between">
@@ -96,10 +96,12 @@ export default function Home() {
 						style={detailsAnimation} // Set animation style
 					>
 						<Image
-							className="w-10 h-10 rounded-full "
+							className="w-56 h-56 rounded-full "
 							width={200}
 							height={200}
-							src={`/images/${selectedUser?.image}`} // Add null check for selectedUser
+							src={
+								selectedUser.image.includes(".") && selectedUser.image != null ? `/${selectedUser.image}` : "/pfp.jpg"
+							}
 							alt={`${selectedUser?.firstName} ${selectedUser?.lastName}`} // Add null check for selectedUser
 						/>
 						<div className="p-2 max-h-screen ">
