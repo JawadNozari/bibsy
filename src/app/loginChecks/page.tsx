@@ -1,4 +1,4 @@
-"use client";
+/*
 let userType = "";
 let isAdmin = false;
 
@@ -14,4 +14,9 @@ function CheckIfLoggedIn() {
 }
 CheckIfLoggedIn();
 
-export { isAdmin, userType };
+export { isAdmin, userType }; */
+
+export default function App() {
+    //! This is just to fix yarn build, this file is to be deleted when code is added to the navbar
+    return (<></>);
+};
