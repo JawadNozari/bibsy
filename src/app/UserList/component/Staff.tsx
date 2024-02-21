@@ -17,7 +17,7 @@ interface User {
 	image: string;
 	classroom: string;
 	admin: boolean;
-	qrCode: number;
+	qrCode: string;
 }
 
 // Defines an interface for the properties that the StaffList component expects to receive
@@ -78,12 +78,9 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 				};
 				if (selectedImage !== null && selectedImage !== undefined) {
 					const formData = new FormData();
-					let imagePath = "";
 					formData.append("file", selectedImage || undefined);
-					formData.append("path", "StaffPFP");
-					imagePath = await axios.post("/api/uploader", formData, {
-						headers: { "Content-Type": "multipart/form-data" },
-					});
+					formData.append("path", "StudentPFP");
+					
 				}
 				const user = {
 					...updatedUsers[index],
@@ -150,7 +147,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 			id: editedUser?.id || 0, // Assigns the user id if available, otherwise assign 0
 			password: editedUser?.password || "", // Assigns the user password if available, otherwise assign an empty string
 			admin: editedUser?.admin || false, // Assigns the user admin status if available, otherwise assign false
-			qrCode: editedUser?.qrCode || 0, // Assigns the user QR code if available, otherwise assign 0
+			qrCode: String(editedUser?.qrCode || 0), // Converts the qrCode to a string and assigns the value if available, otherwise assign "0"
 			image: selectedImage ? selectedImage.name : editedUser?.image || "", // Assigns the selected image name if available, otherwise assign the previous image name or an empty string
 		}));
 	};
