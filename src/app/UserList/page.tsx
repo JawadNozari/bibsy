@@ -8,7 +8,9 @@ import StaticModal from "./component/StaticModal"; // Import the StaticModal com
 import axios from "axios";
 import "../globals.css";
 import { useSpring, animated } from "react-spring"; // Import react-spring library
-import Navigation from "../components/navigation"; // Import the Navigation component
+import Page from "../components/navigation"; // Import the Navigation component
+import { useRouter } from "next/navigation";
+import { CheckIfLoggedIn } from "../components/loginChecks";
 
 // Define interfaces for User and ApiResponse
 interface User {
@@ -30,14 +32,28 @@ interface ApiResponse {
 }
 
 export default function Home() {
+		const router = useRouter();
+	
 	const [apiData, setApiData] = useState<ApiResponse | null>(null);
 	const [selectedUser, setSelectedUser] = useState<User | null>(null);
 	const [userType, setUserType] = useState<string>("all");
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const [showUserDetails, setShowUserDetails] = useState(false);
 	const [showModal, setShowModal] = useState(false);
+	const [isAdmin, setIsAdmin] = useState(false);
 
 	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (!token) {
+			router.push("/login");
+		} else {
+			const { areYouAdmin, whatUserAreYou } = CheckIfLoggedIn(token);
+			setIsAdmin(areYouAdmin);
+			if (whatUserAreYou !== "Staff" && whatUserAreYou !== "Admin") {
+				router.push("/");
+			}
+		}
+
 		const fetchData = async () => {
 			try {
 				const response = await axios("/api/getUsers"); // Fetch data from API endpoint
@@ -49,7 +65,7 @@ export default function Home() {
 		};
 
 		fetchData(); // Call fetchData function on component mount
-	}, []);
+	}, [router]);
 
 	// Function to handle click on a user
 	const handleClick = (user: User | null) => {
@@ -84,7 +100,7 @@ export default function Home() {
 	return (
 		<main className="flex items-center h-screen bg-neutral-200 dark:bg-gray-800 justify-between overflow-x-auto">
 			<div>
-				<Navigation />
+				<Page />
 			</div>
 			<div className="flex items-center h-screen justify-around w-full">
 				{showUserDetails && (
@@ -249,6 +265,7 @@ export default function Home() {
 															.includes(searchTerm.toLowerCase()), // Check if it includes the search term
 												)}
 												handleClick={handleClick} // Pass handleClick
+												isAdmin={isAdmin} // Pass isAdmin
 											/>
 											<Student
 												studentUsers={apiData.studentUsers.filter((user) =>
@@ -257,6 +274,7 @@ export default function Home() {
 														.includes(searchTerm.toLowerCase()),
 												)}
 												handleClick={handleClick}
+												isAdmin={isAdmin}
 											/>
 										</>
 									)}
@@ -268,6 +286,7 @@ export default function Home() {
 													.includes(searchTerm.toLowerCase()),
 											)}
 											handleClick={handleClick}
+											isAdmin={isAdmin}
 										/>
 									)}
 									{userType === "student" && (
@@ -278,6 +297,7 @@ export default function Home() {
 													.includes(searchTerm.toLowerCase()),
 											)}
 											handleClick={handleClick}
+											isAdmin={isAdmin}
 										/>
 									)}
 								</>
