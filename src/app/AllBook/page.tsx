@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import BookList from "./component/BookList";
 import StaticModal from "./component/StaticModal";
 import Navigation from "../components/navigation";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 // Define your component
 const AllBook = () => {
@@ -46,10 +46,9 @@ const AllBook = () => {
 		const token = localStorage.getItem("token");
 		if (token) {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
-			console.log(decodedToken);
 			setUserInfo(decodedToken);
 		} else {
-			console.log("no token");
+			redirect("/");
 		}
 	}, []);
 
