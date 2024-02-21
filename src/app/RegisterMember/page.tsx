@@ -289,14 +289,14 @@ export default function RegisterMember() {
 								</label>
 							</div>
 						</div>
+					</form>
+					<div className="flex justify-around">
 						<button
 							type="submit"
 							className=" btn block bg-neutral-50  hover:text-gray-100 hover:bg-gray-800  text-gray-500 dark:bg-gray-700  btn-active "
 						>
 							Register
 						</button>
-					</form>
-					<div className="flex justify-around">
 						
 
 						<div className="relative z-0 mb-5 group">
