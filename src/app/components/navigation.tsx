@@ -5,6 +5,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { CheckIfLoggedIn } from "./loginChecks";
 
 export default function Page() {
 	const router = useRouter();
@@ -52,6 +53,22 @@ export default function Page() {
 	// 		document.removeEventListener("mousedown", handleClickOutside);
 	// 	};
 	// }, []);
+
+	const [isAdmin, setIsAdmin] = useState(false);
+	const [userType, setUserType] = useState("");
+	const [userImage, setUserImage] = useState("");
+
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (!token) {
+			router.push("/login");
+		} else {
+			const { areYouAdmin, whatUserAreYou, user } = CheckIfLoggedIn(token);
+			setIsAdmin(areYouAdmin);
+			setUserType(whatUserAreYou);
+			setUserImage(user.user.image);
+		}
+	}, [router]);
 
 	const logOutUser = (event: React.MouseEvent<HTMLElement>) => {
 		event.preventDefault();
