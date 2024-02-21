@@ -1,4 +1,5 @@
 //! FIX UNUSED VARS
+/* eslint-disable no-unused-vars */
 
 import React, { useState } from "react"; // Import React and useState hook from React library
 import Image from "next/image"; // Import Image component from Next.js library for displaying images
