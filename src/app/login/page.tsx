@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 import axios from "axios";
@@ -52,6 +52,11 @@ const Page = () => {
 			});
 	};
 
+	const handleRememberChange = (e: ChangeEvent<HTMLInputElement>) => {
+		setRememberMe(e.target.checked);
+		setChecked(e.target.checked);
+	};
+
 	return (
 		<>
 			{Err ? (
@@ -91,7 +96,7 @@ const Page = () => {
 												htmlFor="username"
 												className="absolute left-0 -top-3.5 text-white peer-placeholder-shown:text-gray-400  peer-placeholder-shown:text-base peer-placeholder-shown:top-2 transition-all duration-500 peer-focus:-top-3.5 peer-focus:text-white peer-focus:text-sm"
 											>
-												Användarnamn
+												Email
 											</label>
 										</div>
 										<div className="relative h-11 mb-6 flex items-center">
@@ -105,7 +110,11 @@ const Page = () => {
 												required
 												autoComplete="off"
 											/>
-											<button type="button" className="ml-2 absolute right-0">
+											<button
+												type="button"
+												onClick={(e) => setShowPassword(!showPassword)}
+												className="ml-2 absolute right-0"
+											>
 												{showPassword ? (
 													<EyeOffIcon className="h-6 w-6 text-white" />
 												) : (
@@ -116,14 +125,14 @@ const Page = () => {
 												htmlFor="password"
 												className="absolute left-0 -top-3.5 text-white peer-placeholder-shown:text-gray-400  peer-placeholder-shown:text-base peer-placeholder-shown:top-2 transition-all duration-500 peer-focus:-top-3.5 peer-focus:text-white peer-focus:text-sm"
 											>
-												Lösenord
+												Password
 											</label>
 										</div>
 										<div className="flex items-center">
 											<input
 												type="checkbox"
 												checked={rememberMe}
-												onChange={(e) => setShowPassword(!showPassword)}
+												onChange={(e) => handleRememberChange(e)}
 												className="mr-2"
 												id="remember"
 											/>
@@ -140,7 +149,7 @@ const Page = () => {
 											type="submit"
 											className="p-2 bg-purple-600 text-white rounded hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-800"
 										>
-											Logga in
+											Sign in
 										</button>
 									</form>
 								</div>
