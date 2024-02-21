@@ -387,53 +387,142 @@ export default function BookList({
 										? userType?.user.id === state.staffId
 										: true) ? (
 									<tr
-										onClick={() => {
-											toggleModal();
-											bookInfoData?.({
-												id: book.id,
-												title: book.title,
-												author: book.author,
-												publishers: book.publishers,
-												published: book.published,
-												invNr: book.invNr,
-												isbn: book.isbn,
-												bookImg: book.bookImg,
-												price: book.price,
-											});
-										}}
-										onKeyDown={() => {
-											bookInfoData?.({
-												id: book.id,
-												title: book.title,
-												author: book.author,
-												publishers: book.publishers,
-												published: book.published,
-												invNr: book.invNr,
-												isbn: book.isbn,
-												bookImg: book.bookImg,
-												price: book.price,
-											});
-										}}
 										key={book.id}
 										className={`border-b ${theme[colorTheme.theme].lightBg}
 										${theme[colorTheme.theme].darkBg}
 										${theme[colorTheme.theme].darkHover}
 										${theme[colorTheme.theme].lightHover} border-gray-700`}
 									>
-										<td className="px-6 py-4 font-medium text-white w-1/5 overflow-auto whitespace-pre-wrap max-w-12">
+										<td
+											className="px-6 py-4 font-medium text-white w-1/5 overflow-auto whitespace-pre-wrap max-w-12"
+											onClick={() => {
+												toggleModal();
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+											onKeyDown={() => {
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+										>
 											{books[index]?.title}
 										</td>
-										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">
+										<td
+											className="px-6 py-4 whitespace-pre-wrap max-w-12"
+											onClick={() => {
+												toggleModal();
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+											onKeyDown={() => {
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+										>
 											{books[index]?.author}
 										</td>
-										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">
+										<td
+											className="px-6 py-4 whitespace-pre-wrap max-w-12"
+											onClick={() => {
+												toggleModal();
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+											onKeyDown={() => {
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+										>
 											{colorTheme.theme === "missing" ||
 											colorTheme.theme === "borrowed"
 												? `${books[index]?.regDate.split("T")[0]} 
 												  ${books[index]?.regDate.split("T")[1].split(".")[0]}`
 												: books[index]?.published.split("T")[0]}
 										</td>
-										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">{`${books[index]?.price};-`}</td>
+										<td
+											className="px-6 py-4 whitespace-pre-wrap max-w-12"
+											onClick={() => {
+												toggleModal();
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+											onKeyDown={() => {
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+										>{`${books[index]?.price};-`}</td>
 										{/*Ternary if available adds link to borrow else if book add corresponding availability else, add buttuns for post */}
 										<td className="px-6 py-4">
 											{colorTheme.theme === "available" ? (
