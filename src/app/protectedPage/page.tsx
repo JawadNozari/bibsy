@@ -28,7 +28,7 @@ const ProtectedPage = () => {
 
 	const pathname = usePathname();
 
-	const secretKey = String(process.env.NEXT_PUBLIC_SECRET_KEY); // ! don't share !
+  const secretKey = String(process.env.NEXT_PUBLIC_SECRET_KEY); // ! don't share !
 
 	useEffect(() => {
 		//* Check for token when the page is visited
