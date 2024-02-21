@@ -28,7 +28,7 @@ const ProtectedPage = () => {
 
 	const pathname = usePathname();
 
-  const secretKey = String(process.env.NEXT_PUBLIC_SECRET_KEY); // ! don't share !
+	const secretKey = String(process.env.NEXT_PUBLIC_SECRET_KEY); // ! don't share !
 
 	useEffect(() => {
 		//* Check for token when the page is visited
@@ -84,7 +84,7 @@ const ProtectedPage = () => {
 	return (
 		<div>
 			{loggedIn ? (
-				<div>Logged In</div>
+				<></>
 			) : (
 				<div style={{ height: 1000, color: "white" }}>
 					<h1>Checking if logged in. . .</h1>
