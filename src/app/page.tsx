@@ -1,30 +1,38 @@
 "use client";
-
-//! THESE ARE IMPORTS NEEDED FOR CHECKING IF THE USER IS LOGGED IN AND WHAT TYPE OF USER THEY ARE
-/* import { useRouter } from "next/navigation"; */
-/* import { isAdmin, userType } from "./loginChecks/page"; */
+import { useRouter } from "next/navigation";
 
 // import UserList from './userList/page';
 import React from "react";
+import Page from "./components/navigation";
+
+//! This is a function that takes in a token and checks and returns if the user is an admin and what type of user they are
+import { CheckIfLoggedIn } from "./components/loginChecks";
 
 export default function Home() {
-	//! THIS USEEFFECT FUNCTION CHECKS IF THE USER IS LOGGED AND IF THEY ARE NOT, THEY WILL BE REDIRECTED TO THE LOGIN PAGE-
-	/* const router = useRouter();
-	React.useEffect(() => {
-		if (!isAdmin && userType === "") {
-			router.push("/login");
-		}
-	}, [router]); */
+	const router = useRouter();
 
-	//! EXAMPLE OF A STYLE BASED ON USER TYPE
-	//! style={{ display: `${userType === "Staff" ? "none" : "block"}` }}
-	//! IF THE USER IS A STAFF MEMBER, THE STYLE WILL BE SET TO "NONE" AND THE ELEMENT WILL NOT BE DISPLAYED
+	//! THESE ARE THE STATES THAT WILL HOLD THE USER TYPE AND IF THEY ARE AN ADMIN
+	const [isAdmin, setIsAdmin] = React.useState(false);
+	const [userType, setUserType] = React.useState("");
+
+	//! THIS USEEFFECT FUNCTION CHECKS IF THE USER IS LOGGED AND IF THEY ARE NOT, THEY WILL BE REDIRECTED TO THE LOGIN PAGE-
+	React.useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (!token) {
+			router.push("/login");
+		} else {
+			const { areYouAdmin, whatUserAreYou } = CheckIfLoggedIn(token);
+			setIsAdmin(areYouAdmin);
+			setUserType(whatUserAreYou);
+		}
+	}, [router]);
 
 	return (
 		<div className="flex min-w-full h-screen w-screen justify-center items-center flex-col">
+			<Page />
 			{
 				//! IF THE USER IS AN ADMIN, THEY WILL SEE "HELLO THERE ADMIN!" OTHERWISE THEY WILL SEE "HELLO THERE {USER TYPE}"
-				<div className="font-bold text-2xl mb-10">Hello there {/* {isAdmin ? "Admin!" : userType} */}</div>
+				<div className="font-bold text-2xl mb-10">Hello there {isAdmin ? "Admin!" : userType}</div>
 			}
 			<div role="alert" className="alert alert-info w-fit text-white">
 				<span className="text-center" >
