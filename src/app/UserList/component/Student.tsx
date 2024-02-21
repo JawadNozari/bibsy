@@ -25,6 +25,7 @@ interface StudentListProps {
 	studentUsers: User[]; // Type for student users
 	handleClick: (user: User | null) => void; // Function to handle click on a user
 	setStudentUsers?: React.Dispatch<React.SetStateAction<User[]>>; // Function to update student users
+	isAdmin: boolean; // Boolean indicating whether the user is an admin
 }
 
 // Defines a functional component StudentList that receives properties defined by StudentListProps
@@ -32,6 +33,7 @@ const StudentList: React.FC<StudentListProps> = ({
 	studentUsers, // An array of student users to be displayed in the list
 	handleClick, // A function that handles click events on a user in the list
 	setStudentUsers, // A function to update student users (optional)
+	isAdmin, // Boolean indicating whether the user is an admin
 }) => {
 	// State variables
 	const [showModal, setShowModal] = useState(false); // Show or hide modal
@@ -87,8 +89,7 @@ const StudentList: React.FC<StudentListProps> = ({
 					const formData = new FormData();
 					formData.append("file", selectedImage || undefined);
 					formData.append("path", "StudentPFP");
-					await axios
-					.post("/api/uploader", formData, {
+					await axios.post("/api/uploader", formData, {
 						headers: { "Content-Type": "multipart/form-data" },
 					});
 				}
@@ -96,8 +97,7 @@ const StudentList: React.FC<StudentListProps> = ({
 					...updatedUsers[index],
 					userType: "student",
 				};
-				await axios
-				.post("/api/editUsers", user, {
+				await axios.post("/api/editUsers", user, {
 					headers: { "Content-Type": "application/json" },
 				});
 
@@ -188,9 +188,13 @@ const StudentList: React.FC<StudentListProps> = ({
 				<th scope="col" className="px-6 py-3">
 					Classroom {/* Classroom */}
 				</th>
-				<th scope="col" className="px-6 py-3">
-					Action {/* Action */}
-				</th>
+				{isAdmin ? (
+					<th scope="col" className="px-6 py-3">
+						Action {/* Action */}
+					</th>
+				) : (
+					<></>
+				)}
 			</tr>
 			{studentUsers?.map((user) => (
 				<tbody key={user.id}>
@@ -213,10 +217,8 @@ const StudentList: React.FC<StudentListProps> = ({
 								className="w-10 h-10 rounded-full"
 								width={10}
 								height={10}
-								src={
-									user.image.includes(".") ? `/${user.image}` : "/pfp.jpg"
-								}
-								alt={`${user.firstName} ${user.lastName}`}
+								src={user.image.includes(".") ? `/${user.image}` : "/pfp.jpg"}
+								alt={"Image"}
 							/>
 							<div className="ps-3">
 								<div className="text-base font-semibold">{`${user.firstName} ${user.lastName}`}</div>
@@ -225,18 +227,22 @@ const StudentList: React.FC<StudentListProps> = ({
 						</th>
 						<td className="px-6 py-4">{user.phone}</td>
 						<td className="px-6 py-4">{user.classroom}</td>
-						<td className="px-6 py-4">
-							<button
-								type="button"
-								onClick={(e) => {
-									e.stopPropagation();
-									openModal(user);
-								}}
-								className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-							>
-								Edit user {/* Edit user */}
-							</button>
-						</td>
+						{isAdmin ? (
+							<td className="px-6 py-4">
+								<button
+									type="button"
+									onClick={(e) => {
+										e.stopPropagation();
+										openModal(user);
+									}}
+									className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+								>
+									Edit user {/* Edit user */}
+								</button>
+							</td>
+						) : (
+							<></>
+						)}
 					</tr>
 				</tbody>
 			))}

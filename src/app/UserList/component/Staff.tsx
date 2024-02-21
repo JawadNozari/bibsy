@@ -24,10 +24,15 @@ interface User {
 interface StaffListProps {
 	staffUsers: User[]; // An array of users
 	handleClick: (user: User | null) => void; // A function to handle click on user
+	isAdmin: boolean; // A boolean indicating whether the user is an admin
 }
 
 // Defines a functional component StaffList that receives properties defined by StaffListProps
-const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
+const StaffList: React.FC<StaffListProps> = ({
+	staffUsers,
+	handleClick,
+	isAdmin,
+}) => {
 	// State hooks
 	const [showModal, setShowModal] = useState(false); // Shows or hides the modal for editing user
 	const [selectedUser, setSelectedUser] = useState<User | null>(null); // The user selected for editing
@@ -80,7 +85,6 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					const formData = new FormData();
 					formData.append("file", selectedImage || undefined);
 					formData.append("path", "StudentPFP");
-					
 				}
 				const user = {
 					...updatedUsers[index],
@@ -172,9 +176,13 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 				<th scope="col" className="px-6 py-3">
 					Admin {/* Classroom */}
 				</th>
-				<th scope="col" className="px-6 py-3">
-					Action {/* Action */}
-				</th>
+				{isAdmin ? (
+					<th scope="col" className="px-6 py-3">
+						Action {/* Action */}
+					</th>
+				) : (
+					<></>
+				)}
 			</tr>
 			{staffUsers?.map((user) => (
 				<tbody key={user.id}>
@@ -199,7 +207,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 								width={10}
 								height={10}
 								src={user.image.includes(".") ? `/${user.image}` : "/pfp.jpg"}
-								alt={`${user.firstName} ${user.lastName}´s profile picture`}
+								alt={"Image"}
 							/>
 							<div className="ps-3">
 								<div className="text-base font-semibold">{`${user.firstName} ${user.lastName}`}</div>
@@ -212,19 +220,23 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 								<div className="h-4 w-0.5">{user.admin ? "Yes" : "No"}</div>
 							</div>
 						</td>
-						<td className="px-6 py-4">
-							{/* Button to open the editing modal */}
-							<button
-								type="button"
-								onClick={(e) => {
-									e.stopPropagation();
-									openModal(user);
-								}}
-								className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-							>
-								Edit user
-							</button>
-						</td>
+						{isAdmin ? (
+							<td className="px-6 py-4">
+								{/* Button to open the editing modal */}
+								<button
+									type="button"
+									onClick={(e) => {
+										e.stopPropagation();
+										openModal(user);
+									}}
+									className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+								>
+									Edit user
+								</button>
+							</td>
+						) : (
+							<></>
+						)}
 					</tr>
 				</tbody>
 			))}
