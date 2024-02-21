@@ -52,6 +52,7 @@ const Page = () => {
 			});
 	};
 
+	// eslint-disable-next-line no-unused-vars
 	const handleRememberChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setRememberMe(e.target.checked);
 		setChecked(e.target.checked);
