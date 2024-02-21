@@ -56,15 +56,17 @@ export default function Page() {
 
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [userType, setUserType] = useState("");
+	const [userImage, setUserImage] = useState("");
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (!token) {
 			router.push("/login");
-		} else{
-			const { areYouAdmin, whatUserAreYou } = CheckIfLoggedIn(token);
+		} else {
+			const { areYouAdmin, whatUserAreYou, user } = CheckIfLoggedIn(token);
 			setIsAdmin(areYouAdmin);
 			setUserType(whatUserAreYou);
+			setUserImage(user.user.image);
 		}
 	}, [router]);
 
