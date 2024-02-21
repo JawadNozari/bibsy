@@ -1,4 +1,4 @@
-import { PrismaClient, Staff, Student } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -28,7 +28,7 @@ export const POST = async (req: NextRequest) => {
 			});
 	};
 
-	// // * Find user that matches with given credentials
+	// * Find user that matches with given credentials
 	if (await isStaff()) {
 		console.debug("Found Staff");
 		return prisma.staff

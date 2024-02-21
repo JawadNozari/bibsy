@@ -12,27 +12,19 @@ export default function Home() {
 		if (file) {
 			formData.append("file", file);
 		}
-		try {
-			await axios
-				.post("/api/upload", formData, {
-					headers: {
-						"Content-Type": "multipart/form-data",
-					},
-				})
-				.then((res) => {
-					setMessage(res.data.Message);
-				})
-				.catch((err) => {
-					setMessage("There was a problem with the server");
-					console.log(err);
-				});
-		} catch (err) {
-			if (err) {
-				console.log("There was a problem with the server");
-			} else {
-				console.log(err);
-			}
-		}
+
+		await axios
+			.post("/api/upload", formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			})
+			.then((res) => {
+				setMessage(res.data.Message);
+			})
+			.catch(() => {
+				setMessage("There was a problem with the server");
+			});
 	};
 
 	return (

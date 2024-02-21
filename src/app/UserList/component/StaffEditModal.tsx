@@ -63,8 +63,6 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 		}
 	}
 
-	console.log(imagePreview);
-
 	return (
 		<div
 			className={`fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-500 bg-opacity-50 ${

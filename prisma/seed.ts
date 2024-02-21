@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { PrismaClient } from "@prisma/client";
 
 //! Albin, snälla kör yarn lint och yarn build. Sen också sätt biome som default formatter, var typ 20 format fel i denna filen
@@ -63,7 +64,6 @@ async function seed() {
         note: "This is a test",
     }
   });
-  console.log({ admin, elev, book, borrowed});
 }
 seed()
   .then(async () => {

@@ -2,7 +2,6 @@
 import { useState } from "react";
 import axios from "axios";
 
-
 export default function Page() {
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [id, setId] = useState<number>(0);
@@ -18,8 +17,8 @@ export default function Page() {
 	const [gotError, setGotError] = useState<boolean>(false);
 
 	const handleSubmit = async (e: React.SyntheticEvent) => {
-        e.preventDefault();
-        const formData = new FormData();
+		e.preventDefault();
+		const formData = new FormData();
 		let imagePath = "";
 		if (file !== undefined) {
 			formData.append("file", file || undefined);
@@ -33,35 +32,34 @@ export default function Page() {
 				})
 				.catch((error: Error) => {
 					console.debug(error);
-					console.log("there is issue when getting path from uploader ");
 				});
 		}
-			const userData = {
-                userType: userType,
-				id: id,
-                password: password,  
-                firstName: first,  
-                lastName: last,    
-                email: email,          
-                phone: phone,          
-                image: imagePath,
-                admin: Admin,
-                studentclass: studentclass,
-			};
-	
-			// Post form data to backend
-			await axios
-				.post("/api/editUsers", userData, {
-					headers: { "Content-Type": "application/json" },
-				})
-				.then((res) => {
-					setGotError(false);
-					setMessage(res.data.Message);
-				})
-				.catch((err) => {
-					setGotError(true);
-					setMessage(err.message);
-				});
+		const userData = {
+			userType: userType,
+			id: id,
+			password: password,
+			firstName: first,
+			lastName: last,
+			email: email,
+			phone: phone,
+			image: imagePath,
+			admin: Admin,
+			studentclass: studentclass,
+		};
+
+		// Post form data to backend
+		await axios
+			.post("/api/editUsers", userData, {
+				headers: { "Content-Type": "application/json" },
+			})
+			.then((res) => {
+				setGotError(false);
+				setMessage(res.data.Message);
+			})
+			.catch((err) => {
+				setGotError(true);
+				setMessage(err.message);
+			});
 	};
 
 	return gotError ? (

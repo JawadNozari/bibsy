@@ -1,4 +1,3 @@
-//! FIX UNUSED VARS
 /* eslint-disable no-unused-vars */
 
 "use client";
@@ -208,7 +207,7 @@ export default function BookList({
 		fetch(`/api/${colorTheme.fetchLink}`)
 			.then((res) => res.json())
 			.then((data) => setBooks(data.books))
-			.catch((error) => console.log(error));
+			.catch((error) => console.debug(error));
 	}, [colorTheme.fetchLink]);
 
 	//fetching bookState data if exists
@@ -217,11 +216,10 @@ export default function BookList({
 			? fetch(`/api/${colorTheme.type}`)
 					.then((res) => res.json())
 					.then((data) => setBookState(data.books))
-					.catch((error) => console.log(error))
+					.catch((error) => console.debug(error))
 			: null;
 	}, [colorTheme.type]);
 
-	// Modal toggle
 	//* On missing button press, set the book to missing and remove it from the array and db
 	const setBookMissing = async (
 		event: React.MouseEvent<HTMLElement>,
@@ -237,8 +235,8 @@ export default function BookList({
 
 		const response = await axios.post("/api/setBookMissing", {
 			bookId,
-		});
-		console.log(response.data);
+		}); //? what should happen with this response?
+		// console.log(response.data);
 	};
 	//* On return button press, set the book to available and remove it from the array and db
 	const setBookAvailable = async (
@@ -258,8 +256,7 @@ export default function BookList({
 			bookId,
 			userType: "student",
 			listType,
-		});
-		console.log(response.data);
+		}); //? what should happen with this response?
 	};
 	return (
 		// TableTemplate edited
@@ -288,7 +285,7 @@ export default function BookList({
 					) : null}
 				</div>
 			</div>
-			{/* the */}
+			{/* Table container */}
 			<div
 				className={
 					"relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 shadow-md  size-10/12 rounded-t-xl bg-gray-700 dark:bg-gray-800"
@@ -343,6 +340,7 @@ export default function BookList({
 								</form>
 							</th>
 						</tr>
+						{/* Admin only button (Register Book) */}
 						{userType?.role === "Admin" ? (
 							<tr>
 								<th />
@@ -359,6 +357,7 @@ export default function BookList({
 								<th />
 							</tr>
 						) : null}
+						{/* Table head */}
 						<tr>
 							<th scope="col" className="px-6 py-3 z-20">
 								Title
@@ -381,6 +380,7 @@ export default function BookList({
 							</th>
 						</tr>
 					</thead>
+					{/* Table body */}
 					<tbody>
 						{/* Map of fetched data which prints out table-row */}
 						{bookState?.map((state) =>
@@ -399,9 +399,11 @@ export default function BookList({
 										${theme[colorTheme.theme].darkHover}
 										${theme[colorTheme.theme].lightHover} border-gray-700`}
 									>
+										{/* Table data */}
 										<td
 											className="px-6 py-4 font-medium text-white w-1/5 overflow-auto whitespace-pre-wrap max-w-12"
 											onClick={() => {
+												// On click, toggle modal and send bookInfo to parent (on all but link td)
 												toggleModal();
 												bookInfoData?.({
 													id: book.id,
@@ -535,7 +537,7 @@ export default function BookList({
 												// borrow button
 												<a
 													href={`/loanBook?invNr=${book.invNr}`}
-													className="transform p-2 bg-gray-800 dark:bg-gray-700 rounded-xl text-yellow-600 font-bold hover:scale-110 transition-transform"
+													className="transform p-2 bg-gray-600 text-yellow-500 dark:bg-gray-700 rounded-xl dark:text-yellow-600 font-bold hover:scale-110 transition-transform"
 												>
 													Borrow
 												</a>

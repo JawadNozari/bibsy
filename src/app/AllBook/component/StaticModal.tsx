@@ -6,6 +6,7 @@ import imgJpg from "/public/img/content.jpeg";
 import axios from "axios";
 import { Book } from "@prisma/client";
 
+// Interfaces
 interface StaticModalProps {
 	showModal: boolean; // Prop to determine whether the modal should be displayed
 	toggleModal: () => void; // Function to toggle the modal
@@ -51,6 +52,7 @@ interface userInfo {
 	};
 }
 
+// Component
 const StaticModal: React.FC<StaticModalProps> = ({
 	showModal,
 	toggleModal,
@@ -58,23 +60,32 @@ const StaticModal: React.FC<StaticModalProps> = ({
 	userInfo,
 	refreshPage,
 }) => {
+	// Saves the bookInfo to a state
 	useEffect(() => {
 		setBookInfoState(bookInfo);
 	}, [bookInfo]);
+	// State to switch between the book info and the edit form
 	const [switchDiv, setSwitchDiv] = useState(true);
-
+	// State to save the book info
 	const [bookInfoState, setBookInfoState] = useState(bookInfo);
+	// State to save the file
 	const [file, setFile] = useState<File | undefined>(undefined);
+	// State to save the user info
 	const [user, setUser] = useState<userInfo | null>(userInfo);
+	// Previous image dots added because of backend-need
 	const prevImage = `.......${bookInfo.bookImg}`;
 
+	// Set user info to state
 	useEffect(() => {
 		setUser(userInfo);
 	}, [userInfo]);
+
+	// Function to switch between the book info and the edit form
 	const switchingDiv = () => {
 		setSwitchDiv(!switchDiv);
 	};
 
+	// Function to handle the submit of the edit form
 	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
 		const formData = new FormData();
@@ -93,6 +104,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 					console.debug(error);
 				});
 		}
+		// Create a book object(copy-pasted from user)
 		const userData: Book = {
 			id: bookInfoState.id,
 			bookImg: imagePath ? imagePath : prevImage,
@@ -121,9 +133,11 @@ const StaticModal: React.FC<StaticModalProps> = ({
 					<div className="bg-white rounded-lg shadow-lg p-8 max-w-xl w-full dark:bg-gray-800">
 						{/* Modal header */}
 						<div className="flex items-center justify-between mb-4">
+							{/* header */}
 							<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
 								Book info
 							</h3>
+							{/* Close button */}
 							<button
 								type="button"
 								onClick={() => {
@@ -134,7 +148,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
-									className="h-4 w-4"
+									className="h-6 w-6"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
@@ -150,14 +164,16 @@ const StaticModal: React.FC<StaticModalProps> = ({
 							</button>
 						</div>
 						{/* Modal body */}
+						{/* If switchDiv is true, display the book info else display the edit form*/}
 						{switchDiv ? (
 							<div>
 								<div className="flex justify-center items-center bg-gray-100 dark:bg-gray-700">
-									<div className="p-2 bg-white shadow-lg rounded-lg dark:bg-gray-800">
+									<div className="p-2 bg-white shadow-lg rounded-lg dark:bg-gray-800 my-3">
+										{/* Title */}
 										<h3 className="text-lg text-black dark:text-gray-100 font-bold mb-2">
 											{bookInfo.title}
 										</h3>
-
+										{/* Image */}
 										<div className="relative h-64 w-48 m-auto">
 											<Image
 												className="m-auto"
@@ -166,14 +182,22 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												layout="fill"
 											/>
 										</div>
+										{/* Author */}
 										<p className="text-gray-700 text-base mt-4 dark:text-gray-100">
 											<span className="font-semibold">Author:</span>{" "}
 											{bookInfo.author}
 										</p>
+										{/* Published */}
 										<p className="text-gray-700 text-base dark:text-gray-100">
 											<span className="font-semibold">Published:</span>{" "}
 											{bookInfo.published.split("T")[0]}
 										</p>
+										{/* Publishers */}
+										<p className="text-gray-700 text-base dark:text-gray-100">
+											<span className="font-semibold">Publishers:</span>{" "}
+											{bookInfo.publishers}
+										</p>
+										{/* Isbn and invNr */}
 										<p className="text-gray-700 text-base dark:text-gray-100">
 											<span className="font-semibold">ISBN:</span>{" "}
 											{bookInfo.isbn}{" "}
@@ -195,6 +219,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 								<div>
 									<div className="flex justify-center items-center bg-gray-100 dark:bg-gray-800">
 										<div className="p-2 bg-white shadow-lg rounded-lg dark:bg-gray-700">
+											{/* Title */}
 											<h3 className="text-lg text-black font-bold mb-2 dark:text-gray-100">
 												{bookInfoState.title}
 											</h3>
@@ -204,6 +229,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											>
 												Title:{" "}
 											</label>
+											{/* Edit Title */}
 											<input
 												type="text"
 												name="bookUpdateTitle"
@@ -223,6 +249,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											>
 												Author:{" "}
 											</label>
+											{/* Edit Author */}
 											<input
 												type="text"
 												name="bookUpdateAuthor"
@@ -242,6 +269,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											>
 												Publishers:{" "}
 											</label>
+											{/* Edit Publishers */}
 											<input
 												type="text"
 												name="bookUpdatePublishers"
@@ -261,6 +289,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											>
 												Published:{" "}
 											</label>
+											{/* Edit Published */}
 											<input
 												type="date"
 												name="bookUpdatePublished"
@@ -282,6 +311,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 													>
 														isbn:{" "}
 													</label>
+													{/* Edit Isbn */}
 													<input
 														type="text"
 														name="bookUpdateisbn"
@@ -303,6 +333,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 													>
 														invNr:{" "}
 													</label>
+													{/* Edit InvNr */}
 													<input
 														type="number"
 														name="bookUpdateinvNr"
@@ -324,6 +355,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											>
 												bookImg:{" "}
 											</label>
+											{/* Edit BookImg */}
 											<input
 												type="file"
 												name="bookUpdatebookImg"
@@ -346,6 +378,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 						)}
 						{/* Modal footer */}
 						<div className="mt-4 flex justify-between">
+							{/* Ternary if logged in as Admin, can see edit btn/info btn else cant */}
 							{switchDiv ? (
 								user?.role === "Admin" ? (
 									<button

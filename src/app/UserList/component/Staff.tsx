@@ -91,7 +91,6 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 				});
 			}
 
-			console.log("Updated user information:", updatedUsers[index]); // Log updated user information
 			closeModal(); // Close the modal
 		}
 	};

@@ -9,7 +9,6 @@ export const POST = async (req: NextRequest) => {
 	const request = await req.json();
 	const { filename, url }: { filename: string; url: string } = request;
 	let path = "";
-	console.log(url);
 
 	// path = await downloader({ filename, url });
 	// Directory where the file will be uploaded
@@ -20,7 +19,6 @@ export const POST = async (req: NextRequest) => {
 
 	// Determine the content type and extract file extension
 	const firstBytes = imageBuffer.data.slice(0, 4).toString("hex");
-	console.log(`Your buffer is: ${firstBytes}`);
 	let extension = "";
 
 	// Match the file signature with known image formats
@@ -38,7 +36,6 @@ export const POST = async (req: NextRequest) => {
 	} else if (firstBytes.startsWith("424d")) {
 		extension = "bmp";
 	} else {
-		console.log("We can't find any type here :(");
 		extension = "png";
 	}
 
@@ -49,7 +46,6 @@ export const POST = async (req: NextRequest) => {
 	await writeFileAsync(filePath, imageBuffer.data, "binary");
 
 	path = `public/bookImage/${filename}.${extension}`;
-	console.log(`path from backend: ${path}`);
 	// Update the book image path
 	return NextResponse.json({ path: path }, { status: 200 });
 };
