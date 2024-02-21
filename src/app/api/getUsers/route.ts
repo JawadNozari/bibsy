@@ -17,30 +17,7 @@ const fetchUsers = async (model: keyof PrismaClient): Promise<UserModel[]> => {
 		throw error;
 	}
 };
-const fetchUser = async (id: number, userType: string) => {
-	try {
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-const  user = await (prisma as any)[userType]
-				.findUnique({
-					where: { id: id },
-					include: {
-						borrowed: true,
-					},
-				});
-				return user;
-	} catch {
-		// Extra error checking
-		console.debug(Error);
-		return NextResponse.json(
-			{
-				message:
-					"FormData Error. This can be cuased becuase of mallformed Data (Check Data Type)",
-			},
-			{ status: 500 },
-		);
-	}
-};
-// This is the GET method
+
 export const GET = async () => {
 	try {
 		// Fetch staff and student users
@@ -56,18 +33,7 @@ export const GET = async () => {
 		await prisma.$disconnect();
 	}
 };
-// This is the POST method
-export const POST = async (req: NextRequest) => {
-	try {
-		const { id, type } = await req.json();
-        const userType = type === "staffUsers" ? "staff" : "student";
-		const userdata = await fetchUser(id, userType);
-		return NextResponse.json(userdata);
-	} catch (error) {  
-		// If there is an error, return the error
-		return NextResponse.json({ error: error });
-	} finally {
-		// Disconnect from the database
-		await prisma.$disconnect();
-	}
+export const POST = async () => {
+	// Maybe use this to get specific user
+	return NextResponse.json({ message: "This Method is not impelemented yet!" });
 };
