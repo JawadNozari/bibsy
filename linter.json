@@ -4,6 +4,9 @@
 		"rules": {
 			"complexity": {
 				"noUselessConstructor": "off"
+			},
+			"suspicious": {
+				"noConsoleLog": "error"
 			}
 		}
 	}
