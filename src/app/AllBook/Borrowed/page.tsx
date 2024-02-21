@@ -54,11 +54,10 @@ const Borrowed = () => {
 		const token = localStorage.getItem("token");
 		if (token) {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
-			console.log(decodedToken);
 			setUserInfo(decodedToken);
 			decodedToken.role !== "Admin" ? redirect("/login") : null;
 		} else {
-			redirect("/login");
+			redirect("/");
 		}
 	}, []);
 	return (
