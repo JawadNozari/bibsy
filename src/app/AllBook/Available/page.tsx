@@ -7,7 +7,9 @@ import { redirect, useRouter } from "next/navigation";
 
 // Define your component
 const Available = () => {
+	// Use the useRouter hook to access the refresh function
 	const { refresh } = useRouter();
+	// Interfaces
 	interface UserToken {
 		iat: number;
 		role: string;
@@ -33,14 +35,20 @@ const Available = () => {
 		isbn: string;
 		bookImg: string;
 	}
+	// Theme
 	const colorTheme = {
 		theme: "available",
 		fetchLink: "availableBooks",
 		lostFound: "Borrow",
 	};
+	// States
+	// BookInfo
 	const [bookInfo, setBookInfo] = useState<BookInfo | null>(null);
+	// Modal State (Show/Hide)
 	const [showModal, setShowModal] = useState(false);
+	// User Info State (Logged in user)
 	const [userInfo, setUserInfo] = useState<UserToken | null>(null);
+	// Use the useEffect hook to fetch the user token from local storage
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (token) {
@@ -51,22 +59,29 @@ const Available = () => {
 			redirect("/");
 		}
 	}, []);
+	// Toggle Modal
 	const toggleModal = () => {
 		setShowModal(!showModal);
 	};
+	// Recieve Book Info
 	const recieveBookInfo = (data: BookInfo) => {
 		setBookInfo(data);
 	};
+	// Return your component
 	return (
+		// Main div
 		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
 			<div className="z-50 w-full">
+				{/* Navigation */}
 				<Navigation />
 			</div>
+			{/* BookList */}
 			<BookList
 				colorTheme={colorTheme}
 				toggleModal={toggleModal}
 				bookInfoData={recieveBookInfo}
 			/>
+			{/* StaticModal */}
 			<StaticModal
 				refreshPage={refresh}
 				showModal={showModal}
