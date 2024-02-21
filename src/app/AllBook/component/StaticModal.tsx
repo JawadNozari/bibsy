@@ -121,10 +121,12 @@ const StaticModal: React.FC<StaticModalProps> = ({
 			{showModal && (
 				<div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
 					{/* Modal content */}
-					<div className="bg-white rounded-lg shadow-lg p-8 max-w-xl w-full">
+					<div className="bg-white rounded-lg shadow-lg p-8 max-w-xl w-full dark:bg-gray-800">
 						{/* Modal header */}
 						<div className="flex items-center justify-between mb-4">
-							<h3 className="text-lg font-semibold text-gray-900">Book info</h3>
+							<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+								Book info
+							</h3>
 							<button
 								type="button"
 								onClick={() => {
@@ -153,9 +155,9 @@ const StaticModal: React.FC<StaticModalProps> = ({
 						{/* Modal body */}
 						{switchDiv ? (
 							<div>
-								<div className="flex justify-center items-center bg-gray-100">
-									<div className="p-2 bg-white shadow-lg rounded-lg">
-										<h3 className="text-lg text-black font-bold mb-2">
+								<div className="flex justify-center items-center bg-gray-100 dark:bg-gray-700">
+									<div className="p-2 bg-white shadow-lg rounded-lg dark:bg-gray-800">
+										<h3 className="text-lg text-black dark:text-gray-100 font-bold mb-2">
 											{bookInfo.title}
 										</h3>
 
@@ -167,15 +169,15 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												layout="fill"
 											/>
 										</div>
-										<p className="text-gray-700 text-base mt-4">
+										<p className="text-gray-700 text-base mt-4 dark:text-gray-100">
 											<span className="font-semibold">Author:</span>{" "}
 											{bookInfo.author}
 										</p>
-										<p className="text-gray-700 text-base">
+										<p className="text-gray-700 text-base dark:text-gray-100">
 											<span className="font-semibold">Published:</span>{" "}
 											{bookInfo.published.split("T")[0]}
 										</p>
-										<p className="text-gray-700 text-base">
+										<p className="text-gray-700 text-base dark:text-gray-100">
 											<span className="font-semibold">ISBN:</span>{" "}
 											{bookInfo.isbn}{" "}
 											<span className="font-semibold"> invNr:</span>{" "}
@@ -192,15 +194,16 @@ const StaticModal: React.FC<StaticModalProps> = ({
 								}}
 								method="POST"
 							>
+								{/* Edit Modal Body */}
 								<div>
-									<div className="flex justify-center items-center bg-gray-100">
-										<div className="p-2 bg-white shadow-lg rounded-lg">
-											<h3 className="text-lg text-black font-bold mb-2">
+									<div className="flex justify-center items-center bg-gray-100 dark:bg-gray-800">
+										<div className="p-2 bg-white shadow-lg rounded-lg dark:bg-gray-700">
+											<h3 className="text-lg text-black font-bold mb-2 dark:text-gray-100">
 												{bookInfoState.title}
 											</h3>
 											<label
 												htmlFor={"editTitle"}
-												className="text-black font-semibold"
+												className="text-black font-semibold dark:text-gray-100"
 											>
 												Title:{" "}
 											</label>
@@ -209,7 +212,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												name="bookUpdateTitle"
 												id={"editTitle"}
 												value={bookInfoState.title}
-												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700"
+												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
 												onChange={(event) =>
 													setBookInfoState((prevState) => ({
 														...prevState,
@@ -219,7 +222,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											/>
 											<label
 												htmlFor={"editAuthor"}
-												className="text-black font-semibold"
+												className="text-black font-semibold dark:text-gray-100"
 											>
 												Author:{" "}
 											</label>
@@ -228,7 +231,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												name="bookUpdateAuthor"
 												id={"editAuthor"}
 												value={bookInfoState.author}
-												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700"
+												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
 												onChange={(event) =>
 													setBookInfoState((prevState) => ({
 														...prevState,
@@ -238,7 +241,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											/>
 											<label
 												htmlFor={"editPublishers"}
-												className="text-black font-semibold"
+												className="text-black font-semibold dark:text-gray-100"
 											>
 												Publishers:{" "}
 											</label>
@@ -247,7 +250,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												name="bookUpdatePublishers"
 												id={"editPublishers"}
 												value={bookInfoState.publishers}
-												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700"
+												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
 												onChange={(event) =>
 													setBookInfoState((prevState) => ({
 														...prevState,
@@ -257,7 +260,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											/>
 											<label
 												htmlFor={"editPublished"}
-												className="text-black font-semibold"
+												className="text-black font-semibold dark:text-gray-100"
 											>
 												Published:{" "}
 											</label>
@@ -266,7 +269,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												name="bookUpdatePublished"
 												id={"editPublished"}
 												value={bookInfoState.published}
-												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700"
+												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
 												onChange={(event) =>
 													setBookInfoState((prevState) => ({
 														...prevState,
@@ -278,7 +281,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												<div>
 													<label
 														htmlFor={"editIsbn"}
-														className="text-black font-semibold"
+														className="text-black font-semibold dark:text-gray-100"
 													>
 														isbn:{" "}
 													</label>
@@ -287,7 +290,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 														name="bookUpdateisbn"
 														id={"editIsbn"}
 														value={bookInfoState.isbn}
-														className="p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700"
+														className="p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
 														onChange={(event) =>
 															setBookInfoState((prevState) => ({
 																...prevState,
@@ -299,7 +302,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												<div>
 													<label
 														htmlFor={"editinvNr"}
-														className="text-black font-semibold"
+														className="text-black font-semibold dark:text-gray-100"
 													>
 														invNr:{" "}
 													</label>
@@ -308,7 +311,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 														name="bookUpdateinvNr"
 														id={"editinvNr"}
 														value={bookInfoState.invNr}
-														className="p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700"
+														className="p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
 														onChange={(event) =>
 															setBookInfoState((prevState) => ({
 																...prevState,
@@ -320,7 +323,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											</div>
 											<label
 												htmlFor={"editbookImg"}
-												className="text-black font-semibold"
+												className="text-black font-semibold dark:text-gray-100"
 											>
 												bookImg:{" "}
 											</label>
@@ -328,7 +331,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												type="file"
 												name="bookUpdatebookImg"
 												id={"editbookImg"}
-												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700"
+												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
 												onChange={(e) => {
 													setFile(e.target.files?.[0]);
 												}}

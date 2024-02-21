@@ -266,7 +266,7 @@ export default function BookList({
 	console.log(bookState);
 	return (
 		// TableTemplate edited
-		<div className="size-9/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap">
+		<div className="size-10/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap">
 			<div className="size-2/12 w-full">
 				{/* link container */}
 				<div className="w-full h-full flex justify-center items-end">
@@ -304,13 +304,6 @@ export default function BookList({
 							<th colSpan={5} className="z-10">
 								{/* Input form */}
 								<form className="p-4 z-10">
-									{/* Label */}
-									<label
-										htmlFor="default-search"
-										className="mb-2 text-sm font-medium text-gray-900 sr-only"
-									>
-										Search
-									</label>
 									{/* Search icon */}
 									<div className="relative">
 										<div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -353,6 +346,22 @@ export default function BookList({
 								</form>
 							</th>
 						</tr>
+						{userType?.role === "Admin" ? (
+							<tr>
+								<th className="flex justify-center items-center">
+									<a
+										href="/RegisterBook"
+										className="px-2 py-4 rounded-lg bg-blue-500 mb-2"
+									>
+										Register Book
+									</a>
+								</th>
+								<th />
+								<th />
+								<th />
+								<th />
+							</tr>
+						) : null}
 						<tr>
 							<th scope="col" className="px-6 py-3 z-20">
 								Title
