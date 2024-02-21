@@ -212,8 +212,8 @@ export default function Home() {
                 </label>
               </div>
 
-							{/* Rest of the form fields */}
-							<div className="relative z-0 mb-5 group">
+				{/* Rest of the form fields */}
+				<div className="relative z-0 mb-5 group">
 								<input
 									type="text"
 									name="title"

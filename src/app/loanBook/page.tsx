@@ -229,10 +229,10 @@ export default function LoanBook() {
 	return (
 		<main className="flex w-screen h-screen justify-center items-center bg-neutral-100 text-black dark:bg-gray-800">
 			<ProtectedPage />
-			<div className="flex ">
-				<Navigation />
+			<div className="fixed left-0">
+			  <Navigation />
 			</div>
-			<div className="flex justify-between  ">
+			<div className="flex justify-center ">
 				{selectedUser && (
 					<div className="w-96 rounded card-normal mr-20 h-auto shadow-md  bg-gray-800 text-neutral-50 dark:bg-neutral-50 dark:text-gray-500 " >
 						<div className=" text-center">
