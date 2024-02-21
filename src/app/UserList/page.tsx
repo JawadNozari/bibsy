@@ -80,10 +80,9 @@ export default function Home() {
 		transform: "translateX(-100%)", // Hide user details off-screen
 		config: { mass: 1, tension: 170, friction: 26 }, // Set animation configuration
 	}));
-	const pathofimg = selectedUser?.classroom === undefined ? "StaffPFP" : "StudentPFP";
 	// Return the user list page
 	return (
-		<main className="flex items-center h-screen  bg-neutral-200 dark:bg-gray-800 justify-between">
+		<main className="flex items-center h-screen bg-neutral-200 dark:bg-gray-800 justify-between overflow-x-auto">
 			<div>
 				<Navigation />
 			</div>
@@ -92,7 +91,7 @@ export default function Home() {
 					// Conditionally show user details based on state
 					<animated.div
 						// Apply animation to user details
-						className="bg-white dark:bg-gray-900 dark:border-gray-700 px-4 shadow-xl rounded-lg min-h-content w-80 flex items-center justify-center flex-col max-h-screen py-3"
+						className="bg-white dark:bg-gray-900 dark:border-gray-700 px-4 shadow-xl rounded-lg min-h-content w-80 flex items-center justify-center flex-col max-h-screen py-6"
 						style={detailsAnimation} // Set animation style
 					>
 						<Image
@@ -105,7 +104,7 @@ export default function Home() {
 							alt={`${selectedUser?.firstName} ${selectedUser?.lastName}`} // Add null check for selectedUser
 						/>
 						<div className="p-2 max-h-screen ">
-							<h3 className="text-center text-3xl text-gray-400 font-medium leading-8 sticky top-0 text-nowrap">
+							<h3 className="text-center text-3xl text-gray-700 dark:text-gray-400 font-medium leading-8 sticky py-2 top-0 text-nowrap">
 								{selectedUser?.firstName} {selectedUser?.lastName}
 							</h3>
 							<div className="text-center my-3">
@@ -171,14 +170,15 @@ export default function Home() {
 					</animated.div>
 				)}
 				{/* User List */}
-				<div className="flex flex-col bg-white  dark:bg-gray-900 overflow-y-auto max-h-screen w-1/2 h-3/4 shadow-md sm:rounded-lg">
+				<div className="flex flex-col bg-white  dark:bg-gray-900 overflow-y-auto max-h-screen w-2/3 h-3/4 shadow-md sm:rounded-lg">
 					<div className="flex items-center justify-between border-b px-4 py-2 bg-white dark:bg-gray-900 dark:border-gray-700">
 						<h2 className="text-3xl font-bold text-nowrap">User List</h2>
-						<div className="dropdown dropdown-end">
-							<div tabIndex={0} role="button" className="btn w-48 capitalize">
-								Select type of users
+						<div className="flex items-center justify-between bg-white dark:bg-gray-900 dark:border-gray-700">
+						<div className="dropdown dropdown-end mx-4">
+							<div tabIndex={0} role="button" className="btn w-40 capitalize">
+								Select users
 							</div>
-							<ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48 top-42">
+							<ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40">
 								<li>
 									{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
 									<button onClick={() => handleUserTypeChange("all")}>
@@ -227,6 +227,7 @@ export default function Home() {
 								onChange={handleSearch} // Add onChange event to handle search
 							/>
 						</div>
+					</div>
 					</div>
 					<div>
 						<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">

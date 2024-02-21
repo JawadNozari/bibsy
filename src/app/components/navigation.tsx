@@ -19,7 +19,7 @@ export default function Page() {
 	}
 
 	function MembersRedirect() {
-		router.push("/UserList");
+		router.push("/userList");
 	}
 
 	function ReturnedRedirect() {
