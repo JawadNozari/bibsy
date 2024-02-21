@@ -1,4 +1,3 @@
-//! FIX UNUSED VARS
 /* eslint-disable no-unused-vars */
 //
 import React, { useEffect, useState } from "react";
@@ -10,6 +9,7 @@ import { Book } from "@prisma/client";
 interface StaticModalProps {
 	showModal: boolean; // Prop to determine whether the modal should be displayed
 	toggleModal: () => void; // Function to toggle the modal
+	refreshPage: () => void;
 	bookInfo: {
 		id: number;
 		price: number;
@@ -56,6 +56,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 	toggleModal,
 	bookInfo,
 	userInfo,
+	refreshPage,
 }) => {
 	useEffect(() => {
 		setBookInfoState(bookInfo);
@@ -64,8 +65,14 @@ const StaticModal: React.FC<StaticModalProps> = ({
 	const [switchDiv2, setSwitchDiv2] = useState("block");
 	const [bookInfoState, setBookInfoState] = useState(bookInfo);
 	const [file, setFile] = useState<File | undefined>(undefined);
-	const [user, setUser] = useState<userInfo | null>(null);
+	const [user, setUser] = useState<userInfo | null>(userInfo);
+	const prevImage = `.......${bookInfo.bookImg}`;
+	console.log(user);
 
+	console.log(prevImage);
+	useEffect(() => {
+		setUser(userInfo);
+	}, [userInfo]);
 	const switchingDiv = () => {
 		switchDiv === "block" ? setSwitchDiv("none") : setSwitchDiv("block");
 		switchDiv2 === "block" ? setSwitchDiv2("none") : setSwitchDiv2("block");
@@ -73,6 +80,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 
 	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
+		console.log(bookInfo);
 		const formData = new FormData();
 		let imagePath = "";
 		if (file !== undefined) {
@@ -91,7 +99,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 		}
 		const userData: Book = {
 			id: bookInfoState.id,
-			bookImg: imagePath,
+			bookImg: imagePath ? imagePath : prevImage,
 			title: bookInfoState.title,
 			author: bookInfoState.author,
 			publishers: bookInfoState.publishers,
@@ -148,7 +156,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 						<div style={{ display: switchDiv2 }}>
 							<div className="flex justify-center items-center bg-gray-100">
 								<div className="p-2 bg-white shadow-lg rounded-lg">
-									<h3 className="text-lg text-black font-bold mb-4">
+									<h3 className="text-lg text-black font-bold mb-2">
 										{bookInfo.title}
 									</h3>
 
@@ -177,11 +185,17 @@ const StaticModal: React.FC<StaticModalProps> = ({
 							</div>
 						</div>
 						{/* Modal Edit Body */}
-						<form onSubmit={handleSubmit} method="POST">
+						<form
+							onSubmit={() => {
+								handleSubmit;
+								refreshPage;
+							}}
+							method="POST"
+						>
 							<div style={{ display: switchDiv }}>
 								<div className="flex justify-center items-center bg-gray-100">
 									<div className="p-2 bg-white shadow-lg rounded-lg">
-										<h3 className="text-lg text-black font-bold mb-4">
+										<h3 className="text-lg text-black font-bold mb-2">
 											{bookInfoState.title}
 										</h3>
 										<label
@@ -282,7 +296,6 @@ const StaticModal: React.FC<StaticModalProps> = ({
 													}
 												/>
 											</div>
-											id
 											<div>
 												<label
 													htmlFor={"editinvNr"}
@@ -320,7 +333,12 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												setFile(e.target.files?.[0]);
 											}}
 										/>
-										<button type="submit">Submit</button>
+										<button
+											type="submit"
+											className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+										>
+											Submit
+										</button>
 									</div>
 								</div>
 							</div>
@@ -328,15 +346,25 @@ const StaticModal: React.FC<StaticModalProps> = ({
 
 						{/* Modal footer */}
 						<div className="mt-4 flex justify-between">
-							{
+							{switchDiv === "none" ? (
+								user?.role === "Admin" ? (
+									<button
+										onClick={switchingDiv}
+										className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+										type="button"
+									>
+										Edit
+									</button>
+								) : null
+							) : (
 								<button
 									onClick={switchingDiv}
-									className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+									className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-900 focus:outline-none"
 									type="button"
 								>
-									Edit
+									Info
 								</button>
-							}
+							)}
 							<button
 								onClick={() => {
 									toggleModal();

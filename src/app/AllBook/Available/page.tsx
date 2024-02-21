@@ -3,10 +3,11 @@ import React, { useState, useEffect } from "react";
 import BookList from "../component/BookList";
 import Navigation from "../../components/navigation";
 import StaticModal from "../component/StaticModal";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 // Define your component
 const Available = () => {
+	const { refresh } = useRouter();
 	interface UserToken {
 		iat: number;
 		role: string;
@@ -68,6 +69,7 @@ const Available = () => {
 				bookInfoData={recieveBookInfo}
 			/>
 			<StaticModal
+				refreshPage={refresh}
 				showModal={showModal}
 				toggleModal={toggleModal}
 				bookInfo={
