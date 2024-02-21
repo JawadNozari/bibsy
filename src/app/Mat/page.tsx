@@ -9,7 +9,7 @@ export default function Page() {
 	);
 	const [closingTime, setClosingTime] = useState<Date | null>(null);
 	const [currentTime, setCurrentTime] = useState<string>("");
-	
+
 	// eslint-disable-next-line no-unused-vars
 	const [lunchTime, setLunchTime] = useState<string | null>(null);
 	const [closingIn, setClosingIn] = useState<string | JSX.Element>(
@@ -94,7 +94,7 @@ export default function Page() {
 					</div>
 
 					<div className="flex flex-row place-content-center items-end h-1/4 gap-2 pb-6">
-						<Image className="w-8" src="./icons/timer.png" alt="timer icon" />
+						<Image className="w-8" src="./icons/timer.png" alt="timer icon" width={20} height={20} />
 						<h4 className="text-xl">Closing in:</h4>
 						<h3 className="text-xl">{closingIn}</h3>
 					</div>
@@ -107,7 +107,6 @@ export default function Page() {
 							alt="Nti gymnasiet logo"
 							width={200}
 							height={200}
-
 						/>
 						<h2 className="text-3xl -mt-1">Last Check In</h2>
 					</div>
@@ -124,6 +123,8 @@ export default function Page() {
 							className="w-8"
 							src="./icons/checkmark.png"
 							alt="checkmark icon"
+							width={20}
+							height={20}
 						/>
 						<b>(Number)</b>
 						<p>People checked in so far</p>
