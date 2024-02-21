@@ -1,9 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { Book } from "@prisma/client";
-import Navigation from "../components/navigation";
+import { CheckIfLoggedIn } from "../components/loginChecks";
+import Page from "../components/navigation";
+import { useRouter } from "next/navigation";
+
+
+
 
 interface VolumeInfo {
 	title: string;
@@ -22,6 +27,8 @@ interface BookData {
 }
 
 export default function Home() {
+  const router = useRouter();
+
 	// variables for form fields and book data
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
@@ -36,6 +43,18 @@ export default function Home() {
 	const [bookData, setBookData] = useState<BookData | null>(null);
 	const [message, setMessage] = useState<string | undefined>("");
 	const [status, setStatus] = useState<number>(0);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        router.push("/login");
+    } else {
+        const { whatUserAreYou } = CheckIfLoggedIn(token);
+        if (whatUserAreYou != "Staff" && whatUserAreYou != "Admin") {
+            router.push("/");
+        }
+    }
+}, [router]);
 
 	// Function to search for book by ISBN using Google Books API
 	const searchByIsbn = async () => {
@@ -136,7 +155,7 @@ export default function Home() {
   return (
     <div className="flex justify-center items-center  md: h-screen bg-white gap-11 w-full "> 
     <div>
-      <Navigation />
+      <Page/>
     </div>
       <div className="flex items-center justify-center  md:flex-row md:items-start w-full">
         <div className="shadow-2xl  shadow-black bg-gray-800  text-neutral-50 p-6 rounded-2xl max-w-2xl  w-10/12">
