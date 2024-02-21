@@ -133,7 +133,7 @@ const Page = () => {
 											<input
 												type="checkbox"
 												checked={rememberMe}
-												onChange={() => setShowPassword(!showPassword)}
+												onChange={handleRememberChange}
 												className="mr-2"
 												id="remember"
 											/>
