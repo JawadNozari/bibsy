@@ -6,7 +6,6 @@ export const GET = async () => {
 	return await prisma.missingBooks
 		.findMany()
 		.then((response) => {
-			console.log("response", response);
 			return NextResponse.json({ books: response }, { status: 200 });
 		})
 		.catch((error: Error) => {

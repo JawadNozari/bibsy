@@ -11,6 +11,7 @@ const Page = () => {
 	const [rememberMe, setRememberMe] = useState<boolean>(false);
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	//! Fix Remember me
+	// eslint-disable-next-line no-unused-vars
 	const [checked, setChecked] = useState<boolean>(false);
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
@@ -32,7 +33,6 @@ const Page = () => {
 			.then((res) => {
 				setErr(false);
 				const responseData = res.data;
-				console.log(`Got Token from Backend:  ${responseData}`);
 				localStorage.setItem("token", responseData.token);
 				//const decodedToken = JSON.parse(atob(responseData.token.split(".")[1])); // * Decode JWT to get user details
 
@@ -123,7 +123,7 @@ const Page = () => {
 											<input
 												type="checkbox"
 												checked={rememberMe}
-												onChange={(e) => setShowPassword(!showPassword)}
+												onChange={() => setShowPassword(!showPassword)}
 												className="mr-2"
 												id="remember"
 											/>

@@ -94,11 +94,10 @@ export default function RegisterMember() {
                 })
                 .catch((error: Error) => {
                     console.debug(error);
-                    console.log("there is issue when getting path from uploader ");
+                  
                 });
         }
 
-		console.log("all States", password, firstName, lastName, email, phone, role, admin, imagePath, selectedClassroom);
 
         axios.post("/api/adminCenter", {
             password: hashedPassword,

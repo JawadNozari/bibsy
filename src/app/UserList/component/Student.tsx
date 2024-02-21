@@ -107,7 +107,6 @@ const StudentList: React.FC<StudentListProps> = ({
 				}
 			}
 
-			console.log("Updated user information:", updatedUsers[index]);
 			closeModal(); // Close the modal after editing is done
 		}
 	};
