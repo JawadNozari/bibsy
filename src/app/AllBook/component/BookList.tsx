@@ -197,11 +197,9 @@ export default function BookList({
 		const token = localStorage.getItem("token");
 		if (token) {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
-			console.log(decodedToken);
 			setUserType(decodedToken);
 		} else {
-			console.log("no token");
-			redirect("/login");
+			redirect("/");
 		}
 	}, []);
 
@@ -263,7 +261,6 @@ export default function BookList({
 		});
 		console.log(response.data);
 	};
-	console.log(bookState);
 	return (
 		// TableTemplate edited
 		<div className="size-10/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap">
@@ -348,6 +345,8 @@ export default function BookList({
 						</tr>
 						{userType?.role === "Admin" ? (
 							<tr>
+								<th />
+								<th />
 								<th className="flex justify-center items-center">
 									<a
 										href="/RegisterBook"
@@ -356,8 +355,6 @@ export default function BookList({
 										Register Book
 									</a>
 								</th>
-								<th />
-								<th />
 								<th />
 								<th />
 							</tr>
