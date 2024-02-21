@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Staff, Student } from "@prisma/client";
 import { NextResponse, NextRequest } from "next/server";
 
 const prisma = new PrismaClient();
@@ -21,11 +21,23 @@ const fetchUser = async (qrCode: string, userType: string) => {
 		);
 	}
 };
+const addName = async (userdata:Staff | Student) => {
+	try{
+		await prisma.food.create({
+			data: {
+				name: `${userdata.firstName} ${userdata.lastName}`
+			}
+		});
+	} catch {
+
+	}
+};
 export const POST = async (req: NextRequest) => {
 	try {
 		const { qrCode } = await req.json();
 		const userType = qrCode.slice(-5) === "staff" ? "staff" : "student";
 		const userdata = await fetchUser(qrCode, userType);
+		await addName(userdata);
 		return NextResponse.json(userdata);
 	} catch (error) {
 		// If there is an error, return the error

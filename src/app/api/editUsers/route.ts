@@ -1,7 +1,7 @@
 //* EDIT USERS
 
 // Imports 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Staff, Student } from "@prisma/client";
 import { NextResponse, NextRequest} from "next/server";
 
 // Function if a get request is sent
@@ -31,7 +31,7 @@ export const POST = async (req: NextRequest) => {
 		);
 	}
 	try {
-			// Update for staff
+			// Update for users
 			await (prisma as any)[userType]
 			.update({
 				where: { id: Number(id) },
@@ -47,6 +47,16 @@ export const POST = async (req: NextRequest) => {
 					...(userType === "student" && {classroom: studentclass}),
 					...(userType === "student" && {qrCode: firstName + lastName + studentclass}),
 				},
+				
+			})
+			.then((user: Staff | Student) => {
+				return NextResponse.json({ user: user }, { status: 200 });
+			})
+			.catch((error: Error) => {
+				return NextResponse.json({ message: error }, { status: 500 });
+			})
+			.finally(() => {
+				prisma.$disconnect();
 			});
 	}catch {
 		// Extra error checking
@@ -59,8 +69,5 @@ export const POST = async (req: NextRequest) => {
 			{ status: 500 },
 		);
 
-  }finally{
-	prisma.$disconnect();
-	 NextResponse.json({ status: 200 });
   }
 };
