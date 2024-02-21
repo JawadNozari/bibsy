@@ -4,9 +4,9 @@ import { Staff, Student } from "@prisma/client";
 import { toPng } from "html-to-image";
 
 interface StaticModalProps {
-  showModal: boolean; // Prop to determine whether the modal should be displayed
-  toggleModal: () => void; // Function to toggle the modal
-  selectedUser: Staff | Student | null; // Selected user data
+	showModal: boolean; // Prop to determine whether the modal should be displayed
+	toggleModal: () => void; // Function to toggle the modal
+	selectedUser: Staff | Student | null; // Selected user data
 }
 
 const StaticModal: React.FC<StaticModalProps> = ({
@@ -26,7 +26,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 					link.click();
 				})
 				.catch((err) => {
-					console.log(err);
+					console.debug(err);
 				});
 		}
 	};

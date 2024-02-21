@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client";
 import { useState, useEffect } from "react";
 import { CheckIfLoggedIn } from "../components/loginChecks";
@@ -37,7 +38,6 @@ export default function RegisterMember() {
 			router.push("/login");
 		} else {
 			const { areYouAdmin } = CheckIfLoggedIn(token);
-			console.log(areYouAdmin);
 			if (!areYouAdmin) {
 				router.push("/");
 			}
@@ -45,7 +45,6 @@ export default function RegisterMember() {
 		// Uppdatera gränssnittet baserat på vald option
 		setIsSingleUser(selectedOption === "CSVSingleUser");
 		setIsMultipleUsers(selectedOption === "CSVMultipleUsers");
-		console.log(CheckIfLoggedIn);
 	}, [selectedOption, router]);
 
 	const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -110,22 +109,8 @@ export default function RegisterMember() {
 				})
 				.catch((error: Error) => {
 					console.debug(error);
-					console.log("there is issue when getting path from uploader ");
 				});
 		}
-
-		console.log(
-			"all States",
-			password,
-			firstName,
-			lastName,
-			email,
-			phone,
-			role,
-			admin,
-			imagePath,
-			selectedClassroom,
-		);
 
 		axios.post("/api/adminCenter", {
 			password: hashedPassword,
