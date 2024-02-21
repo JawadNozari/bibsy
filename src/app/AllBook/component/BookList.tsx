@@ -257,7 +257,6 @@ export default function BookList({
 			userType: "student",
 			listType,
 		}); //? what should happen with this response?
-		
 	};
 	return (
 		// TableTemplate edited
@@ -538,7 +537,7 @@ export default function BookList({
 												// borrow button
 												<a
 													href={`/loanBook?invNr=${book.invNr}`}
-													className="transform p-2 bg-gray-800 dark:bg-gray-700 rounded-xl text-yellow-600 font-bold hover:scale-110 transition-transform"
+													className="transform p-2 bg-gray-600 text-yellow-500 dark:bg-gray-700 rounded-xl dark:text-yellow-600 font-bold hover:scale-110 transition-transform"
 												>
 													Borrow
 												</a>

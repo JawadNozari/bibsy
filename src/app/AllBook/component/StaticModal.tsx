@@ -168,7 +168,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 						{switchDiv ? (
 							<div>
 								<div className="flex justify-center items-center bg-gray-100 dark:bg-gray-700">
-									<div className="p-2 bg-white shadow-lg rounded-lg dark:bg-gray-800">
+									<div className="p-2 bg-white shadow-lg rounded-lg dark:bg-gray-800 my-3">
 										{/* Title */}
 										<h3 className="text-lg text-black dark:text-gray-100 font-bold mb-2">
 											{bookInfo.title}
