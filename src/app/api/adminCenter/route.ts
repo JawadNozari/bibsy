@@ -1,29 +1,31 @@
-//TODO: Check if the user already exists before creating a new user (ERROR handling)
-//TODO: Comment the code
+// TODO: Check if the user already exists before creating a new user (Error handling)
+// TODO: Comment the code
 
-import { PrismaClient, Student } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
+// Function to handle GET requests
 export const GET = async () => {
-	return NextResponse.json({ message: "Hello World" });
+    return NextResponse.json({ message: "Hello World" });
 };
 
 const prisma = new PrismaClient();
-type incomingData = Student & { file: File | undefined };
 
 // Handler function for handling student registration
 export const POST = async (req: NextRequest) => {
-	// Get the student data from the request body
-	const request: incomingData = await req.json();
-	if (!request)
-		return NextResponse.json({ message: "Invalid request" }, { status: 400 });
-	const { password, firstName, lastName, email, phone, image, classroom, qrCode } =
-		request as incomingData;
-	// We have to await the request body to get the data
-	
+    try {
+        // Get the student data from the request body
+        const request = await req.json();
+        if (!request) {
+            // If request is invalid, return error response
+            return NextResponse.json({ message: "Invalid request" }, { status: 400 });
+        }
 
-	return await prisma.student
-		.create({
+		//* Extract the data from the request
+        const { password, firstName, lastName, email, phone, image, classroom, qrCode, admin, role } = request;
+
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		const  newUser = await (prisma as any)[role].create({ // Create a new user based on the role
 			data: {
 				password,
 				firstName,
@@ -31,18 +33,20 @@ export const POST = async (req: NextRequest) => {
 				email,
 				phone,
 				image: image,
-				classroom,
-				qrCode, // Add the qrCode property with a default value
-			} as incomingData,
-		})
-		.then((student) => {
-			return NextResponse.json(student, { status: 201 });
-		})
-		.catch((error: Error) => {
-			console.log(error);
-			return NextResponse.json(error, { status: 500 });
-		})
-		.finally(() => {
-			prisma.$disconnect();
+				qrCode,
+				...(role === "staff" && {admin}),
+				...(role === "student" && {classroom}),
+				
+			},
 		});
-}; 
+        // Return success response with created user data
+        return NextResponse.json( newUser, { status: 201 });
+    } catch (error) {
+        // Handle errors
+        console.error(error);
+        return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+    } finally {
+        // Disconnect Prisma client
+        prisma.$disconnect();
+    }
+};
