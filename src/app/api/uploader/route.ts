@@ -11,7 +11,6 @@ export const POST = async (req: NextRequest) => {
 	}
 	const buffer = Buffer.from(await (file as File).arrayBuffer());
 	const filename = (file as File).name.replaceAll(" ", "_");
-	console.log(`I got Path here: ${uploadPath}`);
 	const uploadDirectory = path.join(`public/${uploadPath}`);
 
 	// Create the directory if it doesn't exist

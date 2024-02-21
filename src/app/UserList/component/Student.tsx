@@ -17,7 +17,7 @@ interface User {
 	image: string;
 	classroom: string;
 	admin: boolean;
-	qrCode: number;
+	qrCode: string;
 }
 
 // Defines an interface for the properties that the StudentList component expects to receive
@@ -107,7 +107,6 @@ const StudentList: React.FC<StudentListProps> = ({
 				}
 			}
 
-			console.log("Updated user information:", updatedUsers[index]);
 			closeModal(); // Close the modal after editing is done
 		}
 	};
@@ -165,7 +164,7 @@ const StudentList: React.FC<StudentListProps> = ({
 			id: editedUser?.id || 0, // Keep the id the same or set it to 0 if it's undefined
 			password: editedUser?.password || "", // Keep the password the same or set it to an empty string if it's undefined
 			admin: editedUser?.admin || false, // Keep the admin status the same or set it to false if it's undefined
-			qrCode: editedUser?.qrCode || 0, // Keep the QR code the same or set it to 0 if it's undefined
+			qrCode: String(editedUser?.qrCode || 0), // Convert qrCode to string or set it to "0" if it's undefined
 			image: selectedImage ? selectedImage.name : editedUser?.image || "", // Update the image name with the selected image's name or set it to an empty string if 'editedUser?.image' is undefined
 		}));
 	};

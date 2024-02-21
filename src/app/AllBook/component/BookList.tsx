@@ -207,7 +207,7 @@ export default function BookList({
 		fetch(`/api/${colorTheme.fetchLink}`)
 			.then((res) => res.json())
 			.then((data) => setBooks(data.books))
-			.catch((error) => console.log(error));
+			.catch((error) => console.debug(error));
 	}, [colorTheme.fetchLink]);
 
 	//fetching bookState data if exists
@@ -216,7 +216,7 @@ export default function BookList({
 			? fetch(`/api/${colorTheme.type}`)
 					.then((res) => res.json())
 					.then((data) => setBookState(data.books))
-					.catch((error) => console.log(error))
+					.catch((error) => console.debug(error))
 			: null;
 	}, [colorTheme.type]);
 
@@ -235,8 +235,8 @@ export default function BookList({
 
 		const response = await axios.post("/api/setBookMissing", {
 			bookId,
-		});
-		console.log(response.data);
+		}); //? what should happen with this response?
+		// console.log(response.data);
 	};
 	//* On return button press, set the book to available and remove it from the array and db
 	const setBookAvailable = async (
@@ -256,8 +256,8 @@ export default function BookList({
 			bookId,
 			userType: "student",
 			listType,
-		});
-		console.log(response.data);
+		}); //? what should happen with this response?
+		
 	};
 	return (
 		// TableTemplate edited

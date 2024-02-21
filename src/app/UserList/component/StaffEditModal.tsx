@@ -4,6 +4,7 @@
 import React from "react"; // Import React library for using React components
 import Image from "next/image"; // Import Image component from Next.js for optimized image loading
 
+
 // Defines interface for User object
 interface User {
 	id: number;
@@ -15,7 +16,7 @@ interface User {
 	image: string;
 	classroom: string;
 	admin: boolean;
-	qrCode: number;
+	qrCode: string;
 }
 
 // Defines interface for props passed to StaffEditModal component
@@ -61,8 +62,6 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 			setShowFullImage(false); // Hide full image
 		}
 	}
-
-	console.log(imagePreview);
 
 	return (
 		<div

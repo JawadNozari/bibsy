@@ -1,18 +1,24 @@
+/* eslint-disable no-unused-vars */
 "use client";
 import { useState, useEffect } from "react";
+import { CheckIfLoggedIn } from "../components/loginChecks";
 import axios from "axios";
 import Papa from "papaparse";
 import bcrypt from "bcryptjs";
-
+import { useRouter } from "next/navigation";
+import { toJpeg } from "html-to-image";
+import Page from "../components/navigation";
 
 type PapaData = {
 	data: string[];
 };
 
 export default function RegisterMember() {
+	const router = useRouter();
+
 	const [password, setPassword] = useState("");
-    const [email] = useState("@elev.ntig.se");
-    const [file, setFile] = useState<File | undefined>(undefined);
+	const [email] = useState("@elev.ntig.se");
+	const [file, setFile] = useState<File | undefined>(undefined);
 	const [role, setRole] = useState<string>("");
 	const [admin, setAdmin] = useState<boolean>(false);
 	const [selectedValue, setSelectedValue] = useState("students");
@@ -27,10 +33,19 @@ export default function RegisterMember() {
 	const [phone, setPhone] = useState("");
 
 	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (!token) {
+			router.push("/login");
+		} else {
+			const { areYouAdmin } = CheckIfLoggedIn(token);
+			if (!areYouAdmin) {
+				router.push("/");
+			}
+		}
 		// Uppdatera gränssnittet baserat på vald option
 		setIsSingleUser(selectedOption === "CSVSingleUser");
 		setIsMultipleUsers(selectedOption === "CSVMultipleUsers");
-	}, [selectedOption]);
+	}, [selectedOption, router]);
 
 	const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const selectedRole = event.target.value;
@@ -58,7 +73,7 @@ export default function RegisterMember() {
 				},
 			});
 			alert("File uploaded");
-		} 
+		}
 		//* If its a single user file, then it parses the data and sets the state of the input fields
 		else if (isSingleUser) {
 			Papa.parse(file, {
@@ -77,90 +92,91 @@ export default function RegisterMember() {
 	};
 
 	const handleSubmit = async (e: React.SyntheticEvent) => {
-        e.preventDefault();
-        const hashedPassword = bcrypt.hashSync(password, 10);
+		e.preventDefault();
+		const hashedPassword = bcrypt.hashSync(password, 10);
 
-        const formData = new FormData();
-        let imagePath = "";
-        if (file !== undefined) {
-            formData.append("file", file);
-            formData.append("path", role === "student" ? "studentPFP" : "staffPFP");
-            imagePath = await axios
-                .post("/api/uploader", formData, {
-                    headers: { "Content-Type": "multipart/form-data" },
-                })
-                .then((res) => {
-                    return res.data.path;
-                })
-                .catch((error: Error) => {
-                    console.debug(error);
-                    console.log("there is issue when getting path from uploader ");
-                });
-        }
+		const formData = new FormData();
+		let imagePath = "";
+		if (file !== undefined) {
+			formData.append("file", file);
+			formData.append("path", role === "student" ? "studentPFP" : "staffPFP");
+			imagePath = await axios
+				.post("/api/uploader", formData, {
+					headers: { "Content-Type": "multipart/form-data" },
+				})
+				.then((res) => {
+					return res.data.path;
+				})
+				.catch((error: Error) => {
+					console.debug(error);
+				});
+		}
 
-		console.log("all States", password, firstName, lastName, email, phone, role, admin, imagePath, selectedClassroom);
-
-        axios.post("/api/adminCenter", {
-            password: hashedPassword,
-            firstName: firstName,
-            lastName: lastName,
-            email: `${firstName}.${lastName}${email}`,
-            phone: phone,
-            image: imagePath.slice(7),
+		axios.post("/api/adminCenter", {
+			password: hashedPassword,
+			firstName: firstName,
+			lastName: lastName,
+			email: `${firstName}.${lastName}${email}`,
+			phone: phone,
+			image: imagePath.slice(7),
 			classroom: selectedClassroom,
-            admin: Boolean(admin),
-            qrCode: firstName + lastName + role,
+			admin: Boolean(admin),
+			qrCode: firstName + lastName + role,
 			role: role,
-        });
-    };
+		});
+	};
 
 	const generateClassroomOptions = () => {
 		const currentYear = new Date().getFullYear();
 		const specialties = ["TEK", "EL", "DES"];
 		const lastYearClassroom = "TE4";
-	  
-		const classroomOptions = specialties.flatMap(specialty =>
-		  Array.from({ length: 4 }, (_, index) => `${(currentYear - index).toString().slice(-2)}${specialty}`)
+
+		const classroomOptions = specialties.flatMap((specialty) =>
+			Array.from(
+				{ length: 4 },
+				(_, index) =>
+					`${(currentYear - index).toString().slice(-2)}${specialty}`,
+			),
 		);
-	  
+
 		// Add TE4 for the last year
 		classroomOptions.push(lastYearClassroom);
-	  
+
 		// Sort the classroom options based on the extracted numbers
 		classroomOptions.sort((a, b) => {
-		  const numA = parseInt(a.slice(0, 2));
-		  const numB = parseInt(b.slice(0, 2));
-		  return numA - numB;
+			const numA = parseInt(a.slice(0, 2));
+			const numB = parseInt(b.slice(0, 2));
+			return numA - numB;
 		});
-	  
+
 		return classroomOptions;
-	  };
-	  
-	  const SelectComponent: React.FC = () => {
-	  
+	};
+
+	const SelectComponent: React.FC = () => {
 		const classroomOptions = generateClassroomOptions();
-	  
+
 		const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		  setSelectedClassroom(event.target.value);
+			setSelectedClassroom(event.target.value);
 		};
-	  
+
 		return (
-		  <div>
-			<label>Select Classroom:</label>
-			<select value={selectedClassroom} onChange={handleChange} required>
-			  <option value="">Select</option>
-			  {classroomOptions.map(classroom => (
-				<option key={classroom} value={classroom}>
-				  {classroom}
-				</option>
-			  ))}
-			</select>
-		  </div>
+			<div>
+				<label>Select Classroom:</label>
+				<select value={selectedClassroom} onChange={handleChange} required>
+					<option value="">Select</option>
+					{classroomOptions.map((classroom) => (
+						<option key={classroom} value={classroom}>
+							{classroom}
+						</option>
+					))}
+				</select>
+			</div>
 		);
-	  };
+	};
 
 	return (
 		<div className="flex justify-center items-center  md: h-screen bg-white dark:bg-gray-900 gap-11 w-full ">
+			<Page />
 			<div className="flex items-center justify-center  md:flex-row md:items-start w-full">
 				<div className="shadow-2xl  shadow-black bg-gray-800  text-neutral-50 p-6 rounded-2xl max-w-2xl  w-10/12">
 					<form onSubmit={handleSubmit}>
@@ -297,30 +313,14 @@ export default function RegisterMember() {
 						>
 							Register
 						</button>
-						
-
 						<div className="relative z-0 mb-5 group">
-							<div style={{ display: isSingleUser || isMultipleUsers ? "block" : "none" }}>
-								<input
-									type="file"
-									name="fileUploader"
-									id="fileUploader"
-									className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-									accept=".csv"
-									onChange={(e) => { handleFileUpload(e); }}
-								/>
-								<div style={{ display: isMultipleUsers ? "block" : "none" }}>
-									<label htmlFor="students">
-										<input type="radio" value="students" onChange={() => handleRadioChange("students")} checked={selectedValue === "students"} />
-										Students
-									</label>
-									<br />
-									<label htmlFor="staff">
-										<input type="radio" name="staff" onChange={() => handleRadioChange("staff")} value="staff" checked={selectedValue === "staff"} />
-										Staff
-									</label>
-								</div>
-							</div>
+							<input
+								type="file"
+								name="fileUploader"
+								id="fileUploader"
+								className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+								style={{ display: isSingleUser ? "block" : "none" }} // Visa endast om isSingleUser är true
+							/>
 							<select
 								className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
 								name="CSVUser"

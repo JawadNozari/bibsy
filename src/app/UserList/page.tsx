@@ -21,7 +21,7 @@ interface User {
 	image: string;
 	classroom: string;
 	admin: boolean;
-	qrCode: number;
+	qrCode: string;
 }
 
 interface ApiResponse {
@@ -99,7 +99,9 @@ export default function Home() {
 							width={200}
 							height={200}
 							src={
-								selectedUser.image.includes(".") && selectedUser.image != null ? `/${selectedUser.image}` : "/pfp.jpg"
+								selectedUser.image.includes(".") && selectedUser.image != null
+									? `/${selectedUser.image}`
+									: "/pfp.jpg"
 							}
 							alt={`${selectedUser?.firstName} ${selectedUser?.lastName}`} // Add null check for selectedUser
 						/>
@@ -174,60 +176,60 @@ export default function Home() {
 					<div className="flex items-center justify-between border-b px-4 py-2 bg-white dark:bg-gray-900 dark:border-gray-700">
 						<h2 className="text-3xl font-bold text-nowrap">User List</h2>
 						<div className="flex items-center justify-between bg-white dark:bg-gray-900 dark:border-gray-700">
-						<div className="dropdown dropdown-end mx-4">
-							<div tabIndex={0} role="button" className="btn w-40 capitalize">
-								Select users
+							<div className="dropdown dropdown-end mx-4">
+								<div tabIndex={0} role="button" className="btn w-40 capitalize">
+									Select users
+								</div>
+								<ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40">
+									<li>
+										{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+										<button onClick={() => handleUserTypeChange("all")}>
+											All Users
+										</button>
+									</li>
+									<li>
+										{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+										<button onClick={() => handleUserTypeChange("staff")}>
+											Staffs
+										</button>
+									</li>
+									<li>
+										{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+										<button onClick={() => handleUserTypeChange("student")}>
+											Students
+										</button>
+									</li>
+								</ul>
 							</div>
-							<ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40">
-								<li>
-									{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
-									<button onClick={() => handleUserTypeChange("all")}>
-										All Users
-									</button>
-								</li>
-								<li>
-									{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
-									<button onClick={() => handleUserTypeChange("staff")}>
-										Staffs
-									</button>
-								</li>
-								<li>
-									{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
-									<button onClick={() => handleUserTypeChange("student")}>
-										Students
-									</button>
-								</li>
-							</ul>
-						</div>
-						<div className="relative">
-							<div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-								<svg
-									className="w-4 h-4 text-gray-500 dark:text-gray-400"
-									aria-hidden="true"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 20 20"
-								>
-									<path
-										stroke="currentColor"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="2"
-										d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-									/>
-								</svg>
+							<div className="relative">
+								<div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+									<svg
+										className="w-4 h-4 text-gray-500 dark:text-gray-400"
+										aria-hidden="true"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 20 20"
+									>
+										<path
+											stroke="currentColor"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
+											d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+										/>
+									</svg>
+								</div>
+								<input
+									// Add input element for search
+									type="text"
+									id="table-search-users"
+									className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									placeholder="Search for users"
+									value={searchTerm} // Set value to searchTerm
+									onChange={handleSearch} // Add onChange event to handle search
+								/>
 							</div>
-							<input
-								// Add input element for search
-								type="text"
-								id="table-search-users"
-								className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-								placeholder="Search for users"
-								value={searchTerm} // Set value to searchTerm
-								onChange={handleSearch} // Add onChange event to handle search
-							/>
 						</div>
-					</div>
 					</div>
 					<div>
 						<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -288,8 +290,10 @@ export default function Home() {
 					<StaticModal
 						showModal={showModal}
 						toggleModal={toggleModal}
-						//@ts-ignore
-						selectedUser={selectedUser} //! FIX THIS SHIT
+						selectedUser={{
+							...selectedUser,
+							qrCode: selectedUser.qrCode.toString(),
+						}}
 					/>
 				)}
 			</div>

@@ -17,7 +17,7 @@ interface User {
     image: string;
     classroom: string;
     admin: boolean;
-    qrCode: number;
+    qrCode: string;
 }
 
 interface StudentEditModalProps {
