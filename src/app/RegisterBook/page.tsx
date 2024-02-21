@@ -1,9 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { Book } from "@prisma/client";
-import Navigation from "../components/navigation";
+import { CheckIfLoggedIn } from "../components/loginChecks";
+import Page from "../components/navigation";
+import { useRouter } from "next/navigation";
+
+
+
 
 interface VolumeInfo {
 	title: string;
@@ -22,6 +27,8 @@ interface BookData {
 }
 
 export default function Home() {
+  const router = useRouter();
+
 	// variables for form fields and book data
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
@@ -36,6 +43,18 @@ export default function Home() {
 	const [bookData, setBookData] = useState<BookData | null>(null);
 	const [message, setMessage] = useState<string | undefined>("");
 	const [status, setStatus] = useState<number>(0);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        router.push("/login");
+    } else {
+        const { whatUserAreYou } = CheckIfLoggedIn(token);
+        if (whatUserAreYou != "Staff" && whatUserAreYou != "Admin") {
+            router.push("/");
+        }
+    }
+}, [router]);
 
 	// Function to search for book by ISBN using Google Books API
 	const searchByIsbn = async () => {
@@ -137,44 +156,61 @@ export default function Home() {
 	// 	  </div>
 	//   ) : (
 
-	// flex justify-center items-center  md: h-screen bg-white gap-11 w-full
-	return (
-		<div className="flex justify-center items-center  md: h-screen bg-white gap-11 w-full ">
-			<div>
-				<Navigation />
-			</div>
-			<div className="flex items-center justify-center  md:flex-row md:items-start w-full">
-				<div className="shadow-2xl  shadow-black bg-gray-800  text-neutral-50 p-6 rounded-2xl max-w-2xl  w-10/12">
-					<form>
-						<div className="grid gap-10 md:grid-cols-2">
-							<div className="relative z-0 mb-5 group col-span-2 flex items-center justify-center">
-								{/* ISBN input for google book api search*/}
-								<input
-									type="text"
-									name="isbn"
-									id="isbn"
-									value={isbn}
-									onChange={(e) => setIsbn(e.target.value)}
-									className="block py-2.5 px-0 w-3/5 text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-									placeholder=" "
-									required
-									maxLength={13}
-								/>
-								{/* Search button */}
-								<button
-									type="button"
-									onClick={searchByIsbn}
-									className=" btn ml-2 px-4 py-2 bg-neutral-50  text-gray-500 hover:text-gray-100 hover:bg-gray-800 dark:bg-gray-700   btn-active"
-								>
-									Search
-								</button>
-								<label
-									htmlFor="isbn"
-									className="peer-focus:font-medium absolute text-xl text-center text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-100 top-3 left-0 right-0 mx-auto -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-2/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-								>
-									ISBN
-								</label>
-							</div>
+  // flex justify-center items-center  md: h-screen bg-white gap-11 w-full 
+  return (
+    <div className="flex justify-center items-center  md: h-screen bg-white gap-11 w-full "> 
+    <div>
+      <Page/>
+    </div>
+      <div className="flex items-center justify-center  md:flex-row md:items-start w-full">
+        <div className="shadow-2xl  shadow-black bg-gray-800  text-neutral-50 p-6 rounded-2xl max-w-2xl  w-10/12">
+          <form>
+            <div className="grid gap-10 md:grid-cols-2">
+              <div className="relative z-0 mb-5 group col-span-2 flex items-center justify-center">
+                {/* ISBN input for google book api search*/}
+                <input
+                  type="number"
+                  name="isbn"
+                  id="isbn"
+                  value={isbn}
+                  onChange={(e) => setIsbn(e.target.value)}
+                  className="block py-2.5 px-0 w-3/5 text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                  maxLength={13}
+                />
+                {/* Search button */}
+                <button
+                  type="button"
+                  onClick={searchByIsbn}
+                  className=" btn ml-2 px-4 py-2 bg-neutral-50  text-gray-500 hover:text-gray-100 hover:bg-gray-800 dark:bg-gray-700   btn-active"
+                >
+                  Search
+                </button>
+                <label htmlFor="isbn" className="peer-focus:font-medium absolute text-xl text-center text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-100 top-3 left-0 right-0 mx-auto -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-2/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
+                  ISBN
+                </label>
+              </div>
+        
+              {/* Rest of the form fields */}
+              <div className="relative z-0 mb-5 group">
+                <input
+                  type="text"
+                  name="title"
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+                <label
+                  htmlFor="title"
+                  className="peer-focus:font-medium absolute text-xl text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 left-0 right-0 mx-auto -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 "
+                >
+                  Title
+                </label>
+              </div>
 
 							{/* Rest of the form fields */}
 							<div className="relative z-0 mb-5 group">
