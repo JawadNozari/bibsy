@@ -59,14 +59,16 @@ const Missing = () => {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
 			console.log(decodedToken);
 			setUserInfo(decodedToken);
-			decodedToken.role !== "Staff" ? redirect("/login") : null;
+			decodedToken.role !== "Admin" ? redirect("/login") : null;
 		} else {
 			redirect("/login");
 		}
 	}, []);
 	return (
 		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
-			<ProtectedPage />
+			<div className="fixed -translate-x-96">
+				<ProtectedPage />
+			</div>
 			<Navigation />
 
 			<BookList
