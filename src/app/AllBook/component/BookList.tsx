@@ -1,4 +1,3 @@
-//! FIX UNUSED VARS
 /* eslint-disable no-unused-vars */
 
 "use client";
@@ -221,7 +220,6 @@ export default function BookList({
 			: null;
 	}, [colorTheme.type]);
 
-	// Modal toggle
 	//* On missing button press, set the book to missing and remove it from the array and db
 	const setBookMissing = async (
 		event: React.MouseEvent<HTMLElement>,
@@ -288,7 +286,7 @@ export default function BookList({
 					) : null}
 				</div>
 			</div>
-			{/* the */}
+			{/* Table container */}
 			<div
 				className={
 					"relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 shadow-md  size-10/12 rounded-t-xl bg-gray-700 dark:bg-gray-800"
@@ -343,6 +341,7 @@ export default function BookList({
 								</form>
 							</th>
 						</tr>
+						{/* Admin only button (Register Book) */}
 						{userType?.role === "Admin" ? (
 							<tr>
 								<th />
@@ -359,6 +358,7 @@ export default function BookList({
 								<th />
 							</tr>
 						) : null}
+						{/* Table head */}
 						<tr>
 							<th scope="col" className="px-6 py-3 z-20">
 								Title
@@ -381,6 +381,7 @@ export default function BookList({
 							</th>
 						</tr>
 					</thead>
+					{/* Table body */}
 					<tbody>
 						{/* Map of fetched data which prints out table-row */}
 						{bookState?.map((state) =>
@@ -399,9 +400,11 @@ export default function BookList({
 										${theme[colorTheme.theme].darkHover}
 										${theme[colorTheme.theme].lightHover} border-gray-700`}
 									>
+										{/* Table data */}
 										<td
 											className="px-6 py-4 font-medium text-white w-1/5 overflow-auto whitespace-pre-wrap max-w-12"
 											onClick={() => {
+												// On click, toggle modal and send bookInfo to parent (on all but link td)
 												toggleModal();
 												bookInfoData?.({
 													id: book.id,
