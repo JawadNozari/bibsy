@@ -96,6 +96,7 @@ const Page = () => {
 											<label
 												htmlFor="username"
 												className="absolute left-0 -top-3.5 text-white peer-placeholder-shown:text-gray-400  peer-placeholder-shown:text-base peer-placeholder-shown:top-2 transition-all duration-500 peer-focus:-top-3.5 peer-focus:text-white peer-focus:text-sm"
+												style={{ pointerEvents: "none" }}
 											>
 												Email
 											</label>
@@ -125,6 +126,7 @@ const Page = () => {
 											<label
 												htmlFor="password"
 												className="absolute left-0 -top-3.5 text-white peer-placeholder-shown:text-gray-400  peer-placeholder-shown:text-base peer-placeholder-shown:top-2 transition-all duration-500 peer-focus:-top-3.5 peer-focus:text-white peer-focus:text-sm"
+												style={{ pointerEvents: "none" }}
 											>
 												Password
 											</label>
