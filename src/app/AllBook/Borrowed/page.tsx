@@ -5,9 +5,11 @@ import { redirect } from "next/navigation";
 import Navigation from "@/app/components/navigation";
 import StaticModal from "../component/StaticModal";
 import ProtectedPage from "../../protectedPage/page";
+import { useRouter } from "next/navigation";
 
 // Define your component
 const Borrowed = () => {
+	const { refresh } = useRouter();
 	interface UserToken {
 		iat: number;
 		role: string;
@@ -69,6 +71,7 @@ const Borrowed = () => {
 				bookInfoData={recieveBookInfo}
 			/>
 			<StaticModal
+				refreshPage={refresh}
 				showModal={showModal}
 				toggleModal={toggleModal}
 				bookInfo={

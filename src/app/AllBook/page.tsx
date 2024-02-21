@@ -3,10 +3,11 @@ import React, { useState, useEffect } from "react";
 import BookList from "./component/BookList";
 import StaticModal from "./component/StaticModal";
 import Navigation from "../components/navigation";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 // Define your component
 const AllBook = () => {
+	const { refresh } = useRouter();
 	interface UserToken {
 		iat: number;
 		role: string;
@@ -49,7 +50,6 @@ const AllBook = () => {
 			setUserInfo(decodedToken);
 		} else {
 			console.log("no token");
-			redirect("/login");
 		}
 	}, []);
 
@@ -74,6 +74,7 @@ const AllBook = () => {
 				bookInfoData={recieveBookInfo}
 			/>
 			<StaticModal
+				refreshPage={refresh}
 				showModal={showModal}
 				toggleModal={toggleModal}
 				bookInfo={

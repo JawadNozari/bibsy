@@ -102,14 +102,14 @@ const linkObject: LinkArray = {
 			name: "Missing",
 			link: "/AllBook/Missing",
 			color: " dark:bg-red-600 bg-red-500 ",
-			token: "Staff",
+			token: "Admin",
 		},
 		{
 			key: "borrowed",
 			name: "Borrowed",
 			link: "/AllBook/Borrowed",
 			color: " dark:bg-yellow-600 bg-yellow-500 ",
-			token: "Staff",
+			token: "Admin",
 		},
 	],
 };
@@ -124,6 +124,7 @@ export default function BookList({
 
 	bookInfoData?: (data: BookInfo) => void;
 }) {
+	// session
 	<ProtectedPage />;
 	//refresh method
 	const { refresh } = useRouter();
@@ -274,7 +275,7 @@ export default function BookList({
 						.slice(0)
 						.reverse()
 						.map((link: Links) =>
-							userType?.role === link.token || userType?.role === "Staff" ? (
+							userType?.role === link.token || userType?.role === "Admin" ? (
 								<a
 									key={link.key}
 									href={link.link}

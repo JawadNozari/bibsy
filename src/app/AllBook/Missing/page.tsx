@@ -5,9 +5,11 @@ import ProtectedPage from "../../protectedPage/page";
 import Navigation from "../../components/navigation";
 import { redirect } from "next/navigation";
 import StaticModal from "../component/StaticModal";
+import { useRouter } from "next/navigation";
 
 // Define your component
 const Missing = () => {
+	const { refresh } = useRouter();
 	<ProtectedPage />;
 	interface UserToken {
 		iat: number;
@@ -73,6 +75,7 @@ const Missing = () => {
 				bookInfoData={recieveBookInfo}
 			/>
 			<StaticModal
+				refreshPage={refresh}
 				showModal={showModal}
 				toggleModal={toggleModal}
 				bookInfo={
