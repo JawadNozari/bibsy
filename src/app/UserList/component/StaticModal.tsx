@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import QRCode from "qrcode.react";
+import { useQRCode } from "next-qrcode";
 import { Staff, Student } from "@prisma/client";
 import { toPng } from "html-to-image";
 
@@ -30,7 +30,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 				});
 		}
 	};
-
+	const { SVG } = useQRCode();
 	return (
 		<>
 			{/* Modal overlay */}
@@ -87,7 +87,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 									<div className="flex flex-col justify-between h-full">
 										<div
 											style={{
-												backgroundImage: `url('${selectedUser.image}')`,
+												backgroundImage: `url('${selectedUser.image.includes(".") ? `/${selectedUser.image}` : "/pfp.jpg"}')`,
 												backgroundSize: "cover",
 												backgroundPosition: "center",
 												height: "300px",
@@ -96,7 +96,13 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												borderRadius: "10px",
 												border: "1px solid white",
 											}}
-										/>
+										>{/* 
+											<img
+												className="w-10 h-10 rounded-full"
+												src={selectedUser.image.includes(".") ? `/${selectedUser.image}` : "/pfp.jpg"}
+												alt="Image"
+											/> */}
+										</div>
 										<>
 											<div className="w-2/3 text-center py-2">
 												<p>
@@ -112,11 +118,17 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												<hr className="h-px my-2 bg-white border-0" />
 											</div>
 											<div className="flex justify-center items-center">
-												<QRCode
-													value={selectedUser.qrCode}
-													size={64}
-													level={"H"}
-												/>
+											<SVG
+                                              text={selectedUser.qrCode}
+                                              options={{
+                                                margin: 2,
+                                                width: 70,
+                                                color: {
+                                                  dark: "#010599FF",
+                                                  light: "#FFFFFF",
+                                                },
+                                              }}
+                                            />
 											</div>
 										</>
 									</div>
