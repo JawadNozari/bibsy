@@ -105,5 +105,6 @@ export const POST = async (req: NextRequest) => {
 				});
 			return NextResponse.json({ message: "Staff have been created" });
 	}
+	// console.log(staff, students);
 	return NextResponse.json({ message: `${userType} have been created` });
 };

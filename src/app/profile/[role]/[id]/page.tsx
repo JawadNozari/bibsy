@@ -29,6 +29,7 @@ export default function Home() {
 	const [bookArray, setBookArray] = useState<Book[]>([]);
 	const params = useParams();
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -53,18 +54,18 @@ export default function Home() {
 
 	return (
 		<div className="flex">
-			<main className=" flex sm:flex-row items-center w-screen h-screen justify-center">
 			<div>
 				<Navigation />
 			</div>
+			<main className=" flex sm:flex-row items-center w-screen h-screen justify-center">
 				<div className="flex flex-col sm:flex-row items-center h-screen justify-center">
-					<div className="flex border items-center justify-center max-w-xs mb-4 sm:mb-0 sm:mr-4">
+					<div className="flex  items-center justify-center max-w-xs mb-4 sm:mb-0 sm:mr-4">
 						{apiData && (
 							<div className="max-h-screen items-center flex-col justify-center w-full sm:w-96 bg-white dark:bg-gray-900 shadow-xl rounded-lg py-3 ">
 								<div className="flex items-center justify-center flex-col max-h-screen bg-white dark:bg-gray-900 dark:text-gray-300 py-3">
 									<Image
 										className="w-10 h-10 rounded-full"
-										src={`/${apiData?.image}`}
+										src={apiData?.image ? `/${apiData?.image}` : "/pfp.jpg"}
 										width={200}
 										height={200}
 										alt="asd"
@@ -98,8 +99,8 @@ export default function Home() {
 						)}
 					</div>
 
-					<div className="flex flex-col border overflow-y-auto h-2/4 max-h-screen w-full sm:w-2/3 shadow-md sm:rounded-lg">
-						<div className="flex flex-col text-center items-center justify-between flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
+					<div className="flex flex-col overflow-y-auto h-2/4 max-h-screen w-full sm:w-2/3 shadow-md sm:rounded-lg dark:bg-gray-900">
+						<div className="flex flex-col text-center items-center justify-between flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4  bg-white dark:bg-gray-900 p-2">
 							<div className="text-center w-full">
 								<h2 className="text-3xl font-bold px-4 py-2">Loaned Books</h2>
 							</div>
@@ -121,25 +122,33 @@ export default function Home() {
 									</tr>
 								</thead>
 								<tbody>
-									{bookArray?.map((item, index: number) => (
-										<tr key={item.id}>
-											<td className="px-6 py-4">{item.title}</td>
-											<td className="px-6 py-4">{item.author}</td>
-											<td className="px-6 py-4">
-												{apiData?.borrowed?.[index]
-													? String(apiData.borrowed[index].regDate)
-															.replace("T", " ")
-															.slice(0, 16)
-															.replace(" ", " | ")
-													: ""}
-											</td>
-											<td className="px-6 py-4 hidden sm:table-cell">
-												{apiData?.borrowed?.[index]
-													? apiData.borrowed[index].note
-													: ""}
-											</td>
-										</tr>
-									))}
+									{Array.isArray(bookArray) &&
+										bookArray?.map((item, index: number) => (
+											<tr key={item.id}>
+												<td className="px-6 py-4">{item.title}</td>
+												<td className="px-6 py-4">{item.author}</td>
+												<td className="px-6 py-4">
+													{apiData?.borrowed?.[index]
+														? (() => {
+																const regDate = new Date(
+																	apiData.borrowed[index].regDate,
+																);
+																regDate.setHours(regDate.getHours() + 1); // Add an hour
+																const formattedDate = regDate
+																	.toISOString()
+																	.slice(0, 16)
+																	.replace("T", " | ");
+																return formattedDate;
+														  })()
+														: ""}
+												</td>
+												<td className="px-6 py-4 hidden sm:table-cell">
+													{apiData?.borrowed?.[index]
+														? apiData.borrowed[index].note
+														: ""}
+												</td>
+											</tr>
+										))}
 								</tbody>
 							</table>
 						</div>

@@ -1,11 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import BookList from "./component/BookList";
-import StaticModal from "./component/StaticModal";
-import { redirect } from "next/navigation";
+import BookList from "./component/bookList";
+import StaticModal from "./component/staticModal";
+import Navigation from "../components/navigation";
+import { redirect, useRouter } from "next/navigation";
 
-// Define your component
+// Component
 const AllBook = () => {
+	// Use the useRouter hook to access the refresh function
+	const { refresh } = useRouter();
+	// Interfaces
 	interface UserToken {
 		iat: number;
 		role: string;
@@ -37,18 +41,21 @@ const AllBook = () => {
 		type?: string;
 		lostFound?: string;
 	}
+	// States
+	// BookInfo
 	const [bookInfo, setBookInfo] = useState<BookInfo | null>(null);
+	// Modal State (Show/Hide)
 	const [showModal, setShowModal] = useState(false);
+	// User Info State (Logged in user)
 	const [userInfo, setUserInfo] = useState<UserToken | null>(null);
+	// Use the useEffect hook to fetch the user token from local storage
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (token) {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
-			console.log(decodedToken);
 			setUserInfo(decodedToken);
 		} else {
-			console.log("no token");
-			redirect("/login");
+			redirect("/");
 		}
 	}, []);
 
@@ -57,21 +64,27 @@ const AllBook = () => {
 		setShowModal(!showModal);
 	};
 
+	// Recieve Book Info
 	const recieveBookInfo = (data: BookInfo) => {
 		setBookInfo(data);
 	};
+	// Theme
 	const colorTheme = {
 		theme: "book",
 		fetchLink: "registeredBooks",
 	};
+	// Return the component
 	return (
+		// Main div
 		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
 			<BookList
 				colorTheme={colorTheme as Theme}
 				toggleModal={toggleModal}
 				bookInfoData={recieveBookInfo}
 			/>
+			{/* StaticModal */}
 			<StaticModal
+				refreshPage={refresh}
 				showModal={showModal}
 				toggleModal={toggleModal}
 				bookInfo={

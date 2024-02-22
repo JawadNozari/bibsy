@@ -26,7 +26,7 @@ export const POST = async (req: NextRequest) => {
 		invNr,
 		price,
 	} = request as incomingData;
-	console.log(bookImg, id, author, title, published, publishers, isbn, invNr, price);
+	// console.log(bookImg, id, author, title, published, publishers, isbn, invNr, price);
 	// Checks if any variable is null and gives a response
 	if (
 		!id ||

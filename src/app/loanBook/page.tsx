@@ -1,11 +1,10 @@
-//! FIX UNUSED VARS
-/* eslint-disable no-unused-vars */
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import axios from "axios";
 import Profile from "../../../public/img/img.jpg";
-// import Navgation from "../Navigation/page";
+import ProtectedPage from "../protectedPage/page";
+import Navigation from "../components/navigation";
 
 interface User {
 	id: number;
@@ -40,6 +39,21 @@ interface BookApiResponse {
 	books: Book[];
 }
 
+interface UserToken {
+	iat: number;
+	role: string;
+	user: {
+		admin: boolean;
+		email: string;
+		firstName: string;
+		id: number;
+		lastName: string;
+		password: string;
+		phone: string;
+		qrCode: string;
+	};
+}
+
 export default function LoanBook() {
 	const [apiData, setApiData] = useState<ApiResponse[]>([]);
 	const [data2, setData2] = useState<BookApiResponse | null>(null);
@@ -50,19 +64,16 @@ export default function LoanBook() {
 	const userClickedRef = useRef(false); // Add this ref
 	const [invNr, setInvNr] = useState("");
 	const [selectedBook, setSelectedBook] = useState<Book | null>(null);
-	
+	const [userType, setUserType] = useState<UserToken>();
 
 	// * Fetch users from the API
 	useEffect(() => {
-		const invNr = new URLSearchParams(window.location.search).get("invNr");
 		const token = localStorage.getItem("token");
-  
 		if (token) {
-			const payload = JSON.parse(atob(token.split(".")[1]));
-			// return payload.Value;
-			console.log(payload);
+			const decodedToken = JSON.parse(atob(token.split(".")[1]));
+			setUserType(decodedToken);
 		}
-
+		const invNr = new URLSearchParams(window.location.search).get("invNr");
 		if (invNr) {
 			setInvNr(invNr); // Update the state with the passed invNr
 		}
@@ -70,8 +81,6 @@ export default function LoanBook() {
 			try {
 				const response = await fetch("../api/getUsers");
 				const response2 = await fetch("../api/availableBooks");
-				// * log the response status code:
-				console.log("Response status:", response.status);
 
 				// *  Check if the response is OK (status code 200)
 				if (response.ok && response2.ok) {
@@ -83,9 +92,6 @@ export default function LoanBook() {
 
 					// * Set the fetched data to the state
 					setData2(data2);
-
-					// * Log the fetched data
-					console.log("Fetched data:", data, data2);
 
 					// * Set loading state to false
 					setIsLoading(false); // * Set loading state to false
@@ -125,22 +131,17 @@ export default function LoanBook() {
 	};
 
 	//* Add this function to get the current user's ID from the token
-	const getCurrentUserId = () => {
-		const token = localStorage.getItem("token");
-  
-		if (token) {
-			const payload = JSON.parse(atob(token.split(".")[1]));
-			// return payload.Value;
-			console.log(payload);
-			return Number(payload.Value); // Convert the user ID to a number
+	// const getCurrentUserId = () => {
+	// 	const token = localStorage.getItem("token");
 
+	// 	if (token) {
+	// 		const payload = JSON.parse(atob(token.split(".")[1]));
+	// 		// return payload.Value;
+	// 		return Number(payload.Value); // Convert the user ID to a number
 
-		}
-		console.error("No token found");
-		
-		return null;
-		
-  	};
+	// 	}
+	// 	return null;
+	// };
 
 	// * Filter users based on search query
 	const filterUsers = (users: User[]) => {
@@ -151,21 +152,20 @@ export default function LoanBook() {
 
 		// * Normalize search query and user names for case-insensitive search
 		const normalizedQuery = searchQuery.toLowerCase();
-		const currentUserId = getCurrentUserId();
-		
-		// return users.filter((user) => {
-		// 	const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-		// 	return fullName.includes(normalizedQuery);
-
-		// });
+		// const currentUserId = getCurrentUserId();
 
 		return users.filter((user) => {
 			const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-			const isStudent = user.type === "student";
-			const isStaff = user.type === "staff" && user.id === currentUserId;
-
-			return fullName.includes(normalizedQuery) && (isStudent || isStaff);
+			return fullName.includes(normalizedQuery);
 		});
+
+		// return users.filter((user) => {
+		// 	const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+		// 	const isStudent = user.type === 'student';
+		// 	const isStaff = user.type === 'staff' && user.id === currentUserId;
+
+		// 	return fullName.includes(normalizedQuery) && (isStudent || isStaff);
+		// });
 	};
 
 	//* Handle user click event
@@ -173,8 +173,6 @@ export default function LoanBook() {
 		setSelectedUser(user); //* Store selected user on click
 		userClickedRef.current = true; // * Set the ref to true on user click
 		setSearchQuery(`${user.firstName} ${user.lastName}`); //*  Set search query to the user's name
-		console.log(selectedUser);
-		console.log(user);
 		setShowList(false); //* Hide the list on user click
 	};
 
@@ -196,6 +194,7 @@ export default function LoanBook() {
 			const response = await axios.post("/api/setBookBorrowed", {
 				user: selectedUser,
 				invNr: invNr,
+				currentStaff: userType?.user.id,
 			});
 			//* Log the response status
 			if (response.status === 200) {
@@ -213,9 +212,13 @@ export default function LoanBook() {
 	// * Render the page
 	return (
 		<main className="flex w-screen h-screen justify-center items-center bg-neutral-100 text-black dark:bg-gray-800">
-			<div className="flex justify-between  ">
+			<ProtectedPage />
+			<div className="fixed left-0">
+			  <Navigation />
+			</div>
+			<div className="flex justify-center ">
 				{selectedUser && (
-					<div className="w-96 rounded card-normal mr-20 h-auto shadow-md  bg-gray-800 text-neutral-50 dark:bg-neutral-50 dark:text-gray-500 " >
+					<div className="w-96 rounded card-normal mr-20 h-auto shadow-md  bg-gray-800 text-neutral-50 dark:bg-neutral-50 dark:text-gray-500 ">
 						<div className=" text-center">
 							<button
 								type="button"
@@ -253,7 +256,9 @@ export default function LoanBook() {
 						autoComplete="off"
 					>
 						<div className="flex justify-center mb-10 items-center m-3 ">
-							<h1 className="text-4xl font-bold text-center text-neutral-50 dark:text-gray-700">Loan Book</h1>
+							<h1 className="text-4xl font-bold text-center text-neutral-50 dark:text-gray-700">
+								Loan Book
+							</h1>
 						</div>
 
 						<div>
@@ -356,15 +361,15 @@ export default function LoanBook() {
 
 						<div className="mt-10 mb-10 justify-center flex">
 							<button
-    							type="button"
-    							onClick={() => window.history.back()}
-   								className="btn block m-3 bg-neutral-50  hover:text-gray-50 text-gray-500 dark:bg-gray-700 btn-active btn-neutral"
- 							>
-  							 	Go Back
- 							</button>
+								type="button"
+								onClick={() => window.history.back()}
+								className="btn block m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700 btn-active btn-neutral"
+							>
+								Go Back
+							</button>
 							<button
 								type="submit"
-								className="btn block   m-3 bg-neutral-50  hover:text-gray-50  text-gray-500 dark:bg-gray-700  btn-active btn-neutral"
+								className="btn block   m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700  btn-active btn-neutral"
 							>
 								Loan
 							</button>
@@ -376,12 +381,14 @@ export default function LoanBook() {
 					{selectedBook && (
 						<div className="w-[15rem] h-[20rem] ml-20 border">
 							<Image
-								src={`/${selectedBook.bookImg}`}
+								// src={`/${selectedBook.bookImg}`}
+								src={`/${selectedBook.bookImg.replace("public/", "")}`}
+
 								alt="book cover"
-								width={64}
+								width={300}
 								height={80}
 							/>
-							<h1 className="text-center mt-5 text-xl">{selectedBook.title}</h1>
+							<h1 className="text-center mt-5  dark:text-gray-100 text-2xl">{selectedBook.title}</h1>
 						</div>
 					)}
 				</div>

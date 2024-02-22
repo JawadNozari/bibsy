@@ -1,4 +1,3 @@
-//! FIX UNUSED VARS
 /* eslint-disable no-unused-vars */
 
 "use client";
@@ -86,30 +85,30 @@ const linkObject: LinkArray = {
 		{
 			key: "book",
 			name: "Book",
-			link: "/AllBook",
+			link: "/allBook",
 			color: " dark:bg-blue-800 bg-blue-700 ",
 			token: "Student",
 		},
 		{
 			key: "available",
 			name: "Available",
-			link: "/AllBook/Available",
+			link: "/allBook/available",
 			color: " dark:bg-green-600 bg-green-500 ",
 			token: "Student",
 		},
 		{
 			key: "missing",
 			name: "Missing",
-			link: "/AllBook/Missing",
+			link: "/allBook/missing",
 			color: " dark:bg-red-600 bg-red-500 ",
-			token: "Staff",
+			token: "Admin",
 		},
 		{
 			key: "borrowed",
 			name: "Borrowed",
-			link: "/AllBook/Borrowed",
+			link: "/allBook/borrowed",
 			color: " dark:bg-yellow-600 bg-yellow-500 ",
-			token: "Staff",
+			token: "Admin",
 		},
 	],
 };
@@ -124,6 +123,7 @@ export default function BookList({
 
 	bookInfoData?: (data: BookInfo) => void;
 }) {
+	// session
 	<ProtectedPage />;
 	//refresh method
 	const { refresh } = useRouter();
@@ -196,11 +196,9 @@ export default function BookList({
 		const token = localStorage.getItem("token");
 		if (token) {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
-			console.log(decodedToken);
 			setUserType(decodedToken);
 		} else {
-			console.log("no token");
-			redirect("/login");
+			redirect("/");
 		}
 	}, []);
 
@@ -209,7 +207,7 @@ export default function BookList({
 		fetch(`/api/${colorTheme.fetchLink}`)
 			.then((res) => res.json())
 			.then((data) => setBooks(data.books))
-			.catch((error) => console.log(error));
+			.catch((error) => console.debug(error));
 	}, [colorTheme.fetchLink]);
 
 	//fetching bookState data if exists
@@ -218,11 +216,10 @@ export default function BookList({
 			? fetch(`/api/${colorTheme.type}`)
 					.then((res) => res.json())
 					.then((data) => setBookState(data.books))
-					.catch((error) => console.log(error))
+					.catch((error) => console.debug(error))
 			: null;
 	}, [colorTheme.type]);
 
-	// Modal toggle
 	//* On missing button press, set the book to missing and remove it from the array and db
 	const setBookMissing = async (
 		event: React.MouseEvent<HTMLElement>,
@@ -238,8 +235,8 @@ export default function BookList({
 
 		const response = await axios.post("/api/setBookMissing", {
 			bookId,
-		});
-		console.log(response.data);
+		}); //? what should happen with this response?
+		// console.log(response.data);
 	};
 	//* On return button press, set the book to available and remove it from the array and db
 	const setBookAvailable = async (
@@ -259,13 +256,11 @@ export default function BookList({
 			bookId,
 			userType: "student",
 			listType,
-		});
-		console.log(response.data);
+		}); //? what should happen with this response?
 	};
-	console.log(bookState);
 	return (
 		// TableTemplate edited
-		<div className="size-9/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap">
+		<div className="size-11/12 w-5/6 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap">
 			<div className="size-2/12 w-full">
 				{/* link container */}
 				<div className="w-full h-full flex justify-center items-end">
@@ -274,7 +269,7 @@ export default function BookList({
 						.slice(0)
 						.reverse()
 						.map((link: Links) =>
-							userType?.role === link.token || userType?.role === "Staff" ? (
+							userType?.role === link.token || userType?.role === "Admin" ? (
 								<a
 									key={link.key}
 									href={link.link}
@@ -290,7 +285,7 @@ export default function BookList({
 					) : null}
 				</div>
 			</div>
-			{/* the */}
+			{/* Table container */}
 			<div
 				className={
 					"relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 shadow-md  size-10/12 rounded-t-xl bg-gray-700 dark:bg-gray-800"
@@ -303,13 +298,6 @@ export default function BookList({
 							<th colSpan={5} className="z-10">
 								{/* Input form */}
 								<form className="p-4 z-10">
-									{/* Label */}
-									<label
-										htmlFor="default-search"
-										className="mb-2 text-sm font-medium text-gray-900 sr-only"
-									>
-										Search
-									</label>
 									{/* Search icon */}
 									<div className="relative">
 										<div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -352,6 +340,24 @@ export default function BookList({
 								</form>
 							</th>
 						</tr>
+						{/* Admin only button (Register Book) */}
+						{userType?.role === "Admin" ? (
+							<tr>
+								<th />
+								<th />
+								<th className="flex justify-center items-center">
+									<a
+										href="/RegisterBook"
+										className="px-2 py-4 rounded-lg bg-blue-500 mb-2"
+									>
+										Register Book
+									</a>
+								</th>
+								<th />
+								<th />
+							</tr>
+						) : null}
+						{/* Table head */}
 						<tr>
 							<th scope="col" className="px-6 py-3 z-20">
 								Title
@@ -374,6 +380,7 @@ export default function BookList({
 							</th>
 						</tr>
 					</thead>
+					{/* Table body */}
 					<tbody>
 						{/* Map of fetched data which prints out table-row */}
 						{bookState?.map((state) =>
@@ -386,60 +393,151 @@ export default function BookList({
 										? userType?.user.id === state.staffId
 										: true) ? (
 									<tr
-										onClick={() => {
-											toggleModal();
-											bookInfoData?.({
-												id: book.id,
-												title: book.title,
-												author: book.author,
-												publishers: book.publishers,
-												published: book.published,
-												invNr: book.invNr,
-												isbn: book.isbn,
-												bookImg: book.bookImg,
-												price: book.price,
-											});
-										}}
-										onKeyDown={() => {
-											bookInfoData?.({
-												id: book.id,
-												title: book.title,
-												author: book.author,
-												publishers: book.publishers,
-												published: book.published,
-												invNr: book.invNr,
-												isbn: book.isbn,
-												bookImg: book.bookImg,
-												price: book.price,
-											});
-										}}
 										key={book.id}
 										className={`border-b ${theme[colorTheme.theme].lightBg}
 										${theme[colorTheme.theme].darkBg}
 										${theme[colorTheme.theme].darkHover}
 										${theme[colorTheme.theme].lightHover} border-gray-700`}
 									>
-										<td className="px-6 py-4 font-medium text-white w-1/5 overflow-auto whitespace-pre-wrap max-w-12">
+										{/* Table data */}
+										<td
+											className="px-6 py-4 font-medium text-white w-1/5 overflow-auto whitespace-pre-wrap max-w-12"
+											onClick={() => {
+												// On click, toggle modal and send bookInfo to parent (on all but link td)
+												toggleModal();
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+											onKeyDown={() => {
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+										>
 											{books[index]?.title}
 										</td>
-										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">
+										<td
+											className="px-6 py-4 whitespace-pre-wrap max-w-12"
+											onClick={() => {
+												toggleModal();
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+											onKeyDown={() => {
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+										>
 											{books[index]?.author}
 										</td>
-										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">
+										<td
+											className="px-6 py-4 whitespace-pre-wrap max-w-12"
+											onClick={() => {
+												toggleModal();
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+											onKeyDown={() => {
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+										>
 											{colorTheme.theme === "missing" ||
 											colorTheme.theme === "borrowed"
 												? `${books[index]?.regDate.split("T")[0]} 
 												  ${books[index]?.regDate.split("T")[1].split(".")[0]}`
 												: books[index]?.published.split("T")[0]}
 										</td>
-										<td className="px-6 py-4 whitespace-pre-wrap max-w-12">{`${books[index]?.price};-`}</td>
+										<td
+											className="px-6 py-4 whitespace-pre-wrap max-w-12"
+											onClick={() => {
+												toggleModal();
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+											onKeyDown={() => {
+												bookInfoData?.({
+													id: book.id,
+													title: book.title,
+													author: book.author,
+													publishers: book.publishers,
+													published: book.published,
+													invNr: book.invNr,
+													isbn: book.isbn,
+													bookImg: book.bookImg,
+													price: book.price,
+												});
+											}}
+										>{`${books[index]?.price};-`}</td>
 										{/*Ternary if available adds link to borrow else if book add corresponding availability else, add buttuns for post */}
 										<td className="px-6 py-4">
 											{colorTheme.theme === "available" ? (
 												// borrow button
 												<a
 													href={`/loanBook?invNr=${book.invNr}`}
-													className="transform p-2 bg-gray-800 dark:bg-gray-700 rounded-xl text-yellow-600 font-bold hover:scale-110 transition-transform"
+													className="transform p-2 bg-gray-600 text-yellow-500 dark:bg-gray-700 rounded-xl dark:text-yellow-600 font-bold hover:scale-110 transition-transform"
 												>
 													Borrow
 												</a>

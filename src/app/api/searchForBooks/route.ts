@@ -89,7 +89,7 @@ export const POST = async (req: NextRequest) => {
 						missingBooks.push(book);
 					});
 				} catch (error) {
-					console.log(error);
+					return NextResponse.json({ Err: error }, { status: 500 });
 				}
 
 				//* Filters through the array and compares id's, if matching add to queriedBooks
@@ -110,7 +110,7 @@ export const POST = async (req: NextRequest) => {
 						borrowedBooks.push(book);
 					});
 				} catch (error) {
-					console.log(error);
+					return NextResponse.json({ Err: error }, { status: 500 });
 				}
 
 				//* Filters through the array and compares id's, if matching add to queriedBooks

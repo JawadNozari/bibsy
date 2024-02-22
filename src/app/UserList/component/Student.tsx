@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import StudentEditModal from "./StudentEditModal";
 import axios from "axios";
+import bcrypt from "bcryptjs";
 
 interface User {
 	// Defines an interface for a user
@@ -17,7 +18,7 @@ interface User {
 	image: string;
 	classroom: string;
 	admin: boolean;
-	qrCode: number;
+	qrCode: string;
 }
 
 // Defines an interface for the properties that the StudentList component expects to receive
@@ -25,6 +26,7 @@ interface StudentListProps {
 	studentUsers: User[]; // Type for student users
 	handleClick: (user: User | null) => void; // Function to handle click on a user
 	setStudentUsers?: React.Dispatch<React.SetStateAction<User[]>>; // Function to update student users
+	isAdmin: boolean; // Boolean indicating whether the user is an admin
 }
 
 // Defines a functional component StudentList that receives properties defined by StudentListProps
@@ -32,6 +34,7 @@ const StudentList: React.FC<StudentListProps> = ({
 	studentUsers, // An array of student users to be displayed in the list
 	handleClick, // A function that handles click events on a user in the list
 	setStudentUsers, // A function to update student users (optional)
+	isAdmin, // Boolean indicating whether the user is an admin
 }) => {
 	// State variables
 	const [showModal, setShowModal] = useState(false); // Show or hide modal
@@ -41,6 +44,7 @@ const StudentList: React.FC<StudentListProps> = ({
 	const [editedLastName, setEditedLastName] = useState(""); // Edited last name
 	const [editedEmail, setEditedEmail] = useState(""); // Edited email address
 	const [editedPhone, setEditedPhone] = useState(""); // Edited phone number
+	const [editedPassword, setEditedPassword] = useState(""); // The edited password
 	const [editedClassroom, setEditedClassroom] = useState(""); // Edited classroom
 	const [selectedImage, setSelectedImage] = useState<File | null>(null); // The selected image for upload
 	const [imagePreview, setImagePreview] = useState<string | null>(null); // Image preview
@@ -54,6 +58,7 @@ const StudentList: React.FC<StudentListProps> = ({
 		setEditedLastName(user.lastName);
 		setEditedEmail(user.email);
 		setEditedPhone(user.phone);
+		setEditedPassword(user.password); // Set the edited password
 		setEditedClassroom(user.classroom);
 		setImagePreview(user.image); // Preview the image when the modal opens
 		setShowModal(true);
@@ -80,6 +85,7 @@ const StudentList: React.FC<StudentListProps> = ({
 					lastName: editedLastName,
 					email: editedEmail,
 					phone: editedPhone,
+					password: bcrypt.hashSync(editedPassword, 10), // Update the password
 					classroom: editedClassroom,
 					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one has been selected
 				};
@@ -87,17 +93,26 @@ const StudentList: React.FC<StudentListProps> = ({
 					const formData = new FormData();
 					formData.append("file", selectedImage || undefined);
 					formData.append("path", "StudentPFP");
-					await axios
+					const imagePath = await axios
 					.post("/api/uploader", formData, {
 						headers: { "Content-Type": "multipart/form-data" },
+					})
+					.then((res) => {
+						return res.data.path;
+					})
+					.catch((error: Error) => {
+						console.debug(error);
 					});
+					updatedUsers[index] = {
+						...updatedUsers[index],
+						image: imagePath
+					};
 				}
 				const user = {
 					...updatedUsers[index],
 					userType: "student",
 				};
-				await axios
-				.post("/api/editUsers", user, {
+				await axios.post("/api/editUsers", user, {
 					headers: { "Content-Type": "application/json" },
 				});
 
@@ -107,7 +122,6 @@ const StudentList: React.FC<StudentListProps> = ({
 				}
 			}
 
-			console.log("Updated user information:", updatedUsers[index]);
 			closeModal(); // Close the modal after editing is done
 		}
 	};
@@ -130,6 +144,9 @@ const StudentList: React.FC<StudentListProps> = ({
 				break;
 			case "phone":
 				setEditedPhone(value);
+				break;
+			case "password":
+				setEditedPassword(value); // Updates the edited password
 				break;
 			case "classroom":
 				setEditedClassroom(value);
@@ -165,7 +182,7 @@ const StudentList: React.FC<StudentListProps> = ({
 			id: editedUser?.id || 0, // Keep the id the same or set it to 0 if it's undefined
 			password: editedUser?.password || "", // Keep the password the same or set it to an empty string if it's undefined
 			admin: editedUser?.admin || false, // Keep the admin status the same or set it to false if it's undefined
-			qrCode: editedUser?.qrCode || 0, // Keep the QR code the same or set it to 0 if it's undefined
+			qrCode: String(editedUser?.qrCode || 0), // Convert qrCode to string or set it to "0" if it's undefined
 			image: selectedImage ? selectedImage.name : editedUser?.image || "", // Update the image name with the selected image's name or set it to an empty string if 'editedUser?.image' is undefined
 		}));
 	};
@@ -189,9 +206,13 @@ const StudentList: React.FC<StudentListProps> = ({
 				<th scope="col" className="px-6 py-3">
 					Classroom {/* Classroom */}
 				</th>
-				<th scope="col" className="px-6 py-3">
-					Action {/* Action */}
-				</th>
+				{isAdmin ? (
+					<th scope="col" className="px-6 py-3">
+						Action {/* Action */}
+					</th>
+				) : (
+					<></>
+				)}
 			</tr>
 			{studentUsers?.map((user) => (
 				<tbody key={user.id}>
@@ -214,10 +235,8 @@ const StudentList: React.FC<StudentListProps> = ({
 								className="w-10 h-10 rounded-full"
 								width={10}
 								height={10}
-								src={
-									user.image.includes(".") ? `/${user.image}` : "/pfp.jpg"
-								}
-								alt={`${user.firstName} ${user.lastName}`}
+								src={user.image.includes(".") ? `/${user.image}` : "/pfp.jpg"}
+								alt={"Image"}
 							/>
 							<div className="ps-3">
 								<div className="text-base font-semibold">{`${user.firstName} ${user.lastName}`}</div>
@@ -226,18 +245,22 @@ const StudentList: React.FC<StudentListProps> = ({
 						</th>
 						<td className="px-6 py-4">{user.phone}</td>
 						<td className="px-6 py-4">{user.classroom}</td>
-						<td className="px-6 py-4">
-							<button
-								type="button"
-								onClick={(e) => {
-									e.stopPropagation();
-									openModal(user);
-								}}
-								className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-							>
-								Edit user {/* Edit user */}
-							</button>
-						</td>
+						{isAdmin ? (
+							<td className="px-6 py-4">
+								<button
+									type="button"
+									onClick={(e) => {
+										e.stopPropagation();
+										openModal(user);
+									}}
+									className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+								>
+									Edit user {/* Edit user */}
+								</button>
+							</td>
+						) : (
+							<></>
+						)}
 					</tr>
 				</tbody>
 			))}
@@ -250,6 +273,7 @@ const StudentList: React.FC<StudentListProps> = ({
 					editedLastName={editedLastName}
 					editedEmail={editedEmail}
 					editedPhone={editedPhone}
+					editedPassword={editedPassword}
 					imagePreview={imagePreview}
 					showFullImage={showFullImage}
 					handleInputChange={handleInputChange}

@@ -1,10 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse, NextRequest } from "next/server";
 
-/* export const GET = async () => {
-	return NextResponse.json({ message: "Hello World" });
-}; */
-
 // Declare Prisma Client
 const prisma = new PrismaClient();
 
@@ -13,9 +9,10 @@ export const POST = async (req: NextRequest) => {
 	const data = await req.json();
 	const userInvNr = parseInt(data.invNr);
 	const selectedUserType = data.user.admin ? "staffUser" : "studentUser";
-
-	// Get current staff member
-	const currentStaffId = 1; // Hardcoded for now
+	const selectedUserId = data.user;;
+	
+	// Get current logged in staff member
+	const currentStaffId = data.currentStaff;
 	//! MAX FIX THIS!!!!
 	// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
 	let staff;
@@ -43,9 +40,12 @@ export const POST = async (req: NextRequest) => {
 			data: {
 				bookId: updatedBook.id,
 				staffId: currentStaffId,
-				studentId:
-					selectedUserType === "studentUser" ? data.user.id : undefined,
-				note: `${staff?.firstName} ${staff?.lastName} has successfully loaned out a book.`,
+				studentId: selectedUserType === "studentUser" ? data.user.id : undefined,
+				note: selectedUserType === "studentUser"
+				?
+				`${staff?.firstName} ${staff?.lastName} has successfully loaned a book to ${selectedUserId?.firstName} ${selectedUserId?.lastName}.`
+				:
+				`${staff?.firstName} ${staff?.lastName} has successfully loaned out a book.`,
 			},
 		});
 
