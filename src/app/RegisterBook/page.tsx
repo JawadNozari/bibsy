@@ -50,7 +50,7 @@ export default function Home() {
         router.push("/login");
     } else {
         const { whatUserAreYou } = CheckIfLoggedIn(token);
-        if (whatUserAreYou != "Staff" && whatUserAreYou != "Admin") {
+        if (whatUserAreYou !== "Staff" && whatUserAreYou !== "Admin") {
             router.push("/");
         }
     }

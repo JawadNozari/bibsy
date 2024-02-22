@@ -60,7 +60,7 @@ export const GET = async () => {
 export const POST = async (req: NextRequest) => {
 	try {
 		const { id, type } = await req.json();
-        const userType = type === "staffUsers" ? "staff" : "student";
+        const userType = type === "staff" ? "staff" : "student";
 		const userdata = await fetchUser(id, userType);
 		return NextResponse.json(userdata);
 	} catch (error) {  

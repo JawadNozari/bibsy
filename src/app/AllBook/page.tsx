@@ -77,9 +77,6 @@ const AllBook = () => {
 	return (
 		// Main div
 		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
-			{/* Nav */}
-			<Navigation />
-			{/* BookList */}
 			<BookList
 				colorTheme={colorTheme as Theme}
 				toggleModal={toggleModal}

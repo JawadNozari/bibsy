@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs";
 import { useRouter } from "next/navigation";
 import { toJpeg } from "html-to-image";
 import Page from "../components/navigation";
+import Loading from "../components/loading";
 
 type PapaData = {
 	data: string[];
@@ -28,6 +29,7 @@ export default function RegisterMember() {
 	const [isSingleUser, setIsSingleUser] = useState(true);
 	const [isMultipleUsers, setIsMultipleUsers] = useState(false);
 
+	const [loading, setLoading] = useState(true);
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [phone, setPhone] = useState("");
@@ -38,6 +40,7 @@ export default function RegisterMember() {
 			router.push("/login");
 		} else {
 			const { areYouAdmin } = CheckIfLoggedIn(token);
+			setLoading(false);
 			if (!areYouAdmin) {
 				router.push("/");
 			}
@@ -179,7 +182,12 @@ export default function RegisterMember() {
 		);
 	};
 
-	return (
+	return loading ? (
+		// Show error message
+		<div>
+			<Loading />
+		</div>
+	) : (
 		<div className="flex justify-center items-center  md: h-screen bg-white dark:bg-gray-900 gap-11 w-full ">
 			<Page />
 			<div className="flex items-center justify-center  md:flex-row md:items-start w-full">

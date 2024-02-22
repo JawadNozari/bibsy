@@ -260,7 +260,7 @@ export default function BookList({
 	};
 	return (
 		// TableTemplate edited
-		<div className="size-10/12 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap">
+		<div className="size-11/12 w-5/6 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap">
 			<div className="size-2/12 w-full">
 				{/* link container */}
 				<div className="w-full h-full flex justify-center items-end">

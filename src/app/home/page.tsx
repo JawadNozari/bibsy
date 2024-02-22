@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
 const Page = () => {
 	const router = useRouter();
@@ -30,44 +30,68 @@ const Page = () => {
 
 	//* Returns the JSX for the page with the number of books available, borrowed, and missing and buttons to navigate to different pages
 	return (
-		<div>
-			<div>{availableBooks} books available to borrow</div>
-			<div>{borrowedBooks} books borrowed</div>
-			<div>{missingBooks} books missing</div>
-			<div>{totalBooks} books in total</div>
-			<div
-				style={{ width: 1000, display: "flex", justifyContent: "space-around" }}
-			>
-				<button
-					type="button"
-					onClick={() => router.push("/home/allbooks")}
-					style={{ backgroundColor: "lightblue", color: "black" }}
+			<div className=" p-10 bg-white dark:bg-zinc-900 w-full">
+				<div className="">
+					<h1 className="text-3xl font-extrabold tracking-tighter">Hi, Bond</h1>
+					<p className="font-medium mt-3 mb-8">
+						Welcome back to the library dashboard
+					</p>
+				</div>
+
+				<div className="text-xl font-semibold">
+					<h3>All books</h3>
+				</div>
+
+				<div className="flex gap-5 mt-6">
+					<div className="border-solid border p-6 w-72 rounded-xl border-opacity-25">
+						<p className="mb-3">Total books</p>
+						<p className="font-bold text-2xl">{totalBooks}</p>
+					</div>
+
+					<div className="border-solid border p-6 w-72 rounded-xl border-opacity-25">
+						<p className="mb-3">Available books</p>
+						<p className="font-bold text-2xl">{availableBooks}</p>
+					</div>
+
+					<div className="border-solid border p-6 w-72 rounded-xl border-opacity-25">
+						<p className="mb-3">Missing books</p>
+						<p className="font-bold text-2xl">{missingBooks}</p>
+					</div>
+				</div>
+
+				{/* <div
+					style={{ width: 1000, display: "flex", justifyContent: "space-around" }}
 				>
-					All Books
-				</button>
-				<button
-					type="button"
-					onClick={() => router.push("/home/available")}
-					style={{ backgroundColor: "lightblue", color: "black" }}
-				>
-					Available Books
-				</button>
-				<button
-					type="button"
-					onClick={() => router.push("/home/borrowed")}
-					style={{ backgroundColor: "lightblue", color: "black" }}
-				>
-					Borrowed Books
-				</button>
-				<button
-					type="button"
-					onClick={() => router.push("/home/missing")}
-					style={{ backgroundColor: "lightblue", color: "black" }}
-				>
-					Missing Books
-				</button>
+					<button
+						type="button"
+						onClick={() => router.push("/home/allbooks")}
+						style={{ backgroundColor: "lightblue", color: "black" }}
+					>
+						{totalBooks}
+					</button>
+					<button
+						type="button"
+						onClick={() => router.push("/home/available")}
+						style={{ backgroundColor: "lightblue", color: "black" }}
+					>
+						Available Books
+					</button>
+					<button
+						type="button"
+						onClick={() => router.push("/home/borrowed")}
+						style={{ backgroundColor: "lightblue", color: "black" }}
+					>
+						Borrowed Books
+					</button>
+					<button
+						type="button"
+						onClick={() => router.push("/home/missing")}
+						style={{ backgroundColor: "lightblue", color: "black" }}
+					>
+						Missing Books
+					</button>
+				</div> */}
 			</div>
-		</div>
 	);
 };
 
