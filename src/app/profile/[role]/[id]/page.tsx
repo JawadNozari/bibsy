@@ -4,9 +4,12 @@ import Image from "next/image";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { Staff, Student, borrowedBooks } from "@prisma/client";
+import { CheckIfLoggedIn } from "../../../components/loginChecks";
 import Navigation from "../../../components/navigation";
+import { useRouter } from "next/navigation";
 
 type UserModal = {
+	id: number;
 	phone: ReactNode;
 	classroom: ReactNode;
 	borrowed: Array<borrowedBooks> | undefined;
@@ -25,11 +28,14 @@ type Book = {
 };
 
 export default function Home() {
+	const router = useRouter();
+
 	const [apiData, setApiData] = useState<UserModal>();
 	const [bookArray, setBookArray] = useState<Book[]>([]);
 	const params = useParams();
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+
+
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -39,6 +45,7 @@ export default function Home() {
 				});
 				setApiData(response.data);
 
+	
 				const response2 = await axios.post("/api/specifiedBook", {
 					books: response.data.borrowed,
 				});
@@ -48,9 +55,20 @@ export default function Home() {
 				setBookArray([]);
 			}
 		};
-
+	
 		fetchData();
-	}, [params.role, params.id]);
+		const token = localStorage.getItem("token");
+		if (!token) {
+			router.push("/login");
+		} else {
+			const { whatUserAreYou, user } = CheckIfLoggedIn(token);
+			if (whatUserAreYou === "Student" || params.role !== "student" || Number(params.id) !== user.user.id) {
+				// Redirect student to its own profile
+				router.push(`/profile/student/${user.user.id}`);
+			} 
+		}
+	}, [params.role, params.id, router, ]);
+	
 
 	return (
 		<div className="flex">
