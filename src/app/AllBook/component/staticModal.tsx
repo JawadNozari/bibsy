@@ -22,6 +22,7 @@ interface StaticModalProps {
 		invNr: number;
 		isbn: string;
 		bookImg: string;
+		bookState: string;
 	};
 	userInfo: {
 		iat: number;
@@ -100,12 +101,13 @@ const StaticModal: React.FC<StaticModalProps> = ({
 	};
 
 	const handleDelete = async () => {
-		await axios.delete("/api/setBookDeleted", {
-			data: { bookId: bookInfo.id, bookType: "registered" },
-		});
-	};
-
-	// Function to handle the submit of the edit form
+		await axios
+			.post("/api/setBookDeleted", {
+				bookId: bookInfo.id,
+				listType: bookInfo.bookState,
+			})
+			.then(toggleModal);
+	}; // Function to handle the submit of the edit form
 	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
 		const formData = new FormData();
@@ -151,7 +153,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 				//TODO instead of refreshing the page, update the bookInfo states
 				setTimeout(() => {
 					window.location.reload();
-				}, 5000);
+				}, 100);
 			})
 			.catch((error: Error) => {
 				SetMessage(error.message);
@@ -389,16 +391,19 @@ const StaticModal: React.FC<StaticModalProps> = ({
 									>
 										Keep
 									</button>
-									<button
-										onClick={() => {
-											switchDelete;
-											handleDelete();
-										}}
-										className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
-										type="button"
-									>
-										Delete
-									</button>
+									{bookInfo.bookState !== "registered" ? (
+										<button
+											onClick={() => {
+												switchDelete;
+												handleDelete();
+												window.location.reload();
+											}}
+											className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
+											type="button"
+										>
+											Delete
+										</button>
+									) : null}
 								</div>
 							</div>
 						)}
@@ -407,7 +412,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 							{/* Ternary if logged in as Admin, can see edit btn/info btn else cant */}
 							{switchDiv ? (
 								user?.role === "Admin" && !deleteDiv ? (
-									<div>
+									<div className=" flex">
 										<button
 											onClick={switchingDiv}
 											className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none mr-2"
@@ -415,7 +420,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 										>
 											Edit
 										</button>
-										{!deleteDiv ? (
+										{!deleteDiv && bookInfo.bookState !== "registered" ? (
 											<button
 												onClick={switchDelete}
 												className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
@@ -423,7 +428,11 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											>
 												Delete
 											</button>
-										) : null}
+										) : (
+											<div className="h-full flex justify-center items-center">
+												Go to different booklist to delete
+											</div>
+										)}
 									</div>
 								) : null
 							) : (

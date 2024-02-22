@@ -37,6 +37,7 @@ const Missing = () => {
 		invNr: number;
 		isbn: string;
 		bookImg: string;
+		bookState: string;
 	}
 	// Theme
 	const colorTheme = {
@@ -59,7 +60,18 @@ const Missing = () => {
 	};
 	// Recieve Book Info
 	const recieveBookInfo = (data: BookInfo) => {
-		setBookInfo(data);
+		setBookInfo({
+			id: data.id,
+			price: data.price,
+			title: data.title,
+			author: data.author,
+			published: data.published,
+			publishers: data.publishers,
+			invNr: data.invNr,
+			isbn: data.isbn,
+			bookImg: data.bookImg,
+			bookState: "missing",
+		});
 	};
 	// UseEffect to check if user is logged in and if not redirect to /
 	useEffect(() => {
@@ -104,6 +116,7 @@ const Missing = () => {
 								invNr: 0,
 								isbn: "",
 								bookImg: "",
+								bookState: "",
 						  }
 				}
 				userInfo={

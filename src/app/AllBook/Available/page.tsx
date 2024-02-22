@@ -33,6 +33,7 @@ const Available = () => {
 		invNr: number;
 		isbn: string;
 		bookImg: string;
+		bookState: string;
 	}
 	// Theme
 	const colorTheme = {
@@ -64,7 +65,18 @@ const Available = () => {
 	};
 	// Recieve Book Info
 	const recieveBookInfo = (data: BookInfo) => {
-		setBookInfo(data);
+		setBookInfo({
+			id: data.id,
+			price: data.price,
+			title: data.title,
+			author: data.author,
+			published: data.published,
+			publishers: data.publishers,
+			invNr: data.invNr,
+			isbn: data.isbn,
+			bookImg: data.bookImg,
+			bookState: "available",
+		});
 	};
 	// Return your component
 	return (
@@ -94,6 +106,7 @@ const Available = () => {
 								invNr: 0,
 								isbn: "",
 								bookImg: "",
+								bookState: "",
 						  }
 				}
 				userInfo={
