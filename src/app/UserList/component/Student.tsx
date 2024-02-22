@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import StudentEditModal from "./StudentEditModal";
 import axios from "axios";
+import bcrypt from "bcryptjs";
 
 interface User {
 	// Defines an interface for a user
@@ -43,6 +44,7 @@ const StudentList: React.FC<StudentListProps> = ({
 	const [editedLastName, setEditedLastName] = useState(""); // Edited last name
 	const [editedEmail, setEditedEmail] = useState(""); // Edited email address
 	const [editedPhone, setEditedPhone] = useState(""); // Edited phone number
+	const [editedPassword, setEditedPassword] = useState(""); // The edited password
 	const [editedClassroom, setEditedClassroom] = useState(""); // Edited classroom
 	const [selectedImage, setSelectedImage] = useState<File | null>(null); // The selected image for upload
 	const [imagePreview, setImagePreview] = useState<string | null>(null); // Image preview
@@ -56,6 +58,7 @@ const StudentList: React.FC<StudentListProps> = ({
 		setEditedLastName(user.lastName);
 		setEditedEmail(user.email);
 		setEditedPhone(user.phone);
+		setEditedPassword(user.password); // Set the edited password
 		setEditedClassroom(user.classroom);
 		setImagePreview(user.image); // Preview the image when the modal opens
 		setShowModal(true);
@@ -82,6 +85,7 @@ const StudentList: React.FC<StudentListProps> = ({
 					lastName: editedLastName,
 					email: editedEmail,
 					phone: editedPhone,
+					password: bcrypt.hashSync(editedPassword, 10), // Update the password
 					classroom: editedClassroom,
 					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one has been selected
 				};
@@ -129,6 +133,9 @@ const StudentList: React.FC<StudentListProps> = ({
 				break;
 			case "phone":
 				setEditedPhone(value);
+				break;
+			case "password":
+				setEditedPassword(value); // Updates the edited password
 				break;
 			case "classroom":
 				setEditedClassroom(value);
@@ -255,6 +262,7 @@ const StudentList: React.FC<StudentListProps> = ({
 					editedLastName={editedLastName}
 					editedEmail={editedEmail}
 					editedPhone={editedPhone}
+					editedPassword={editedPassword}
 					imagePreview={imagePreview}
 					showFullImage={showFullImage}
 					handleInputChange={handleInputChange}

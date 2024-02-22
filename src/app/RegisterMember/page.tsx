@@ -305,34 +305,60 @@ export default function RegisterMember() {
 								</label>
 							</div>
 						</div>
-					</form>
-					<div className="flex justify-around">
-						<button
-							type="submit"
-							className=" btn block bg-neutral-50  hover:text-gray-100 hover:bg-gray-800  text-gray-500 dark:bg-gray-700  btn-active "
-						>
-							Register
-						</button>
-						<div className="relative z-0 mb-5 group">
-							<input
-								type="file"
-								name="fileUploader"
-								id="fileUploader"
-								className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-								style={{ display: isSingleUser ? "block" : "none" }} // Visa endast om isSingleUser är true
-							/>
-							<select
-								className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-								name="CSVUser"
-								id="CSVUser"
-								onChange={(e) => setSelectedOption(e.target.value)}
+						<div className="flex justify-around">
+							<button
+								type="submit"
+								className=" btn block bg-neutral-50  hover:text-gray-100 hover:bg-gray-800  text-gray-500 dark:bg-gray-700  btn-active "
 							>
-								<option value="CSVUser">Välj CSV</option>
-								<option value="CSVSingleUser">CSV SingleUser</option>
-								<option value="CSVMultipleUsers">CSV MultipleUsers</option>
-							</select>
+								Register
+							</button>
+							<div className="relative z-0 mb-5 group">
+								<select
+									className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+									name="CSVUser"
+									id="CSVUser"
+									onChange={(e) => setSelectedOption(e.target.value)}
+								>
+									<option value="CSVUser">Välj CSV</option>
+									<option value="CSVSingleUser">CSV SingleUser</option>
+									<option value="CSVMultipleUsers">CSV MultipleUsers</option>
+								</select>
+								<div style={{ display: isSingleUser ? "block" : "none" }}>
+									<input
+											type="file"
+											name="fileUploader"
+											id="fileUploader"
+											className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+											accept=".csv"
+											onChange={(e) => { handleFileUpload(e); }}
+											style={{ display: isSingleUser? "block" : "none" }}
+										/>
+								</div>
+								<div style={{ display: isMultipleUsers ? "block" : "none" }}>
+									<input
+										type="file"
+										name="fileUploader"
+										id="fileUploader"
+										className="block py-2.5 px-0 w-full text-sm text-neutral-50 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+										accept=".csv"
+										onChange={(e) => { handleFileUpload(e); }}
+										style={{ display: isMultipleUsers? "block" : "none" }}
+									/>
+									<div style={{ display: isMultipleUsers? "block" : "none" }}>
+										<label htmlFor="students">
+											<input type="radio" value="students" onChange={() => handleRadioChange("students")} checked={selectedValue === "students"} />
+											Students
+										</label>
+										<br />
+										<label htmlFor="staff">
+											<input type="radio" name="staff" onChange={() => handleRadioChange("staff")} value="staff" checked={selectedValue === "staff"} />
+											Staff
+										</label>
+									</div>
+								</div>
+							</div>
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		</div>
