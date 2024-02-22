@@ -90,11 +90,11 @@ export default function RegisterMember() {
 		//* Resets the input field to be empty
 		event.target.value = "";
 	};
-
+// The function that hashes the password and sends the data to the server
 	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
 		const hashedPassword = bcrypt.hashSync(password, 10);
-
+// Img upload to the server in to a folder based on the role of the user
 		const formData = new FormData();
 		let imagePath = "";
 		if (file !== undefined) {
@@ -125,7 +125,7 @@ export default function RegisterMember() {
 			role: role,
 		});
 	};
-
+// The function that generates the class options
 	const generateClassroomOptions = () => {
 		const currentYear = new Date().getFullYear();
 		const specialties = ["TEK", "EL", "DES"];
