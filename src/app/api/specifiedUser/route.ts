@@ -24,9 +24,9 @@ const fetchUser = async (qrCode: string, userType: string) => {
 export const POST = async (req: NextRequest) => {
 	try {
 		const { qrCode } = await req.json();
-		const userType = qrCode.slice(-5) === "staff" ? "staff" : "student";
+		const userType = qrCode.slice(-5) === "Staff" ? "staff" : "student";
 		const userdata = await fetchUser(qrCode, userType);
-		return NextResponse.json(userdata);
+		return NextResponse.json({ userdata, userType });
 	} catch (error) {
 		// If there is an error, return the error
 		return NextResponse.json({ error: error });
