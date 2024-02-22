@@ -69,10 +69,10 @@ const StaticModal: React.FC<StaticModalProps> = ({
 						{/* Modal body */}
 						<div
 							className="  dark:bg-gray-800 flex justify-center"
-							ref={elementRef}
-						>
+                            >
 							<div
-								className="p-8 bg-white shadow-lg rounded-lg"
+                                ref={elementRef}
+								className="p-4 bg-white shadow-lg rounded-lg"
 								style={{
 									backgroundImage: "url('/cardResize.png')",
 									backgroundSize: "cover",
@@ -87,7 +87,11 @@ const StaticModal: React.FC<StaticModalProps> = ({
 									<div className="flex flex-col justify-between h-full">
 										<div
 											style={{
-												backgroundImage: `url('${selectedUser.image.includes(".") ? `/${selectedUser.image}` : "/pfp.jpg"}')`,
+												backgroundImage: `url('${
+													selectedUser.image.includes(".")
+														? `/${selectedUser.image}`
+														: "/pfp.jpg"
+												}')`,
 												backgroundSize: "cover",
 												backgroundPosition: "center",
 												height: "300px",
@@ -96,7 +100,8 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												borderRadius: "10px",
 												border: "1px solid white",
 											}}
-										>{/* 
+										>
+											{/* 
 											<img
 												className="w-10 h-10 rounded-full"
 												src={selectedUser.image.includes(".") ? `/${selectedUser.image}` : "/pfp.jpg"}
@@ -104,31 +109,31 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											/> */}
 										</div>
 										<>
-											<div className="w-2/3 text-center py-2">
+											<div className="w-2/3 py-2">
 												<p>
-													<strong className="text-base text-white">
+													<p className="text-sm text-white ">
 														{selectedUser.firstName}
-													</strong>
+													</p>
 												</p>
 												<p>
-													<strong className="text-base text-white">
+													<p className="text-sm text-white">
 														{selectedUser.lastName}
-													</strong>
+													</p>
 												</p>
 												<hr className="h-px my-2 bg-white border-0" />
 											</div>
 											<div className="flex justify-center items-center">
-											<SVG
-                                              text={selectedUser.qrCode}
-                                              options={{
-                                                margin: 2,
-                                                width: 70,
-                                                color: {
-                                                  dark: "#010599FF",
-                                                  light: "#FFFFFF",
-                                                },
-                                              }}
-                                            />
+												<SVG
+													text={selectedUser.qrCode}
+													options={{
+														margin: 2,
+														width: 70,
+														color: {
+															dark: "#010599FF",
+															light: "#FFFFFF",
+														},
+													}}
+												/>
 											</div>
 										</>
 									</div>
