@@ -27,6 +27,7 @@ interface StaffEditModalProps {
 	editedLastName: string; // Edited last name
 	editedEmail: string; // Edited email
 	editedPhone: string; // Edited phone number
+	editedPassword: string; // Edited password
 	editedAdmin: string; // Edited admin status
 	imagePreview: string | null; // Preview of selected image
 	showFullImage: boolean; // Boolean to control whether full image is shown or not
@@ -47,6 +48,7 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 	editedLastName,
 	editedEmail,
 	editedPhone,
+	editedPassword,
 	editedAdmin,
 	imagePreview,
 	showFullImage,
@@ -152,11 +154,26 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 								Phone
 							</label>
 							<input
-								type="text"
+								type="tel"
 								id="phone"
 								className="mt-1 p-1 border rounded-md"
 								value={editedPhone}
 								onChange={(e) => handleInputChange(e, "phone")}
+							/>
+						</div>
+						<div className="mb-4">
+							<label
+								htmlFor="password"
+								className="block text-sm font-medium text-gray-700"
+							>
+								Password
+							</label>
+							<input
+								type="password"
+								id="password"
+								className="mt-1 p-1 border rounded-md"
+								value={editedPassword}
+								onChange={(e) => handleInputChange(e, "password")}
 							/>
 						</div>
 						<div className="mb-4">
@@ -228,7 +245,7 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 										<Image
 											src={
 												imagePreview !== null
-													? `/images/${imagePreview}`
+													? `/${imagePreview}`
 													: "/default-image.png"
 											} // Provide a default image
 											alt="Full size"

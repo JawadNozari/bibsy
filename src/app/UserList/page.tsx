@@ -32,8 +32,8 @@ interface ApiResponse {
 }
 
 export default function Home() {
-		const router = useRouter();
-	
+	const router = useRouter();
+
 	const [apiData, setApiData] = useState<ApiResponse | null>(null);
 	const [selectedUser, setSelectedUser] = useState<User | null>(null);
 	const [userType, setUserType] = useState<string>("all");
@@ -107,7 +107,7 @@ export default function Home() {
 					// Conditionally show user details based on state
 					<animated.div
 						// Apply animation to user details
-						className="bg-white dark:bg-gray-900 dark:border-gray-700 px-4 shadow-xl rounded-lg min-h-content w-80 flex items-center justify-center flex-col max-h-screen py-6"
+						className="bg-white dark:bg-gray-900 dark:border-gray-700 shadow-xl rounded-lg min-h-content w-80 flex items-center justify-center flex-col h-2/3 py-6 px-2"
 						style={detailsAnimation} // Set animation style
 					>
 						<Image
@@ -121,8 +121,8 @@ export default function Home() {
 							}
 							alt={`${selectedUser?.firstName} ${selectedUser?.lastName}`} // Add null check for selectedUser
 						/>
-						<div className="p-2 max-h-screen ">
-							<h3 className="text-center text-3xl text-gray-700 dark:text-gray-400 font-medium leading-8 sticky py-2 top-0 text-nowrap">
+						<div className="py-2 max-h-screen overflow-hidden text-wrap w-full ">
+							<h3 className=" text-center text-3xl text-gray-700 dark:text-gray-400 font-medium leading-8 sticky py-2 top-0 text-wrap ">
 								{selectedUser?.firstName} {selectedUser?.lastName}
 							</h3>
 							<div className="text-center my-3">
@@ -135,7 +135,7 @@ export default function Home() {
 									View more info
 								</button>
 							</div>
-							<table className="text-1xl my-2">
+							<table className="text-1xl my-2 w-full text-wrap">
 								{/* Conditionally display details based on user type */}
 								{selectedUser?.classroom ? (
 									// Check for presence of "classroom" property
@@ -144,7 +144,7 @@ export default function Home() {
 											<td className="px-4 py-1 text-gray-500 font-semibold">
 												Email
 											</td>
-											<td className="px-4 py-1">{selectedUser?.email}</td>
+											<td className="px-4 py-1 ">{selectedUser?.email}</td>
 										</tr>
 										<tr>
 											<td className="px-4 py-1 text-gray-500 font-semibold">
@@ -165,7 +165,7 @@ export default function Home() {
 											<td className="px-4 py-1 text-gray-500 font-semibold">
 												Email
 											</td>
-											<td className="px-4 py-1">{selectedUser?.email}</td>
+											<td className="px-4 py-1 ">{selectedUser?.email}</td>
 										</tr>
 										<tr>
 											<td className="px-4 py-1 text-gray-500 font-semibold">
