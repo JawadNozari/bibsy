@@ -32,15 +32,14 @@ export default function Page() {
 	// 	};
 	// }, []);
 
-
 	type users = {
-    id: number;
-    username: string;
+		id: number;
+		username: string;
 		firstName?: string;
-    email: string;
-    image: string;
-    admin: boolean;
-	}
+		email: string;
+		image: string;
+		admin: boolean;
+	};
 
 	const [userName, setUserName] = useState({} as users);
 	const [userImage, setUserImage] = useState("");
@@ -72,7 +71,7 @@ export default function Page() {
 	};
 
 	function AllBooksRedirect() {
-		router.push("/AllBook");
+		router.push("/allBook");
 	}
 
 	function DashboardRedirect() {
@@ -81,6 +80,10 @@ export default function Page() {
 
 	function RegUserRedirect() {
 		router.push("/registerUser");
+	}
+
+	function NewBooksRedirect() {
+		router.push("/RegisterBook");
 	}
 
 	function MembersRedirect() {
@@ -152,7 +155,7 @@ export default function Page() {
 						<div
 							onClick={ProfileRedirect}
 							onKeyDown={ProfileRedirect}
-							className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+							className="flex flex-row items-center gap-10 w-10 py-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
 						>
 							{userImage ? (
 								<Image
@@ -187,7 +190,7 @@ export default function Page() {
 						<div
 							onClick={DashboardRedirect}
 							onKeyDown={DashboardRedirect}
-							className="flex flex-row items-center gap-10 w-10 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+							className="flex flex-row items-center gap-10 w-10 py-1 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
 						>
 							<Image
 								className="w-9"
@@ -204,7 +207,7 @@ export default function Page() {
 						<div
 							onClick={MembersRedirect}
 							onKeyDown={MembersRedirect}
-							className="flex flex-row items-center gap-10 w-10 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+							className="flex flex-row items-center gap-10 w-10 py-1 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
 						>
 							<Image
 								className="w-9"
@@ -221,7 +224,7 @@ export default function Page() {
 						<div
 							onClick={RegUserRedirect}
 							onKeyDown={RegUserRedirect}
-							className="flex flex-row items-center gap-10 w-10 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+							className="flex flex-row items-center gap-10 w-10 py-1 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
 						>
 							<Image
 								className="w-9"
@@ -238,7 +241,7 @@ export default function Page() {
 						<div
 							onClick={AllBooksRedirect}
 							onKeyDown={AllBooksRedirect}
-							className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+							className="flex flex-row items-center gap-10 w-10 py-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
 						>
 							<Image
 								className="w-10"
@@ -253,9 +256,26 @@ export default function Page() {
 						</div>
 
 						<div
+							onClick={NewBooksRedirect}
+							onKeyDown={NewBooksRedirect}
+							className="flex flex-row items-center gap-10 w-10 py-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+						>
+							<Image
+								className="w-10"
+								src="/Navbar_img/addBooks.png"
+								alt="Books icon"
+								width={36}
+								height={36}
+							/>
+							<p className="text-lg whitespace-nowrap transition-all !duration-150 ease-in-out hidden group-hover:block">
+								Add Books
+							</p>
+						</div>
+
+						<div
 							onClick={LoanRedirect}
 							onKeyDown={LoanRedirect}
-							className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+							className="flex flex-row items-center gap-10 w-10 py-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
 						>
 							<Image
 								className="w-10"
@@ -274,7 +294,7 @@ export default function Page() {
 						<div
 							onClick={logOutUser}
 							onKeyDown={logOutUser}
-							className="flex flex-row items-center gap-10 w-10 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+							className="flex flex-row items-center gap-10 w-10 py-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
 						>
 							<Image
 								className="w-10"
