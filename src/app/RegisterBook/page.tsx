@@ -4,7 +4,7 @@ import axios from "axios";
 import Image from "next/image";
 import { Book } from "@prisma/client";
 import { CheckIfLoggedIn } from "../components/loginChecks";
-import Page from "../components/navigation";
+import Navigation from "../components/navigation";
 import { useRouter } from "next/navigation";
 
 
@@ -160,10 +160,10 @@ export default function Home() {
   return (
     <div className="flex justify-center items-center  md: h-screen bg-white gap-11 w-full "> 
     <div>
-      <Page/>
+      <Navigation/>
     </div>
       <div className="flex items-center justify-center  md:flex-row md:items-start w-full">
-        <div className="shadow-2xl  shadow-black bg-gray-800  text-neutral-50 p-6 rounded-2xl max-w-2xl  w-10/12">
+        <div className="shadow-2xl  shadow-black bg-gray-800   text-neutral-50 p-6 rounded-2xl max-w-2xl h-4/6 w-10/12">
           <form>
             <div className="grid gap-10 md:grid-cols-2">
               <div className="relative z-0 mb-5 group col-span-2 flex items-center justify-center">
