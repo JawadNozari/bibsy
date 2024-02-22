@@ -31,6 +31,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 		}
 	};
 	const { SVG } = useQRCode();
+	const usetType = selectedUser.qrCode.includes("Staff")? "Lärare" : "Elev";
 	return (
 		<>
 			{/* Modal overlay */}
@@ -101,12 +102,6 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												border: "1px solid white",
 											}}
 										>
-											{/* 
-											<img
-												className="w-10 h-10 rounded-full"
-												src={selectedUser.image.includes(".") ? `/${selectedUser.image}` : "/pfp.jpg"}
-												alt="Image"
-											/> */}
 										</div>
 										<>
 											<div className="w-2/3 py-2">
@@ -121,6 +116,11 @@ const StaticModal: React.FC<StaticModalProps> = ({
 													</p>
 												</p>
 												<hr className="h-px my-2 bg-white border-0" />
+												<p>
+													<p className="text-sm text-white">
+														{usetType}
+													</p>
+												</p>
 											</div>
 											<div className="flex justify-center items-center">
 												<SVG
