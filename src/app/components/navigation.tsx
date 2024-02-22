@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { CheckIfLoggedIn } from "./loginChecks";
-
 export default function Page() {
 	const router = useRouter();
 	const pathname = usePathname();
@@ -42,12 +41,14 @@ export default function Page() {
 	};
 
 	const [userName, setUserName] = useState({} as users);
-	const [userImage, setUserImage] = useState("");
+	//!TODO Check if image exists otherwise use default
+	const [userImage, setUserImage] = useState("/Navbar_img/pfp.png");
 	const [isOnloginPage, setIsOnloginPage] = useState(false);
 	const [userType, setUserType] = useState("");
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
+		// console.debug("token", user);
 		if (!token) {
 			pathname === "/login" ? setIsOnloginPage(true) : setIsOnloginPage(false);
 			router.push("/login");
@@ -157,27 +158,15 @@ export default function Page() {
 							onKeyDown={ProfileRedirect}
 							className="flex flex-row items-center gap-10 w-10 py-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
 						>
-							{userImage ? (
-								<Image
-									className="rounded-full w-10"
-									src={
-										userName.image.includes(".")
-											? `/${userName.image}`
-											: "/pfp.jpg"
-									}
-									alt="profile pictue"
-									width={40}
-									height={40}
-								/>
-							) : (
-								<Image
-									className="rounded-full w-10"
-									src="/Navbar_img/Profile.png"
-									alt="profile pictue"
-									width={40}
-									height={40}
-								/>
-							)}
+							<Image
+								className="rounded-full w-10"
+								src="/Navbar_img/pfp.png"
+								alt="profile pictue"
+								width={40}
+								height={40}
+								priority
+							/>
+
 							<p className="text-lg transition !duration-150 ease-in-out hidden group-hover:block">
 								{userName.firstName}
 							</p>

@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import BookList from "./component/bookList";
 import StaticModal from "./component/staticModal";
-import Navigation from "../components/navigation";
 import { redirect, useRouter } from "next/navigation";
 
 // Component
@@ -34,6 +33,7 @@ const AllBook = () => {
 		invNr: number;
 		isbn: string;
 		bookImg: string;
+		bookState: string;
 	}
 	interface Theme {
 		theme: string;
@@ -66,7 +66,18 @@ const AllBook = () => {
 
 	// Recieve Book Info
 	const recieveBookInfo = (data: BookInfo) => {
-		setBookInfo(data);
+		setBookInfo({
+			id: data.id,
+			price: data.price,
+			title: data.title,
+			author: data.author,
+			published: data.published,
+			publishers: data.publishers,
+			invNr: data.invNr,
+			isbn: data.isbn,
+			bookImg: data.bookImg,
+			bookState: "registered",
+		});
 	};
 	// Theme
 	const colorTheme = {
@@ -100,6 +111,7 @@ const AllBook = () => {
 								invNr: 0,
 								isbn: "",
 								bookImg: "",
+								bookState: "",
 						  }
 				}
 				userInfo={

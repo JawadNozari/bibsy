@@ -35,6 +35,7 @@ const Borrowed = () => {
 		invNr: number;
 		isbn: string;
 		bookImg: string;
+		bookState: string;
 	}
 	// Theme
 	const colorTheme = {
@@ -56,7 +57,18 @@ const Borrowed = () => {
 	};
 	// Recieve Book Info
 	const recieveBookInfo = (data: BookInfo) => {
-		setBookInfo(data);
+		setBookInfo({
+			id: data.id,
+			price: data.price,
+			title: data.title,
+			author: data.author,
+			published: data.published,
+			publishers: data.publishers,
+			invNr: data.invNr,
+			isbn: data.isbn,
+			bookImg: data.bookImg,
+			bookState: "borrowed",
+		});
 	};
 	// Use the useEffect hook to fetch the user token from local storage
 	useEffect(() => {
@@ -101,6 +113,7 @@ const Borrowed = () => {
 								invNr: 0,
 								isbn: "",
 								bookImg: "",
+								bookState: "",
 						  }
 				}
 				userInfo={

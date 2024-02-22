@@ -129,7 +129,7 @@ export default function RegisterMember() {
 			image: imagePath.slice(7),
 			classroom: selectedClassroom,
 			admin: Boolean(admin),
-			qrCode: firstName + lastName + role,
+			qrCode: role === "staff"? firstName + lastName + role.charAt(0).toUpperCase() + role.slice(1):firstName + lastName + selectedClassroom + role.charAt(0).toUpperCase() + role.slice(1),
 			role: role,
 		});
 	};

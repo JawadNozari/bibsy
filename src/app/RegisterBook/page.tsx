@@ -153,14 +153,20 @@ export default function Home() {
 			};
 
 			// Post form data to backend
-			const response = await axios.post("/api/bookReg", userData);
-			setStatus(response.data.status);
-			setMessage(response.data.Message);
+			await axios
+				.post("/api/bookReg", userData)
+				.then(() => {
+					setShowMessage(true);
+					setAlertType("alert-success");
+					setMessage("Book Registered Successfully");
+				})
+				.catch((error) => {
+					setShowMessage(true);
+					setAlertType("alert-error");
+					setMessage("An error occurred while registering the book");
+					console.error(error);
+				});
 
-			// if (status === 405){
-			//     setGotError(true);
-			//     setMessage("Looks like this InvNr is already Registered");
-			// }
 		} catch (error) {
 			setMessage("An error occurred while registering the book");
 			console.error(error);
@@ -177,15 +183,6 @@ export default function Home() {
 		setInvNr(e.target.valueAsNumber);
 	};
 
-	// return status ? (
-	// 	  // Show error message
-	//   	<div className="flex justify-center items-center h-screen w-screen">
-	// 	  	{/* if status is 405 (invNr already exist) it will show message here */}
-	// 		  {status === 405 && <div className="text-red-500 mt-4">{message}</div>}
-	// 	  </div>
-	//   ) : (
-
-	// flex justify-center items-center  md: h-screen bg-white gap-11 w-full
 	return loading ? (<div><Loading/></div>) : (
 		<>
 			<div className="flex justify-center items-center flex-col md:h-screen gap-11 w-full relative">

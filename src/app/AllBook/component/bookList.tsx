@@ -45,7 +45,7 @@ interface BookInfo {
 	invNr: number;
 	isbn: string;
 	bookImg: string;
-	bookState?: string;
+	bookState: string;
 }
 interface BookState {
 	id: number;
@@ -407,6 +407,7 @@ export default function BookList({
 													isbn: book.isbn,
 													bookImg: book.bookImg,
 													price: book.price,
+													bookState: "",
 												});
 											}}
 											onKeyDown={() => {
@@ -420,6 +421,7 @@ export default function BookList({
 													isbn: book.isbn,
 													bookImg: book.bookImg,
 													price: book.price,
+													bookState: "",
 												});
 											}}
 										>
@@ -439,6 +441,7 @@ export default function BookList({
 													isbn: book.isbn,
 													bookImg: book.bookImg,
 													price: book.price,
+													bookState: "",
 												});
 											}}
 											onKeyDown={() => {
@@ -452,6 +455,7 @@ export default function BookList({
 													isbn: book.isbn,
 													bookImg: book.bookImg,
 													price: book.price,
+													bookState: "",
 												});
 											}}
 										>
@@ -471,6 +475,7 @@ export default function BookList({
 													isbn: book.isbn,
 													bookImg: book.bookImg,
 													price: book.price,
+													bookState: "",
 												});
 											}}
 											onKeyDown={() => {
@@ -484,6 +489,7 @@ export default function BookList({
 													isbn: book.isbn,
 													bookImg: book.bookImg,
 													price: book.price,
+													bookState: "",
 												});
 											}}
 										>
@@ -507,6 +513,7 @@ export default function BookList({
 													isbn: book.isbn,
 													bookImg: book.bookImg,
 													price: book.price,
+													bookState: "",
 												});
 											}}
 											onKeyDown={() => {
@@ -520,6 +527,7 @@ export default function BookList({
 													isbn: book.isbn,
 													bookImg: book.bookImg,
 													price: book.price,
+													bookState: "",
 												});
 											}}
 										>{`${books[index]?.price};-`}</td>

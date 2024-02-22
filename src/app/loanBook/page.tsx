@@ -2,10 +2,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import axios from "axios";
-import Profile from "../../../public/img/img.jpg";
 import ProtectedPage from "../protectedPage/page";
 import Navigation from "../components/navigation";
 import Loading from "../components/loading";
+import Alert from "../components/alert";
 
 interface User {
 	id: number;
@@ -40,6 +40,8 @@ interface BookApiResponse {
 	books: Book[];
 }
 
+type alertType = "alert-success" | "alert-error";
+
 interface UserToken {
 	iat: number;
 	role: string;
@@ -51,6 +53,7 @@ interface UserToken {
 		lastName: string;
 		password: string;
 		phone: string;
+		image: string;
 		qrCode: string;
 	};
 }
@@ -67,7 +70,9 @@ export default function LoanBook() {
 	const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 	const [userType, setUserType] = useState<UserToken>();
 	const [loading, setLoading] = useState<boolean>(true);
-
+	const [alertType, setAlertType] = useState<alertType>("alert-success");
+	const [showMessage, setShowMessage] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
 
 	// * Fetch users from the API
 	useEffect(() => {
@@ -112,6 +117,14 @@ export default function LoanBook() {
 		fetchData();
 	}, []);
 
+	useEffect(() => {
+		if (showMessage) {
+			setTimeout(() => {
+				setShowMessage(false);
+			}, 5000);
+		}
+	}, [showMessage]);
+
 	// * Handle search input change
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchQuery(event.target.value);
@@ -134,19 +147,6 @@ export default function LoanBook() {
 		setSelectedBook(book || null);
 	};
 
-	//* Add this function to get the current user's ID from the token
-	// const getCurrentUserId = () => {
-	// 	const token = localStorage.getItem("token");
-
-	// 	if (token) {
-	// 		const payload = JSON.parse(atob(token.split(".")[1]));
-	// 		// return payload.Value;
-	// 		return Number(payload.Value); // Convert the user ID to a number
-
-	// 	}
-	// 	return null;
-	// };
-
 	// * Filter users based on search query
 	const filterUsers = (users: User[]) => {
 		// * If there is no search query, return all users
@@ -162,14 +162,6 @@ export default function LoanBook() {
 			const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
 			return fullName.includes(normalizedQuery);
 		});
-
-		// return users.filter((user) => {
-		// 	const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-		// 	const isStudent = user.type === 'student';
-		// 	const isStaff = user.type === 'staff' && user.id === currentUserId;
-
-		// 	return fullName.includes(normalizedQuery) && (isStudent || isStaff);
-		// });
 	};
 
 	//* Handle user click event
@@ -202,23 +194,62 @@ export default function LoanBook() {
 			});
 			//* Log the response status
 			if (response.status === 200) {
-				// Update frontend state based on response
-				// For example, if the response includes the updated book:
+				//* Log the response data
 				setSelectedBook(response.data.book);
+				//* Set the alert type to success
+				setAlertType("alert-success");
+				//* Set the alert message
+				setAlertMessage("Book successfully borrowed!");
+				//* Show the alert message
+				setShowMessage(true);
+				setTimeout(() => {
+					window.history.back();
+				}, 3000);
 			} else {
+				//* Log the error status text
 				console.error("Error borrowing book:", response.statusText);
+				//* Set the alert type to error
+				setAlertType("alert-error");
+				//* Set the alert message
+				if (response.status === 404) {
+					setAlertMessage("The book you're trying to borrow was not found.");
+				} else if (
+					response.status === 409 ||
+					response.data.message === "Book already loaned"
+				) {
+					setAlertMessage(
+						"The book you're trying to borrow is already loaned.",
+					);
+				} else {
+					setAlertMessage(
+						"An unexpected error occurred. Please try again later.",
+					);
+				}
+				//* Show the alert message
+				setShowMessage(true);
 			}
 		} catch (error) {
+			//* Log the error
 			console.error("Error:", error);
+			//* Set the alert type to error
+			setAlertType("alert-error");
+			//* Set the alert message
+			setAlertMessage("An unexpected error occurred. Please try again later.");
+			//* Show the alert message
+			setShowMessage(true);
 		}
 	};
 
 	// * Render the page
-	return loading ? (<div><Loading/></div>) : (
+	return loading ? (
+		<div>
+			<Loading />
+		</div>
+	) : (
 		<main className="flex w-screen h-screen justify-center items-center bg-neutral-100 text-black dark:bg-gray-800">
 			<ProtectedPage />
 			<div className="fixed left-0">
-			  <Navigation />
+				<Navigation />
 			</div>
 			<div className="flex justify-center ">
 				{selectedUser && (
@@ -234,7 +265,16 @@ export default function LoanBook() {
 						</div>
 
 						<div className="m-10 justify-center items-center flex">
-							<Image src={Profile} alt="profile" width={200} height={200} />
+							<Image
+								src={
+									selectedUser.image.includes(".")
+										? `/${selectedUser.image}`
+										: "/"
+								}
+								alt="profile"
+								width={200}
+								height={200}
+							/>
 						</div>
 
 						<div className="m-5 ">
@@ -284,58 +324,62 @@ export default function LoanBook() {
 									className="rounded-md  input font-medium bg-neutral-50  text-gray-700 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 								/>
 
-								<div>
+								<div className="flex justify-center">
 									{isLoading ? (
 										<p>Loading data...</p>
 									) : (
 										//*  Conditionally render the list based on showList and searchQuery
 										showList && (
-											<div className=" mt-1 rounded-lg absolute no-scrollbar  overflow-x-auto overflow-scroll text-white w-64 h-64 bg-slate-800">
+											<div className=" mt-1 rounded-lg absolute no-scrollbar  overflow-x-auto overflow-scroll text-white w-72 h-64 bg-slate-800">
 												<h1 className="m-1 text-xl text-center border-b border-gray-300 bg-slate-800  p-2 cursor-pointer ">
+													{" "}
 													Staff Users:
 												</h1>
+
 												{filterUsers(
 													apiData.flatMap((data) => data.staffUsers),
 												).map((staff) => (
 													<ul
-														className="border-b list-none  border-gray-300 bg-slate-800  p-2 cursor-pointer "
+														className="border-b list-none  border-gray-300 bg-slate-800 p-2 cursor-pointer "
 														key={staff.id}
 													>
 														<li>
 															<button
 																type="button"
-																className="m-1"
+																className="p-3 w-full  h-full"
 																key={staff.id}
 																onClick={() => handleUserClick(staff)}
 															>
-																{staff.firstName} {staff.lastName} (Admin)
+																{`${staff.firstName} ${staff.lastName}`}
 															</button>
 														</li>
 													</ul>
 												))}
-
-												<h1 className="m-1 text-xl text-center border-b border-gray-300  bg-slate-800  p-2 cursor-pointer ">
-													Student Users:
-												</h1>
-												{filterUsers(
-													apiData.flatMap((data) => data.studentUsers),
-												).map((student) => (
-													<ul
-														className="border-b list-none border-gray-300 bg-slate-800  p-2 cursor-pointer "
-														key={student.id}
-													>
-														<li>
-															<button
-																type="button"
-																className="m-1"
-																key={student.id}
-																onClick={() => handleUserClick(student)}
-															>
-																{student.firstName} {student.lastName} (Student)
-															</button>
-														</li>
-													</ul>
-												))}
+												<div className="bg-[#336699]">
+													<h1 className="m-1 text-xl text-center border-b border-gray-300  bg-[#336699]  p-2 cursor-pointer ">
+														{" "}
+														Student Users:
+													</h1>
+													{filterUsers(
+														apiData.flatMap((data) => data.studentUsers),
+													).map((student) => (
+														<ul
+															className="border-b list-none border-gray-300 bg-[#336699]    cursor-pointer "
+															key={student.id}
+														>
+															<li>
+																<button
+																	type="button"
+																	className=" p-3 w-full  h-full"
+																	key={student.id}
+																	onClick={() => handleUserClick(student)}
+																>
+																	{`${student.firstName} ${student.lastName}`}
+																</button>
+															</li>
+														</ul>
+													))}
+												</div>
 											</div>
 										)
 									)}
@@ -363,17 +407,10 @@ export default function LoanBook() {
 							</div>
 						</div>
 
-						<div className="mt-10 mb-10 justify-center flex">
-							<button
-								type="button"
-								onClick={() => window.history.back()}
-								className="btn block m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700 btn-active btn-neutral"
-							>
-								Go Back
-							</button>
+						<div className="mt-10 mb-10 justify-center flex">¨
 							<button
 								type="submit"
-								className="btn block   m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700  btn-active btn-neutral"
+								className="btn block   m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700  btn-active btn-neutral hover:text-gray-300"
 							>
 								Loan
 							</button>
@@ -387,13 +424,19 @@ export default function LoanBook() {
 							<Image
 								// src={`/${selectedBook.bookImg}`}
 								src={`/${selectedBook.bookImg.replace("public/", "")}`}
-
 								alt="book cover"
 								width={300}
 								height={80}
 							/>
-							<h1 className="text-center mt-5  dark:text-gray-100 text-2xl">{selectedBook.title}</h1>
+							<h1 className="text-center mt-5  dark:text-gray-100 text-2xl">
+								{selectedBook.title}
+							</h1>
 						</div>
+					)}
+				</div>
+				<div className="fixed bottom-10 right-10">
+					{showMessage && (
+						<Alert alertType={alertType} message={alertMessage} />
 					)}
 				</div>
 			</div>
