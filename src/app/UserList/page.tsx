@@ -83,10 +83,7 @@ export default function Home() {
 	const pathofimg = selectedUser?.classroom === undefined ? "StaffPFP" : "StudentPFP";
 	// Return the user list page
 	return (
-		<main className="flex items-center h-screen  bg-neutral-200 dark:bg-gray-800 justify-between">
-			<div>
-				<Navigation />
-			</div>
+		<main className="flex items-center h-screen w-screen bg-neutral-200 dark:bg-gray-800 justify-between">
 			<div className="flex items-center h-screen justify-around w-full">
 				{showUserDetails && (
 					// Conditionally show user details based on state

@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import BookList from "./component/BookList";
 import StaticModal from "./component/StaticModal";
-import Navigation from "../components/navigation";
 import { redirect } from "next/navigation";
 
 // Define your component
@@ -67,7 +66,6 @@ const AllBook = () => {
 	};
 	return (
 		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
-			<Navigation />
 			<BookList
 				colorTheme={colorTheme as Theme}
 				toggleModal={toggleModal}

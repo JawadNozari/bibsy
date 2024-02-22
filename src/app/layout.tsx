@@ -1,4 +1,5 @@
 import "./globals.css";
+import Navigation from "./components/navigation";
 
 export const metadata = {
 	title: "Bibsy",
@@ -12,7 +13,12 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en" className="Oxygen">
-			<body>{children}</body>
+			<body className="flex">
+				<div>
+					<Navigation />
+				</div>
+				{children}
+			</body>
 		</html>
 	);
 }
