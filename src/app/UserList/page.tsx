@@ -32,8 +32,8 @@ interface ApiResponse {
 }
 
 export default function Home() {
-		const router = useRouter();
-	
+	const router = useRouter();
+
 	const [apiData, setApiData] = useState<ApiResponse | null>(null);
 	const [selectedUser, setSelectedUser] = useState<User | null>(null);
 	const [userType, setUserType] = useState<string>("all");
