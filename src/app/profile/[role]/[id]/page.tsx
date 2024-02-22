@@ -5,12 +5,11 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import { Staff, Student, borrowedBooks } from "@prisma/client";
 import { CheckIfLoggedIn } from "../../../components/loginChecks";
-import Navigation from "../../../components/navigation";
 import { useRouter } from "next/navigation";
 import Loading from "../../../components/loading";
 
-
 type UserModal = {
+	admin: boolean;
 	id: number;
 	phone: ReactNode;
 	classroom: ReactNode;
@@ -39,8 +38,6 @@ export default function Home() {
 	const [bookArray, setBookArray] = useState<Book[]>([]);
 	const params = useParams();
 
-
-
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -50,7 +47,6 @@ export default function Home() {
 				});
 				setApiData(response.data);
 
-	
 				const response2 = await axios.post("/api/specifiedBook", {
 					books: response.data.borrowed,
 				});
@@ -60,7 +56,7 @@ export default function Home() {
 				setBookArray([]);
 			}
 		};
-	
+
 		fetchData();
 		const token = localStorage.getItem("token");
 		if (!token) {
@@ -75,10 +71,13 @@ export default function Home() {
 				}
 			}
 		}
-	}, [params.role, params.id, router, ]);
-	
+	}, [params.role, params.id, router]);
 
-	return loading ? (<div><Loading/></div>) : (
+	return loading ? (
+		<div>
+			<Loading />
+		</div>
+	) : (
 		<main className=" flex w-screen sm:flex-row  h-screen">
 			<div className="flex flex-col sm:flex-row justify-around w-full dark:bg-gray-900">
 				<div className="flex border-r items-center justify-center sm:mb-0 sm:mr-4">
@@ -114,7 +113,14 @@ export default function Home() {
 										</tr>
 										<tr>
 											<td className="px-4 py-4 text-gray-500 font-semibold">
-												Classroom: {apiData?.classroom}
+												{params.role === "staff" ? (
+													<>
+														Staff{" "}
+														{apiData.admin === true ? "is Admin" : "is not Admin"}
+													</>
+												) : (
+													`Class: ${apiData?.classroom}`
+												)}
 											</td>
 										</tr>
 									</tbody>
