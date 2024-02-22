@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import BookList from "../component/bookList";
-import Navigation from "../../components/navigation";
 import StaticModal from "../component/staticModal";
 import { redirect, useRouter } from "next/navigation";
 
@@ -71,10 +70,6 @@ const Available = () => {
 	return (
 		// Main div
 		<div className="size-full h-dvh bg-gray-300 dark:bg-gray-900">
-			<div className="z-50 w-full">
-				{/* Navigation */}
-				<Navigation />
-			</div>
 			{/* BookList */}
 			<BookList
 				colorTheme={colorTheme}

@@ -139,7 +139,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 						<div className="flex items-center justify-between mb-4">
 							{/* header */}
 							<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-								Book info
+								{!switchDiv ? bookInfo.title : "Book info"}
 							</h3>
 							{/* Close button */}
 							<button
@@ -184,10 +184,6 @@ const StaticModal: React.FC<StaticModalProps> = ({
 								<div>
 									<div className="flex justify-center items-center bg-gray-100 dark:bg-gray-800">
 										<div className="p-2 bg-white shadow-lg rounded-lg dark:bg-gray-700">
-											{/* Title */}
-											<h3 className="text-lg text-black font-bold mb-2 dark:text-gray-100">
-												{bookInfoState.title}
-											</h3>
 											<label
 												htmlFor={"editTitle"}
 												className="text-black font-semibold dark:text-gray-100"
@@ -199,6 +195,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												type="text"
 												name="bookUpdateTitle"
 												id={"editTitle"}
+												autoComplete="off"
 												value={bookInfoState.title}
 												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
 												onChange={(event) =>
@@ -218,6 +215,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											<input
 												type="text"
 												name="bookUpdateAuthor"
+												autoComplete="off"
 												id={"editAuthor"}
 												value={bookInfoState.author}
 												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
@@ -228,46 +226,50 @@ const StaticModal: React.FC<StaticModalProps> = ({
 													}))
 												}
 											/>
-											<label
-												htmlFor={"editPublishers"}
-												className="text-black font-semibold dark:text-gray-100"
-											>
-												Publishers:{" "}
-											</label>
-											{/* Edit Publishers */}
-											<input
-												type="text"
-												name="bookUpdatePublishers"
-												id={"editPublishers"}
-												value={bookInfoState.publishers}
-												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
-												onChange={(event) =>
-													setBookInfoState((prevState) => ({
-														...prevState,
-														publishers: event.target.value,
-													}))
-												}
-											/>
-											<label
-												htmlFor={"editPublished"}
-												className="text-black font-semibold dark:text-gray-100"
-											>
-												Published:{" "}
-											</label>
-											{/* Edit Published */}
-											<input
-												type="date"
-												name="bookUpdatePublished"
-												id={"editPublished"}
-												value={bookInfoState.published}
-												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
-												onChange={(event) =>
-													setBookInfoState((prevState) => ({
-														...prevState,
-														published: event.target.value,
-													}))
-												}
-											/>
+											<div>
+												<label
+													htmlFor={"editPublishers"}
+													className="text-black font-semibold dark:text-gray-100"
+												>
+													Publishers:{" "}
+												</label>
+												{/* Edit Publishers */}
+												<input
+													type="text"
+													name="bookUpdatePublishers"
+													autoComplete="off"
+													id={"editPublishers"}
+													value={bookInfoState.publishers}
+													className="p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
+													onChange={(event) =>
+														setBookInfoState((prevState) => ({
+															...prevState,
+															publishers: event.target.value,
+														}))
+													}
+												/>
+												<label
+													htmlFor={"editPublished"}
+													className="text-black font-semibold dark:text-gray-100"
+												>
+													Published:{" "}
+												</label>
+												{/* Edit Published */}
+												<input
+													type="date"
+													name="bookUpdatePublished"
+													autoComplete="off"
+													id={"editPublished"}
+													value={bookInfoState.published}
+													className="w-28 p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
+													onChange={(event) =>
+														setBookInfoState((prevState) => ({
+															...prevState,
+															published: event.target.value,
+														}))
+													}
+												/>
+											</div>
 											<div className="flex w-full justify-around items-center">
 												<div>
 													<label
@@ -280,6 +282,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 													<input
 														type="text"
 														name="bookUpdateisbn"
+														autoComplete="off"
 														id={"editIsbn"}
 														value={bookInfoState.isbn}
 														className="p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
@@ -302,6 +305,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 													<input
 														type="number"
 														name="bookUpdateinvNr"
+														autoComplete="off"
 														id={"editinvNr"}
 														value={bookInfoState.invNr}
 														className="p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
@@ -324,6 +328,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 											<input
 												type="file"
 												name="bookUpdatebookImg"
+												autoComplete="off"
 												id={"editbookImg"}
 												className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-gray-50 focus:outline-blue-500 text-gray-700 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-600"
 												onChange={(e) => {
@@ -341,10 +346,9 @@ const StaticModal: React.FC<StaticModalProps> = ({
 								</div>
 							</form>
 						) : (
-							<div className=" size-40 w-full flex flex-col">
+							<div className=" size-40 w-full flex flex-col justify-around items-center">
 								<h3>Are you sure you want to delete {bookInfo.title} ?</h3>
 
-								<br />
 								<div className="w-full flex justify-around">
 									<button
 										onClick={switchDelte}
@@ -371,7 +375,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 									<div>
 										<button
 											onClick={switchingDiv}
-											className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+											className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none mr-2"
 											type="button"
 										>
 											Edit
@@ -396,19 +400,21 @@ const StaticModal: React.FC<StaticModalProps> = ({
 									Info
 								</button>
 							)}
-							<button
-								onClick={() => {
-									toggleModal();
-									setSwitchDiv;
-									{
-										setDeleteDiv(false);
-									}
-								}}
-								className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none justify-self-end"
-								type="button"
-							>
-								Close
-							</button>
+							{!deleteDiv ? (
+								<button
+									onClick={() => {
+										toggleModal();
+										setSwitchDiv;
+										{
+											setDeleteDiv(false);
+										}
+									}}
+									className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none justify-self-end"
+									type="button"
+								>
+									Close
+								</button>
+							) : null}
 						</div>
 					</div>
 				</div>

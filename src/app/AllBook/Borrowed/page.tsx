@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import BookList from "../component/bookList";
 import { redirect } from "next/navigation";
-import Navigation from "@/app/components/navigation";
 import StaticModal from "../component/staticModal";
 import ProtectedPage from "../../protectedPage/page";
 import { useRouter } from "next/navigation";
@@ -78,8 +77,6 @@ const Borrowed = () => {
 				{/* session */}
 				<ProtectedPage />
 			</div>
-			{/* Nav */}
-			<Navigation />
 			{/* Booklist */}
 			<BookList
 				colorTheme={colorTheme}
