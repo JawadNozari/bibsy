@@ -10,7 +10,6 @@ export default function Page() {
 	const [closingTime, setClosingTime] = useState<Date | null>(null);
 	const [currentTime, setCurrentTime] = useState<string>("");
 
-
 	// eslint-disable-next-line no-unused-vars
 	const [lunchTime, setLunchTime] = useState<string | null>(null);
 	const [closingIn, setClosingIn] = useState<string | JSX.Element>(

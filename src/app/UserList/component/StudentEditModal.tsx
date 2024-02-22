@@ -1,65 +1,66 @@
 //! FIX UNUSED VARS
 /* eslint-disable no-unused-vars */
 
-
 import React from "react";
 import Image from "next/image";
 import SelectComponent from "./SelectComponent"; // Importing the SelectComponent component
 
 // Defining interfaces for the User and StudentEditModalProps
 interface User {
-    id: number;
-    password: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    image: string;
-    classroom: string;
-    admin: boolean;
-    qrCode: string;
+	id: number;
+	password: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	phone: string;
+	image: string;
+	classroom: string;
+	admin: boolean;
+	qrCode: string;
 }
 
 interface StudentEditModalProps {
-    showModal: boolean; // Boolean indicating whether the modal should be shown or not
-    selectedUser: User | null; // The selected user to be edited, or null if no user is selected
-    editedFirstName: string; // The edited first name for the selected user
-    editedLastName: string; // The edited last name for the selected user
-    editedEmail: string; // The edited email address for the selected user
-    editedPhone: string; // The edited phone number for the selected user
-    imagePreview: string | null; // A preview of the user's image, or null if no image is selected
-    showFullImage: boolean; // Boolean indicating whether the full image should be shown or not
-    setShowFullImage: React.Dispatch<React.SetStateAction<boolean>>; // Function to update the showFullImage variable
-    handleInputChange: (
-        event: React.ChangeEvent<HTMLInputElement>,
-        field: string,
-    ) => void; // Function to handle changes in input fields
-    handleEditUser: () => void; // Function to perform the user edit
-    closeModal: () => void; // Function to close the modal
+	showModal: boolean; // Boolean indicating whether the modal should be shown or not
+	selectedUser: User | null; // The selected user to be edited, or null if no user is selected
+	editedFirstName: string; // The edited first name for the selected user
+	editedLastName: string; // The edited last name for the selected user
+	editedEmail: string; // The edited email address for the selected user
+	editedPhone: string; // The edited phone number for the selected user
+	editedPassword: string; // Edited password
+	imagePreview: string | null; // A preview of the user's image, or null if no image is selected
+	showFullImage: boolean; // Boolean indicating whether the full image should be shown or not
+	setShowFullImage: React.Dispatch<React.SetStateAction<boolean>>; // Function to update the showFullImage variable
+	handleInputChange: (
+		event: React.ChangeEvent<HTMLInputElement>,
+		field: string,
+	) => void; // Function to handle changes in input fields
+	handleEditUser: () => void; // Function to perform the user edit
+	closeModal: () => void; // Function to close the modal
 }
 
 // Defining the functional component StudentEditModal
 const StudentEditModal: React.FC<StudentEditModalProps> = ({
-    showModal,
-    selectedUser,
-    editedFirstName,
-    editedLastName,
-    editedEmail,
-    editedPhone,
-    imagePreview,
-    showFullImage,
-    setShowFullImage,
-    handleInputChange,
-    handleEditUser,
-    closeModal,
+	showModal,
+	selectedUser,
+	editedFirstName,
+	editedLastName,
+	editedEmail,
+	editedPhone,
+	editedPassword,
+	imagePreview,
+	showFullImage,
+	setShowFullImage,
+	handleInputChange,
+	handleEditUser,
+	closeModal,
 }) => {
-    // Function to handle keydown events
-    function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
-        if (event.key === "Escape") {
-            // If Escape key is pressed
-            setShowFullImage(false); // Hide full image
-        }
-    }
+	// Function to handle keydown events
+	function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+		if (event.key === "Escape") {
+			// If Escape key is pressed
+			setShowFullImage(false); // Hide full image
+		}
+	}
 
 	return (
 		<div
@@ -101,7 +102,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 								htmlFor="firstName"
 								className="block text-sm font-medium text-gray-700"
 							>
-								First Name 
+								First Name
 							</label>
 							<input
 								type="text"
@@ -116,7 +117,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 								htmlFor="lastName"
 								className="block text-sm font-medium text-gray-700"
 							>
-								Last Name 
+								Last Name
 							</label>
 							<input
 								type="text"
@@ -131,7 +132,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 								htmlFor="email"
 								className="block text-sm font-medium text-gray-700"
 							>
-								Email 
+								Email
 							</label>
 							<input
 								type="email"
@@ -146,7 +147,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 								htmlFor="phone"
 								className="block text-sm font-medium text-gray-700"
 							>
-								Phone 
+								Phone
 							</label>
 							<input
 								type="text"
@@ -158,10 +159,25 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 						</div>
 						<div className="mb-4">
 							<label
+								htmlFor="password"
+								className="block text-sm font-medium text-gray-700"
+							>
+								Password
+							</label>
+							<input
+								type="password"
+								id="password"
+								className="mt-1 p-1 border rounded-md"
+								value={editedPassword}
+								onChange={(e) => handleInputChange(e, "password")}
+							/>
+						</div>
+						<div className="mb-4">
+							<label
 								htmlFor="classroom"
 								className="block text-sm font-medium text-gray-700"
 							>
-								Classroom 
+								Classroom
 							</label>
 							{/* Fits user.classroom as prop to SelectComponent */}
 							{selectedUser && (
@@ -173,7 +189,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 								htmlFor="image"
 								className="block text-sm font-medium text-gray-700"
 							>
-								Image 
+								Image
 							</label>
 							<input
 								type="file"
@@ -185,13 +201,13 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 							{/* If there is an image preview, a thumbnail is displayed that can be clicked to view it full size */}
 							{imagePreview && (
 								<Image
-                                src={`/images/${imagePreview}`} // Updated absolute path
-                                alt="Selected"
+									src={`/images/${imagePreview}`} // Updated absolute path
+									alt="Selected"
 									className="mt-2 rounded-md cursor-pointer"
 									width={100}
 									height={100}
 									onClick={() => setShowFullImage(true)} // Show full size image on click
-									onKeyDown={handleKeyDown} 
+									onKeyDown={handleKeyDown}
 								/>
 							)}
 							{/* If the full screen display is enabled, the image is displayed in full size */}

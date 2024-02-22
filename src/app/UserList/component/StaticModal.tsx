@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import QRCode from "qrcode.react";
+import { useQRCode } from "next-qrcode";
 import { Staff, Student } from "@prisma/client";
 import { toPng } from "html-to-image";
 
@@ -30,7 +30,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 				});
 		}
 	};
-
+	const { SVG } = useQRCode();
 	return (
 		<>
 			{/* Modal overlay */}
@@ -118,11 +118,17 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												<hr className="h-px my-2 bg-white border-0" />
 											</div>
 											<div className="flex justify-center items-center">
-												<QRCode
-													value={selectedUser.qrCode}
-													size={64}
-													level={"H"}
-												/>
+											<SVG
+                                              text={selectedUser.qrCode}
+                                              options={{
+                                                margin: 2,
+                                                width: 70,
+                                                color: {
+                                                  dark: "#010599FF",
+                                                  light: "#FFFFFF",
+                                                },
+                                              }}
+                                            />
 											</div>
 										</>
 									</div>

@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import BookList from "../component/BookList";
+import BookList from "../component/bookList";
 import { redirect } from "next/navigation";
 import Navigation from "@/app/components/navigation";
-import StaticModal from "../component/StaticModal";
+import StaticModal from "../component/staticModal";
 import ProtectedPage from "../../protectedPage/page";
 import { useRouter } from "next/navigation";
 
