@@ -93,9 +93,20 @@ const StudentList: React.FC<StudentListProps> = ({
 					const formData = new FormData();
 					formData.append("file", selectedImage || undefined);
 					formData.append("path", "StudentPFP");
-					await axios.post("/api/uploader", formData, {
+					const imagePath = await axios
+					.post("/api/uploader", formData, {
 						headers: { "Content-Type": "multipart/form-data" },
+					})
+					.then((res) => {
+						return res.data.path;
+					})
+					.catch((error: Error) => {
+						console.debug(error);
 					});
+					updatedUsers[index] = {
+						...updatedUsers[index],
+						image: imagePath
+					};
 				}
 				const user = {
 					...updatedUsers[index],

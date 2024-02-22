@@ -89,7 +89,21 @@ const StaffList: React.FC<StaffListProps> = ({
 				if (selectedImage !== null && selectedImage !== undefined) {
 					const formData = new FormData();
 					formData.append("file", selectedImage || undefined);
-					formData.append("path", "StudentPFP");
+					formData.append("path", "staffPFP");
+					const imagePath = await axios
+					.post("/api/uploader", formData, {
+						headers: { "Content-Type": "multipart/form-data" },
+					})
+					.then((res) => {
+						return res.data.path;
+					})
+					.catch((error: Error) => {
+						console.debug(error);
+					});
+					updatedUsers[index] = {
+						...updatedUsers[index],
+						image: imagePath
+					};
 				}
 				const user = {
 					...updatedUsers[index],

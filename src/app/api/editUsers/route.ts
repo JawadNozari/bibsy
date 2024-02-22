@@ -24,7 +24,6 @@ export const POST = async (req: NextRequest) => {
 		admin,
 		studentclass,
 	} = await req.json(); // We have to await the request body to get the data
-
 	if (!id || !firstName || !lastName || !password || !email || !phone) {
 		return NextResponse.json(
 			{
@@ -39,7 +38,7 @@ export const POST = async (req: NextRequest) => {
 		const updatedUser = await (prisma as any)[userType].update({
 			where: { id: Number(id) },
 			data: {
-				image: image,
+				image: image.slice(7),
 				firstName: firstName,
 				lastName: lastName,
 				password: password,
