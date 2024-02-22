@@ -31,7 +31,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 		}
 	};
 	const { SVG } = useQRCode();
-	const usetType = selectedUser.qrCode.includes("Staff")? "Lärare" : "Elev";
+	const userType = selectedUser.qrCode.includes("staff") ? "Lärare" : "Elev";
 	return (
 		<>
 			{/* Modal overlay */}
@@ -68,11 +68,9 @@ const StaticModal: React.FC<StaticModalProps> = ({
 							</button>
 						</div>
 						{/* Modal body */}
-						<div
-							className="  dark:bg-gray-800 flex justify-center"
-                            >
+						<div className="  dark:bg-gray-800 flex justify-center">
 							<div
-                                ref={elementRef}
+								ref={elementRef}
 								className="p-4 bg-white shadow-lg rounded-lg"
 								style={{
 									backgroundImage: "url('/cardResize.png')",
@@ -101,8 +99,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												borderRadius: "10px",
 												border: "1px solid white",
 											}}
-										>
-										</div>
+										/>
 										<>
 											<div className="w-2/3 py-2">
 												<p>
@@ -111,15 +108,13 @@ const StaticModal: React.FC<StaticModalProps> = ({
 													</p>
 												</p>
 												<p>
-													<p className="text-sm text-white">
+													<p className="text-sm mb-1 text-white">
 														{selectedUser.lastName}
 													</p>
 												</p>
-												<hr className="h-px my-2 bg-white border-0" />
+												<hr className="h-px mb-1 bg-white border-0" />
 												<p>
-													<p className="text-sm text-white">
-														{usetType}
-													</p>
+													<p className="text-sm text-white">{userType}</p>
 												</p>
 											</div>
 											<div className="flex justify-center items-center">
