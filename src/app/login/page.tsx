@@ -4,6 +4,7 @@ import { useState, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 import axios from "axios";
+import Loading from "../components/loading";
 
 const Page = () => {
 	// Hooks
@@ -61,6 +62,7 @@ const Page = () => {
 	return (
 		<div className="h-screen w-screen bg-gradient-to-r from-gray-800 to-gray-950 flex items-center justify-center">
 			<div className="h-full w-2/4 relative flex justify-center items-center">
+				<Loading />
 				<div className="w-3/4 h-4/6 relative justify-center items-start flex rounded-lg">
 				<div className="flex flex-col mt-3">
 					<Image
