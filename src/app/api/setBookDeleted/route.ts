@@ -112,3 +112,10 @@ export const POST = async (req: NextRequest) => {
 			);
 	}
 };
+
+export const DELETE = async () => {
+	return NextResponse.json(
+		{ message: "DELETE Method is NOT Allowed" },
+		{ status: 401 },
+	);
+};

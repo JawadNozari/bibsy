@@ -33,7 +33,7 @@ const BookInfo: React.FC<StaticModalProps> = ({ bookInfo }) => {
 							layout="fill"
 						/>
 					</div>
-					{/* Author */}
+					{/* Author */}  
 					<p className="text-gray-700 text-base mt-4 dark:text-gray-100">
 						<span className="font-semibold">Author:</span> {bookInfo.author}
 					</p>

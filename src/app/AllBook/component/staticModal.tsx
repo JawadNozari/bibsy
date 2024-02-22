@@ -4,7 +4,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Book } from "@prisma/client";
 import BookInfo from "./bookInfo";
-
+import Alert from "@/app/components/alert";
+import { Router } from "next/router";
+type alertType = "alert-success" | "alert-error";
 // Interfaces
 interface StaticModalProps {
 	showModal: boolean; // Prop to determine whether the modal should be displayed
@@ -57,7 +59,6 @@ const StaticModal: React.FC<StaticModalProps> = ({
 	toggleModal,
 	bookInfo,
 	userInfo,
-	refreshPage,
 }) => {
 	// Saves the bookInfo to a state
 	useEffect(() => {
@@ -74,8 +75,17 @@ const StaticModal: React.FC<StaticModalProps> = ({
 	// State to save the user info
 	const [user, setUser] = useState<userInfo | null>(userInfo);
 	// Previous image dots added because of backend-need
-	const prevImage = `.......${bookInfo.bookImg}`;
-
+	const prevImage = bookInfo.bookImg;
+	const [message, SetMessage] = useState<string>("");
+	const [showMessage, setshowMessage] = useState<boolean>(false);
+	const [alertType, setAlertType] = useState<alertType>("alert-success");
+	useEffect(() => {
+		if (showMessage) {
+			setTimeout(() => {
+				setshowMessage(false);
+			}, 5000);
+		}
+	}, [showMessage]);
 	// Set user info to state
 	useEffect(() => {
 		setUser(userInfo);
@@ -130,9 +140,25 @@ const StaticModal: React.FC<StaticModalProps> = ({
 		};
 
 		// Post form data to backend
-		await axios.post("/api/editBooks", userData, {
-			headers: { "Content-Type": "application/json" },
-		});
+		await axios
+			.post("/api/editBooks", userData, {
+				headers: { "Content-Type": "application/json" },
+			})
+			.then((res) => {
+				SetMessage("Book has been updated!");
+				setAlertType("alert-success");
+				setshowMessage(true);
+				//TODO instead of refreshing the page, update the bookInfo states
+				setTimeout(() => {
+					window.location.reload();
+				}, 5000);
+			})
+			.catch((error: Error) => {
+				SetMessage(error.message);
+				setAlertType("alert-error");
+				setshowMessage(true);
+				console.debug(error);
+			});
 	};
 	return (
 		<>
@@ -181,9 +207,8 @@ const StaticModal: React.FC<StaticModalProps> = ({
 							<BookInfo bookInfo={bookInfo} />
 						) : !switchDiv && !deleteDiv ? (
 							<form
-								onSubmit={() => {
-									handleSubmit;
-									refreshPage;
+								onSubmit={(e) => {
+									handleSubmit(e);
 								}}
 								method="POST"
 							>
@@ -426,6 +451,9 @@ const StaticModal: React.FC<StaticModalProps> = ({
 								</button>
 							) : null}
 						</div>
+					</div>
+					<div className="fixed bottom-10 right-10">
+						{showMessage && <Alert message={message} alertType={alertType} />}
 					</div>
 				</div>
 			)}

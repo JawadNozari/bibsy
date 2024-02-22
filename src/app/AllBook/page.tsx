@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import BookList from "./component/bookList";
 import StaticModal from "./component/staticModal";
-import Navigation from "../components/navigation";
 import { redirect, useRouter } from "next/navigation";
 
 // Component
