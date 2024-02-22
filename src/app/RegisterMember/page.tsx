@@ -182,12 +182,7 @@ export default function RegisterMember() {
 		);
 	};
 
-	return loading ? (
-		// Show error message
-		<div>
-			<Loading />
-		</div>
-	) : (
+	return loading ? (<div><Loading /></div>) : (
 		<div className="flex justify-center items-center  md: h-screen bg-white dark:bg-gray-900 gap-11 w-full ">
 			<Page />
 			<div className="flex items-center justify-center  md:flex-row md:items-start w-full">

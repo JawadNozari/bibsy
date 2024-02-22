@@ -54,7 +54,7 @@ export default function Page() {
 			router.push("/login");
 		} else {
 			const { whatUserAreYou, user } = CheckIfLoggedIn(token);
-			if (whatUserAreYou === "staff" || whatUserAreYou === "admin") {
+			if (whatUserAreYou === "Staff" || whatUserAreYou === "Admin") {
 				setUserType("staff");
 			} else {
 				setUserType("student");

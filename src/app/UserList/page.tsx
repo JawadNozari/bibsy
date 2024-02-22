@@ -1,6 +1,6 @@
 // userlist code
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import Image from "next/image";
 import Staff from "./component/Staff";
 import Student from "./component/Student";
@@ -10,6 +10,8 @@ import "../globals.css";
 import { useSpring, animated } from "react-spring"; // Import react-spring library
 import { useRouter } from "next/navigation";
 import { CheckIfLoggedIn } from "../components/loginChecks";
+import Loading from "../components/loading";
+
 
 // Define interfaces for User and ApiResponse
 interface User {
@@ -33,6 +35,9 @@ interface ApiResponse {
 export default function Home() {
 	const router = useRouter();
 
+	const [loading, setLoading] = useState<boolean>(true);
+
+
 	const [apiData, setApiData] = useState<ApiResponse | null>(null);
 	const [selectedUser, setSelectedUser] = useState<User | null>(null);
 	const [userType, setUserType] = useState<string>("all");
@@ -47,6 +52,7 @@ export default function Home() {
 			router.push("/login");
 		} else {
 			const { areYouAdmin, whatUserAreYou } = CheckIfLoggedIn(token);
+			setLoading(false);
 			setIsAdmin(areYouAdmin);
 			if (whatUserAreYou !== "Staff" && whatUserAreYou !== "Admin") {
 				router.push("/");
@@ -95,8 +101,17 @@ export default function Home() {
 		transform: "translateX(-100%)", // Hide user details off-screen
 		config: { mass: 1, tension: 170, friction: 26 }, // Set animation configuration
 	}));
+	const schoolCardUserType = (user: User) => {
+		if (user.classroom) {
+			return "student";
+		}
+		return "staff";
+	};
+	
+	
+	
 	// Return the user list page
-	return (
+	return loading ? (<div><Loading/></div>) : (
 		<main className="flex items-center h-screen bg-neutral-200 dark:bg-gray-800 justify-between overflow-x-auto w-screen">
 			<div className="flex items-center h-screen justify-around w-full">
 				{showUserDetails && (
@@ -121,15 +136,19 @@ export default function Home() {
 							<h3 className=" text-center text-3xl text-gray-700 dark:text-gray-400 font-medium leading-8 sticky py-2 top-0 text-wrap ">
 								{selectedUser?.firstName} {selectedUser?.lastName}
 							</h3>
-							<div className="text-center my-3">
+							<div className="text-center my-3 flex justify-center">
 								{/* Render the button to toggle modal */}
 								<button
-									className="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
+									className="mr-2 text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
 									type="button"
 									onClick={toggleModal} // Call toggleModal function when button is clicked
 								>
-									View more info
+									School Card
 								</button>
+
+								
+
+								<a href={`/profile/${schoolCardUserType(selectedUser)}/${selectedUser.id}`} className="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium">Profile</a>
 							</div>
 							<table className="text-1xl my-2 w-full h-2/4 overflow-hidden text-wrap">
 								{/* Conditionally display details based on user type */}

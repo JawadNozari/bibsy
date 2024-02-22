@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import { redirect, useRouter } from "next/navigation";
 import ProtectedPage from "@/app/protectedPage/page";
 import axios from "axios";
+import Loading from "../../components/loading";
 
 // Interfaces
 interface UserToken {
@@ -44,6 +45,7 @@ interface BookInfo {
 	invNr: number;
 	isbn: string;
 	bookImg: string;
+	bookState?: string;
 }
 interface BookState {
 	id: number;
@@ -154,6 +156,8 @@ export default function BookList({
 	//Cookie
 	const [userType, setUserType] = useState<UserToken>();
 
+	const [loading, setLoading] = useState<boolean>(true);
+
 	// Theme picker
 	// Have spaces so that can split and use in tailwind
 	const theme: { [key: string]: ThemeColors } = {
@@ -197,6 +201,7 @@ export default function BookList({
 		if (token) {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
 			setUserType(decodedToken);
+			setLoading(false);
 		} else {
 			redirect("/");
 		}
@@ -258,9 +263,13 @@ export default function BookList({
 			listType,
 		}); //? what should happen with this response?
 	};
-	return (
+	return loading ? (
+		<div>
+			<Loading />
+		</div>
+	) : (
 		// TableTemplate edited
-		<div className="size-11/12 w-5/6 absolute bottom-0 left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap">
+		<div className="size-11/12 w-5/6 bottom-8 absolute left-1/2 transform -translate-x-1/2  h-1/2-dvh flex justify-center flex-wrap">
 			<div className="size-2/12 w-full">
 				{/* link container */}
 				<div className="w-full h-full flex justify-center items-end">
@@ -288,7 +297,7 @@ export default function BookList({
 			{/* Table container */}
 			<div
 				className={
-					"relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 shadow-md  size-10/12 rounded-t-xl bg-gray-700 dark:bg-gray-800"
+					"relative bottom-0 overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 shadow-md  size-10/12 rounded-xl bg-gray-700 dark:bg-gray-800"
 				}
 			>
 				<table className="w-full text-sm text-left rtl:text-right text-gray-300">
@@ -340,23 +349,6 @@ export default function BookList({
 								</form>
 							</th>
 						</tr>
-						{/* Admin only button (Register Book) */}
-						{userType?.role === "Admin" ? (
-							<tr>
-								<th />
-								<th />
-								<th className="flex justify-center items-center">
-									<a
-										href="/RegisterBook"
-										className="px-2 py-4 rounded-lg bg-blue-500 mb-2"
-									>
-										Register Book
-									</a>
-								</th>
-								<th />
-								<th />
-							</tr>
-						) : null}
 						{/* Table head */}
 						<tr>
 							<th scope="col" className="px-6 py-3 z-20">

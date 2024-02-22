@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import BookList from "../component/bookList";
 import ProtectedPage from "../../protectedPage/page";
-import Navigation from "../../components/navigation";
 import { redirect } from "next/navigation";
 import StaticModal from "../component/staticModal";
 import { useRouter } from "next/navigation";
@@ -81,8 +80,6 @@ const Missing = () => {
 				{/* Session */}
 				<ProtectedPage />
 			</div>
-			{/* Nav */}
-			<Navigation />
 			{/* BookList */}
 			<BookList
 				colorTheme={colorTheme}
