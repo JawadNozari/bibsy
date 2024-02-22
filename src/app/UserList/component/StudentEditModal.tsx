@@ -201,7 +201,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 							{/* If there is an image preview, a thumbnail is displayed that can be clicked to view it full size */}
 							{imagePreview && (
 								<Image
-									src={`/images/${imagePreview}`} // Updated absolute path
+									src={`/${imagePreview}`} // Updated absolute path
 									alt="Selected"
 									className="mt-2 rounded-md cursor-pointer"
 									width={100}
@@ -221,7 +221,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 										<Image
 											src={
 												imagePreview !== null
-													? `/images/${imagePreview}`
+													? `/${imagePreview}`
 													: "/default-image.png"
 											} // Set a default image if there is no preview
 											alt="Full size"

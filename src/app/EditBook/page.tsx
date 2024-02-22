@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Book } from "@prisma/client";
-
+import Loading from "../components/loading";
 
 export default function Page() {
 	const [file, setFile] = useState<File | undefined>(undefined);
@@ -15,8 +15,6 @@ export default function Page() {
 	const [isbn, setIsbn] = useState<string>("");
 	const [price, setPrice] = useState<number>(0);
 	const [invNr, setInv] = useState<number>(0);
-	const [message, setMessage] = useState<string | undefined>("");
-	const [gotError, setGotError] = useState<boolean>(false);
 
 	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
@@ -54,21 +52,13 @@ export default function Page() {
 			await axios
 				.post("/api/editBooks", userData, {
 					headers: { "Content-Type": "application/json" },
-				})
-				.then((res) => {
-					setGotError(false);
-					setMessage(res.data.Message);
-				})
-				.catch((err) => {
-					setGotError(true);
-					setMessage(err.message);
 				});
 	};
-
-	return gotError ? (
+	const checker = false;
+	return checker ? (
 		// Show error message
 		<div>
-			{message}
+			<Loading />
 		</div>
 	) : (
 		<form onSubmit={handleSubmit} method="POST">

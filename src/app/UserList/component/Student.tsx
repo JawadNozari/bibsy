@@ -94,18 +94,18 @@ const StudentList: React.FC<StudentListProps> = ({
 					formData.append("file", selectedImage || undefined);
 					formData.append("path", "StudentPFP");
 					const imagePath = await axios
-					.post("/api/uploader", formData, {
-						headers: { "Content-Type": "multipart/form-data" },
-					})
-					.then((res) => {
-						return res.data.path;
-					})
-					.catch((error: Error) => {
-						console.debug(error);
-					});
+						.post("/api/uploader", formData, {
+							headers: { "Content-Type": "multipart/form-data" },
+						})
+						.then((res) => {
+							return res.data.path;
+						})
+						.catch((error: Error) => {
+							console.debug(error);
+						});
 					updatedUsers[index] = {
 						...updatedUsers[index],
-						image: imagePath
+						image: imagePath,
 					};
 				}
 				const user = {
@@ -124,6 +124,7 @@ const StudentList: React.FC<StudentListProps> = ({
 
 			closeModal(); // Close the modal after editing is done
 		}
+		window.location.reload();
 	};
 
 	// Function to handle changes in the input fields
