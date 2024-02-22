@@ -11,8 +11,8 @@ export const POST = async (req: NextRequest) => {
 	const selectedUserType = data.user.admin ? "staffUser" : "studentUser";
 	const selectedUserId = data.user;;
 	
-	// Get current staff member
-	const currentStaffId = 1; // Hardcoded for now
+	// Get current logged in staff member
+	const currentStaffId = data.currentStaff;
 	//! MAX FIX THIS!!!!
 	// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
 	let staff;
