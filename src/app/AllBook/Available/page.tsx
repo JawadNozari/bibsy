@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import BookList from "../component/BookList";
+import BookList from "../component/bookList";
 import Navigation from "../../components/navigation";
-import StaticModal from "../component/StaticModal";
+import StaticModal from "../component/staticModal";
 import { redirect, useRouter } from "next/navigation";
 
 // Define your component

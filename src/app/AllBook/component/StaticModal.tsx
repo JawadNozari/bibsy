@@ -2,7 +2,6 @@
 //
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import imgJpg from "/public/img/content.jpeg";
 import axios from "axios";
 import { Book } from "@prisma/client";
 
@@ -177,8 +176,8 @@ const StaticModal: React.FC<StaticModalProps> = ({
 										<div className="relative h-64 w-48 m-auto">
 											<Image
 												className="m-auto"
-												src={imgJpg}
-												alt="Landscape picture"
+												src={`/${bookInfo.bookImg}`}
+												alt={`${bookInfo.title} book cover`}
 												layout="fill"
 											/>
 										</div>
