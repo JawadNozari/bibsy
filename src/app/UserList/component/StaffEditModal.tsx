@@ -57,6 +57,7 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 	handleEditUser,
 	closeModal,
 }) => {
+	
 	// Function to handle keydown event
 	function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
 		if (event.key === "Escape") {
@@ -245,7 +246,7 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 										<Image
 											src={
 												imagePreview !== null
-													? `/images${imagePreview}`
+													? `/${imagePreview}`
 													: "/default-image.png"
 											} // Provide a default image
 											alt="Full size"

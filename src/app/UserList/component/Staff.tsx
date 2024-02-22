@@ -116,6 +116,8 @@ const StaffList: React.FC<StaffListProps> = ({
 
 			closeModal(); // Close the modal
 		}
+		window.location.reload();
+
 	};
 
 	// Handles changes in the input field

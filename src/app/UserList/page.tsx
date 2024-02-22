@@ -8,7 +8,6 @@ import StaticModal from "./component/StaticModal"; // Import the StaticModal com
 import axios from "axios";
 import "../globals.css";
 import { useSpring, animated } from "react-spring"; // Import react-spring library
-import Page from "../components/navigation"; // Import the Navigation component
 import { useRouter } from "next/navigation";
 import { CheckIfLoggedIn } from "../components/loginChecks";
 
@@ -98,10 +97,7 @@ export default function Home() {
 	}));
 	// Return the user list page
 	return (
-		<main className="flex items-center h-screen bg-neutral-200 dark:bg-gray-800 justify-between overflow-x-auto">
-			<div>
-				<Page />
-			</div>
+		<main className="flex items-center h-screen bg-neutral-200 dark:bg-gray-800 justify-between overflow-x-auto w-screen">
 			<div className="flex items-center h-screen justify-around w-full">
 				{showUserDetails && (
 					// Conditionally show user details based on state
