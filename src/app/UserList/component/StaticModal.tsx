@@ -31,7 +31,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 		}
 	};
 	const { SVG } = useQRCode();
-	const usetType = selectedUser.qrCode.includes("Staff")? "Lärare" : "Elev";
+	const userType = selectedUser.qrCode.includes("Staff")? "Lärare" : "Elev";
 	return (
 		<>
 			{/* Modal overlay */}
@@ -111,14 +111,14 @@ const StaticModal: React.FC<StaticModalProps> = ({
 													</p>
 												</p>
 												<p>
-													<p className="text-sm text-white">
+													<p className="text-sm mb-1 text-white">
 														{selectedUser.lastName}
 													</p>
 												</p>
-												<hr className="h-px my-2 bg-white border-0" />
+												<hr className="h-px mb-1 bg-white border-0" />
 												<p>
 													<p className="text-sm text-white">
-														{usetType}
+														{userType}
 													</p>
 												</p>
 											</div>
