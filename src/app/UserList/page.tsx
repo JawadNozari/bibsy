@@ -107,7 +107,7 @@ export default function Home() {
 					// Conditionally show user details based on state
 					<animated.div
 						// Apply animation to user details
-						className="bg-white dark:bg-gray-900 dark:border-gray-700 shadow-xl rounded-lg min-h-content w-80 flex items-center justify-center flex-col h-2/3 py-6 px-2"
+						className="bg-white dark:bg-gray-900 dark:border-gray-700 shadow-xl rounded-lg min-h-content w-80 flex items-center justify-center flex-col h-3/4 py-6 px-2"
 						style={detailsAnimation} // Set animation style
 					>
 						<Image
@@ -121,7 +121,7 @@ export default function Home() {
 							}
 							alt={`${selectedUser?.firstName} ${selectedUser?.lastName}`} // Add null check for selectedUser
 						/>
-						<div className="py-2 max-h-screen overflow-hidden text-wrap w-full ">
+						<div className="py-2 max-h-screen text-wrap w-full overflow-hidden">
 							<h3 className=" text-center text-3xl text-gray-700 dark:text-gray-400 font-medium leading-8 sticky py-2 top-0 text-wrap ">
 								{selectedUser?.firstName} {selectedUser?.lastName}
 							</h3>
@@ -135,7 +135,7 @@ export default function Home() {
 									View more info
 								</button>
 							</div>
-							<table className="text-1xl my-2 w-full text-wrap">
+							<table className="text-1xl my-2 w-full h-2/4 overflow-hidden text-wrap">
 								{/* Conditionally display details based on user type */}
 								{selectedUser?.classroom ? (
 									// Check for presence of "classroom" property
