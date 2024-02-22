@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 //
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import axios from "axios";
 import { Book } from "@prisma/client";
+import BookInfo from "./bookInfo";
 
 // Interfaces
 interface StaticModalProps {
@@ -65,6 +65,8 @@ const StaticModal: React.FC<StaticModalProps> = ({
 	}, [bookInfo]);
 	// State to switch between the book info and the edit form
 	const [switchDiv, setSwitchDiv] = useState(true);
+	// DeleteDiv state
+	const [deleteDiv, setDeleteDiv] = useState(false);
 	// State to save the book info
 	const [bookInfoState, setBookInfoState] = useState(bookInfo);
 	// State to save the file
@@ -82,6 +84,9 @@ const StaticModal: React.FC<StaticModalProps> = ({
 	// Function to switch between the book info and the edit form
 	const switchingDiv = () => {
 		setSwitchDiv(!switchDiv);
+	};
+	const switchDelte = () => {
+		setDeleteDiv(!deleteDiv);
 	};
 
 	// Function to handle the submit of the edit form
@@ -163,50 +168,11 @@ const StaticModal: React.FC<StaticModalProps> = ({
 							</button>
 						</div>
 						{/* Modal body */}
+
 						{/* If switchDiv is true, display the book info else display the edit form*/}
-						{switchDiv ? (
-							<div>
-								<div className="flex justify-center items-center bg-gray-100 dark:bg-gray-700">
-									<div className="p-2 bg-white shadow-lg rounded-lg dark:bg-gray-800 my-3">
-										{/* Title */}
-										<h3 className="text-lg text-black dark:text-gray-100 font-bold mb-2">
-											{bookInfo.title}
-										</h3>
-										{/* Image */}
-										<div className="relative h-64 w-48 m-auto">
-											<Image
-												className="m-auto"
-												src={`/${bookInfo.bookImg}`}
-												alt={`${bookInfo.title} book cover`}
-												layout="fill"
-											/>
-										</div>
-										{/* Author */}
-										<p className="text-gray-700 text-base mt-4 dark:text-gray-100">
-											<span className="font-semibold">Author:</span>{" "}
-											{bookInfo.author}
-										</p>
-										{/* Published */}
-										<p className="text-gray-700 text-base dark:text-gray-100">
-											<span className="font-semibold">Published:</span>{" "}
-											{bookInfo.published.split("T")[0]}
-										</p>
-										{/* Publishers */}
-										<p className="text-gray-700 text-base dark:text-gray-100">
-											<span className="font-semibold">Publishers:</span>{" "}
-											{bookInfo.publishers}
-										</p>
-										{/* Isbn and invNr */}
-										<p className="text-gray-700 text-base dark:text-gray-100">
-											<span className="font-semibold">ISBN:</span>{" "}
-											{bookInfo.isbn}{" "}
-											<span className="font-semibold"> invNr:</span>{" "}
-											{bookInfo.invNr}
-										</p>
-									</div>
-								</div>
-							</div>
-						) : (
+						{switchDiv && !deleteDiv ? (
+							<BookInfo bookInfo={bookInfo} />
+						) : !switchDiv && !deleteDiv ? (
 							<form
 								onSubmit={() => {
 									handleSubmit;
@@ -374,19 +340,52 @@ const StaticModal: React.FC<StaticModalProps> = ({
 									</div>
 								</div>
 							</form>
+						) : (
+							<div className=" size-40 w-full flex flex-col">
+								<h3>Are you sure you want to delete {bookInfo.title} ?</h3>
+
+								<br />
+								<div className="w-full flex justify-around">
+									<button
+										onClick={switchDelte}
+										className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+										type="button"
+									>
+										Keep
+									</button>
+									<button
+										onClick={switchDelte}
+										className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
+										type="button"
+									>
+										Delete
+									</button>
+								</div>
+							</div>
 						)}
 						{/* Modal footer */}
 						<div className="mt-4 flex justify-between">
 							{/* Ternary if logged in as Admin, can see edit btn/info btn else cant */}
 							{switchDiv ? (
-								user?.role === "Admin" ? (
-									<button
-										onClick={switchingDiv}
-										className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
-										type="button"
-									>
-										Edit
-									</button>
+								user?.role === "Admin" && !deleteDiv ? (
+									<div>
+										<button
+											onClick={switchingDiv}
+											className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+											type="button"
+										>
+											Edit
+										</button>
+										{!deleteDiv ? (
+											<button
+												onClick={switchDelte}
+												className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
+												type="button"
+											>
+												Delete
+											</button>
+										) : null}
+									</div>
 								) : null
 							) : (
 								<button
@@ -401,8 +400,11 @@ const StaticModal: React.FC<StaticModalProps> = ({
 								onClick={() => {
 									toggleModal();
 									setSwitchDiv;
+									{
+										setDeleteDiv(false);
+									}
 								}}
-								className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
+								className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none justify-self-end"
 								type="button"
 							>
 								Close
