@@ -14,6 +14,7 @@ const Page = () => {
 	//! Fix Remember me
 	// eslint-disable-next-line no-unused-vars
 	const [checked, setChecked] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(true);
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [errorMessage, SetErrorMessage] = useState<string>("");
@@ -62,7 +63,6 @@ const Page = () => {
 	return (
 		<div className="h-screen w-screen bg-gradient-to-r from-gray-800 to-gray-950 flex items-center justify-center">
 			<div className="h-full w-2/4 relative flex justify-center items-center">
-				<Loading />
 				<div className="w-3/4 h-4/6 relative justify-center items-start flex rounded-lg">
 				<div className="flex flex-col mt-3">
 					<Image

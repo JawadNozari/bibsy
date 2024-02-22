@@ -7,6 +7,8 @@ import { Staff, Student, borrowedBooks } from "@prisma/client";
 import { CheckIfLoggedIn } from "../../../components/loginChecks";
 import Navigation from "../../../components/navigation";
 import { useRouter } from "next/navigation";
+import Loading from "../../../components/loading";
+
 
 type UserModal = {
 	id: number;
@@ -30,6 +32,8 @@ type Book = {
 
 export default function Home() {
 	const router = useRouter();
+
+	const [loading, setLoading] = useState<boolean>(true);
 
 	const [apiData, setApiData] = useState<UserModal>();
 	const [bookArray, setBookArray] = useState<Book[]>([]);
@@ -63,15 +67,18 @@ export default function Home() {
 			router.push("/login");
 		} else {
 			const { whatUserAreYou, user } = CheckIfLoggedIn(token);
-			if (whatUserAreYou === "Student" || params.role !== "student" || Number(params.id) !== user.user.id) {
-				// Redirect student to its own profile
-				router.push(`/profile/student/${user.user.id}`);
-			} 
+			setLoading(false);
+			if (whatUserAreYou === "Student") {
+				if (params.role !== "student" || Number(params.id) !== user.user.id) {
+					// Redirect student to its own profile
+					router.push(`/profile/student/${user.user.id}`);
+				}
+			}
 		}
 	}, [params.role, params.id, router, ]);
 	
 
-	return (
+	return loading ? (<div><Loading/></div>) : (
 		<main className=" flex w-screen sm:flex-row  h-screen">
 			<div className="flex flex-col sm:flex-row justify-around w-full dark:bg-gray-900">
 				<div className="flex border-r items-center justify-center sm:mb-0 sm:mr-4">

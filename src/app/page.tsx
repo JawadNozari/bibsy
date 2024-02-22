@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import axios from "axios";
 import { Book, bookHistory } from "@prisma/client";
+import Loading from "./components/loading";
+
 
 //! This is a function that takes in a token and checks and returns if the user is an admin and what type of user they are
 import { CheckIfLoggedIn } from "./components/loginChecks";
@@ -10,6 +12,9 @@ import Image from "next/image";
 
 export default function Home() {
 	const router = useRouter();
+
+	const [loading, setLoading] = React.useState<boolean>(true);
+
 
 	const [totalBooks, setTotalBooks] = React.useState(0);
 	const [availableBooks, setAvailableBooks] = React.useState(0);
@@ -28,6 +33,8 @@ export default function Home() {
 			router.push("/login");
 		} else {
 			const { areYouAdmin, whatUserAreYou } = CheckIfLoggedIn(token);
+			setLoading(false);
+
 			setIsAdmin(areYouAdmin);
 			setUserType(whatUserAreYou);
 		}
@@ -100,7 +107,7 @@ export default function Home() {
 				});
 			});
 	};
-	return (
+	return loading ? (<div><Loading/></div>) : (
 		<div className=" p-10 bg-white dark:bg-zinc-900 w-full">
 			<div>
 				{/* // ! IF THE USER IS AN ADMIN, THEY WILL SEE "HELLO THERE ADMIN!" OTHERWISE THEY WILL SEE "HELLO THERE {USER TYPE}" */}

@@ -5,6 +5,7 @@ import axios from "axios";
 import Profile from "../../../public/img/img.jpg";
 import ProtectedPage from "../protectedPage/page";
 import Navigation from "../components/navigation";
+import Loading from "../components/loading";
 
 interface User {
 	id: number;
@@ -65,12 +66,15 @@ export default function LoanBook() {
 	const [invNr, setInvNr] = useState("");
 	const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 	const [userType, setUserType] = useState<UserToken>();
+	const [loading, setLoading] = useState<boolean>(true);
+
 
 	// * Fetch users from the API
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (token) {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
+			setLoading(false);
 			setUserType(decodedToken);
 		}
 		const invNr = new URLSearchParams(window.location.search).get("invNr");
@@ -210,7 +214,7 @@ export default function LoanBook() {
 	};
 
 	// * Render the page
-	return (
+	return loading ? (<div><Loading/></div>) : (
 		<main className="flex w-screen h-screen justify-center items-center bg-neutral-100 text-black dark:bg-gray-800">
 			<ProtectedPage />
 			<div className="fixed left-0">

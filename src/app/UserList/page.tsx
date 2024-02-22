@@ -10,6 +10,8 @@ import "../globals.css";
 import { useSpring, animated } from "react-spring"; // Import react-spring library
 import { useRouter } from "next/navigation";
 import { CheckIfLoggedIn } from "../components/loginChecks";
+import Loading from "../components/loading";
+
 
 // Define interfaces for User and ApiResponse
 interface User {
@@ -33,6 +35,9 @@ interface ApiResponse {
 export default function Home() {
 	const router = useRouter();
 
+	const [loading, setLoading] = useState<boolean>(true);
+
+
 	const [apiData, setApiData] = useState<ApiResponse | null>(null);
 	const [selectedUser, setSelectedUser] = useState<User | null>(null);
 	const [userType, setUserType] = useState<string>("all");
@@ -47,6 +52,7 @@ export default function Home() {
 			router.push("/login");
 		} else {
 			const { areYouAdmin, whatUserAreYou } = CheckIfLoggedIn(token);
+			setLoading(false);
 			setIsAdmin(areYouAdmin);
 			if (whatUserAreYou !== "Staff" && whatUserAreYou !== "Admin") {
 				router.push("/");
@@ -105,7 +111,7 @@ export default function Home() {
 	
 	
 	// Return the user list page
-	return (
+	return loading ? (<div><Loading/></div>) : (
 		<main className="flex items-center h-screen bg-neutral-200 dark:bg-gray-800 justify-between overflow-x-auto w-screen">
 			<div className="flex items-center h-screen justify-around w-full">
 				{showUserDetails && (
