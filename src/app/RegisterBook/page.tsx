@@ -153,9 +153,19 @@ export default function Home() {
 			};
 
 			// Post form data to backend
-			const response = await axios.post("/api/bookReg", userData);
-			setStatus(response.data.status);
-			setMessage(response.data.Message);
+			await axios
+				.post("/api/bookReg", userData)
+				.then(() => {
+					setShowMessage(true);
+					setAlertType("alert-success");
+					setMessage("Book Registered Successfully");
+				})
+				.catch((error) => {
+					setShowMessage(true);
+					setAlertType("alert-error");
+					setMessage("An error occurred while registering the book");
+					console.error(error);
+				});
 
 			// if (status === 405){
 			//     setGotError(true);
