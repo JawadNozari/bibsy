@@ -5,6 +5,8 @@ import React, { useState } from "react"; // Import React and useState hook from 
 import Image from "next/image"; // Import Image component from Next.js library for displaying images
 import StaffEditModal from "./StaffEditModal"; // Import StaffEditModal component from another file
 import axios from "axios";
+import bcrypt from "bcryptjs";
+
 
 // Defines an interface for a user
 interface User {
@@ -80,7 +82,7 @@ const StaffList: React.FC<StaffListProps> = ({
 					lastName: editedLastName, // Update the last name
 					email: editedEmail, // Update the email
 					phone: editedPhone, // Update the phone number
-					password: editedPassword, // Update the password
+					password: bcrypt.hashSync(editedPassword, 10), // Update the password
 					admin: editedAdmin === "true", // Convert the string to boolean and update the admin status
 					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one is selected
 				};

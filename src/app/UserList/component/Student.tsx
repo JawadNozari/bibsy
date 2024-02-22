@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import StudentEditModal from "./StudentEditModal";
 import axios from "axios";
+import bcrypt from "bcryptjs";
 
 interface User {
 	// Defines an interface for a user
@@ -84,7 +85,7 @@ const StudentList: React.FC<StudentListProps> = ({
 					lastName: editedLastName,
 					email: editedEmail,
 					phone: editedPhone,
-					password: editedPassword, // Update the password
+					password: bcrypt.hashSync(editedPassword, 10), // Update the password
 					classroom: editedClassroom,
 					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one has been selected
 				};
