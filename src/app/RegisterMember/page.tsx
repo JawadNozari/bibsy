@@ -18,7 +18,7 @@ export default function RegisterMember() {
 	const router = useRouter();
 
 	const [password, setPassword] = useState("");
-	const [email] = useState("@elev.ntig.se");
+	const [email, setEmail] = useState("");
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [role, setRole] = useState<string>("");
 	const [admin, setAdmin] = useState<boolean>(false);
@@ -55,6 +55,9 @@ export default function RegisterMember() {
 		setRole(selectedRole);
 		if (selectedRole !== "staff") {
 			setAdmin(false);
+			setEmail("@elev.ntig.se");
+		} else {
+			setEmail("@ntig.se");
 		}
 	};
 
@@ -114,6 +117,8 @@ export default function RegisterMember() {
 					console.debug(error);
 				});
 		}
+
+
 
 		axios.post("/api/adminCenter", {
 			password: hashedPassword,
