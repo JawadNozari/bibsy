@@ -1,10 +1,9 @@
-"use client";
-
-
 const loading = () => {
     return(
     <div>
-        <p>loading</p>
+        <progress className="progress w-56">
+            
+        </progress>
     </div>
     );
 };
