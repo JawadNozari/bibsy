@@ -187,7 +187,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 						<div className="mb-4">
 							<label
 								htmlFor="image"
-								className="block text-sm font-medium text-gray-700"
+								className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
 							>
 								Image
 							</label>
@@ -196,7 +196,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 								id="image"
 								accept="image/*"
 								onChange={(e) => handleInputChange(e, "image")}
-								className="mt-1 p-1 border rounded-md"
+								className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
 							/>
 							{/* If there is an image preview, a thumbnail is displayed that can be clicked to view it full size */}
 							{imagePreview && (
