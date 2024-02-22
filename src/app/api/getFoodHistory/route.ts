@@ -27,7 +27,6 @@ export const GET = async () => {
 //* If request is POST runs this function that sends the data to the database
 export const POST = async (req: NextRequest) => {
 	const { firstName, lastName, usertype } = await req.json();
-	console.debug(firstName, lastName, usertype);
 	return await prisma.food
 		.create({
 			data: {
