@@ -85,8 +85,14 @@ const StaticModal: React.FC<StaticModalProps> = ({
 	const switchingDiv = () => {
 		setSwitchDiv(!switchDiv);
 	};
-	const switchDelte = () => {
+	const switchDelete = () => {
 		setDeleteDiv(!deleteDiv);
+	};
+
+	const handleDelete = async () => {
+		await axios.delete("/api/setBookDeleted", {
+			data: { bookId: bookInfo.id, bookType: "registered" },
+		});
 	};
 
 	// Function to handle the submit of the edit form
@@ -145,8 +151,9 @@ const StaticModal: React.FC<StaticModalProps> = ({
 							<button
 								type="button"
 								onClick={() => {
+									setSwitchDiv(true);
+									setDeleteDiv(false);
 									toggleModal();
-									setSwitchDiv;
 								}}
 								className="text-gray-500 hover:text-gray-700 focus:outline-none"
 							>
@@ -351,14 +358,17 @@ const StaticModal: React.FC<StaticModalProps> = ({
 
 								<div className="w-full flex justify-around">
 									<button
-										onClick={switchDelte}
+										onClick={switchDelete}
 										className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
 										type="button"
 									>
 										Keep
 									</button>
 									<button
-										onClick={switchDelte}
+										onClick={() => {
+											switchDelete;
+											handleDelete();
+										}}
 										className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
 										type="button"
 									>
@@ -382,7 +392,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 										</button>
 										{!deleteDiv ? (
 											<button
-												onClick={switchDelte}
+												onClick={switchDelete}
 												className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
 												type="button"
 											>
