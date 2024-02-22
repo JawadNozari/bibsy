@@ -87,7 +87,7 @@ const StaticModal: React.FC<StaticModalProps> = ({
 									<div className="flex flex-col justify-between h-full">
 										<div
 											style={{
-												backgroundImage: `url('${selectedUser.image}')`,
+												backgroundImage: `url('${selectedUser.image.includes(".") ? `/${selectedUser.image}` : "/pfp.jpg"}')`,
 												backgroundSize: "cover",
 												backgroundPosition: "center",
 												height: "300px",
@@ -96,7 +96,13 @@ const StaticModal: React.FC<StaticModalProps> = ({
 												borderRadius: "10px",
 												border: "1px solid white",
 											}}
-										/>
+										>{/* 
+											<img
+												className="w-10 h-10 rounded-full"
+												src={selectedUser.image.includes(".") ? `/${selectedUser.image}` : "/pfp.jpg"}
+												alt="Image"
+											/> */}
+										</div>
 										<>
 											<div className="w-2/3 text-center py-2">
 												<p>
