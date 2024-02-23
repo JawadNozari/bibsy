@@ -38,7 +38,7 @@ export const POST = async (req: NextRequest) => {
 		const updatedUser = await (prisma as any)[userType].update({
 			where: { id: Number(id) },
 			data: {
-				image: image.slice(7),
+				image: image.slice(0, 7) === "public/" ? image.slice(7) : image,
 				firstName: firstName,
 				lastName: lastName,
 				password: password,
