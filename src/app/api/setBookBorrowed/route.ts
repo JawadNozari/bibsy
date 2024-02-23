@@ -9,8 +9,8 @@ export const POST = async (req: NextRequest) => {
 	const data = await req.json();
 	const userInvNr = parseInt(data.invNr);
 	const selectedUserType = data.user.admin ? "staffUser" : "studentUser";
-	const selectedUserId = data.user;;
-	
+	const selectedUserId = data.user;
+
 	// Get current logged in staff member
 	const currentStaffId = data.currentStaff;
 	//! MAX FIX THIS!!!!
@@ -40,12 +40,12 @@ export const POST = async (req: NextRequest) => {
 			data: {
 				bookId: updatedBook.id,
 				staffId: currentStaffId,
-				studentId: selectedUserType === "studentUser" ? data.user.id : undefined,
-				note: selectedUserType === "studentUser"
-				?
-				`${staff?.firstName} ${staff?.lastName} has successfully loaned a book to ${selectedUserId?.firstName} ${selectedUserId?.lastName}.`
-				:
-				`${staff?.firstName} ${staff?.lastName} has successfully loaned out a book.`,
+				studentId:
+					selectedUserType === "studentUser" ? data.user.id : undefined,
+				note:
+					selectedUserType === "studentUser"
+						? `${staff?.firstName} ${staff?.lastName} has successfully loaned a book to ${selectedUserId?.firstName} ${selectedUserId?.lastName}.`
+						: `${staff?.firstName} ${staff?.lastName} has successfully loaned out a book.`,
 			},
 		});
 
