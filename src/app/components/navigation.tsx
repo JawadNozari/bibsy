@@ -108,31 +108,9 @@ export default function Page() {
 
 	return (
 		<>
-	<label className="btn btn-circle swap swap-rotate relative z-50"  >
-  
-  {/* this hidden checkbox controls the state */}
-  <input type="checkbox" onChange={(e) => setSwapActive(e.target.checked)}/>
-  
-  {/* hamburger icon */}
-  <svg className="swap-off fill-current" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512"><path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z"/></svg>
-  
-  {/* close icon */}
-  <svg className="swap-on fill-current" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512"><polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49"/></svg>
-  
-			</label>
-			
-			{swapActive &&
-				<div className="w-full h-full relative z-50 ">
-				
-				<ul className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
-					<li><a>Item 1</a></li>
-					<li><a>Item 2</a></li>
-				</ul>
-					</div>
-			}
+	
 			{!isOnloginPage && ( //Phone menu
 				// ! Don't touch !
-
 				// <div className="flex h-screen w-screen justify-center items-center">
 				// 	{/* Under denna */}
 				// 	<div className="dropdown" ref={dropdownRef}>
@@ -239,22 +217,24 @@ export default function Page() {
 							</p>
 						</div>
 
-						{isAdmin && <div
-							onClick={RegUserRedirect}
-							onKeyDown={RegUserRedirect}
-							className="flex flex-row items-center gap-10 w-10 py-1 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
-						>
-							<Image
-								className="w-9"
-								src="/Navbar_img/newAddUser.png"
-								alt="Members icon"
-								width={36}
-								height={36}
-							/>
-							<p className="text-lg whitespace-nowrap transition-all !duration-150 ease-in-out hidden group-hover:block">
-								Add User
-							</p>
-						</div>}
+						{isAdmin && (
+							<div
+								onClick={RegUserRedirect}
+								onKeyDown={RegUserRedirect}
+								className="flex flex-row items-center gap-10 w-10 py-1 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+							>
+								<Image
+									className="w-9"
+									src="/Navbar_img/newAddUser.png"
+									alt="Members icon"
+									width={36}
+									height={36}
+								/>
+								<p className="text-lg whitespace-nowrap transition-all !duration-150 ease-in-out hidden group-hover:block">
+									Add User
+								</p>
+							</div>
+						)}
 
 						<div
 							onClick={AllBooksRedirect}
