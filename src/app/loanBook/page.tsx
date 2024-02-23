@@ -117,6 +117,7 @@ export default function LoanBook() {
 		fetchData();
 	}, []);
 
+	// * Timer to hide the alert message after 5 seconds
 	useEffect(() => {
 		if (showMessage) {
 			setTimeout(() => {
@@ -145,6 +146,13 @@ export default function LoanBook() {
 
 		//*  Update the selected book
 		setSelectedBook(book || null);
+
+		if (book) {
+			if (!book.available) {
+			  setAlertMessage("The book is already loaned.");
+			  setShowMessage(true);
+			}
+		}
 	};
 
 	// * Filter users based on search query
@@ -222,7 +230,7 @@ export default function LoanBook() {
 					);
 				} else {
 					setAlertMessage(
-						"An unexpected error occurred. Please try again later.",
+						"An unexpected error occurred or the book as already been borrowed.",
 					);
 				}
 				//* Show the alert message
@@ -234,7 +242,7 @@ export default function LoanBook() {
 			//* Set the alert type to error
 			setAlertType("alert-error");
 			//* Set the alert message
-			setAlertMessage("An unexpected error occurred. Please try again later.");
+			setAlertMessage("An unexpected error occurred or the book as already been borrowed.");
 			//* Show the alert message
 			setShowMessage(true);
 		}
@@ -397,7 +405,7 @@ export default function LoanBook() {
 
 							<div className="flex">
 								<input
-									type="text"
+									type="number"
 									id="invNr"
 									placeholder="Enter InvNR..."
 									value={invNr}
@@ -407,7 +415,7 @@ export default function LoanBook() {
 							</div>
 						</div>
 
-						<div className="mt-10 mb-10 justify-center flex">¨
+						<div className="mt-10 mb-10 justify-center flex">
 							<button
 								type="submit"
 								className="btn block   m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700  btn-active btn-neutral hover:text-gray-300"
