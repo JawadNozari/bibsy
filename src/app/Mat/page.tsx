@@ -78,8 +78,8 @@ export default function Page() {
 		setInterval(() => {
 			const rightNow = new Date();
 			if (
-				(rightNow.getHours() > 13 && rightNow.getMinutes() > 55) ||
-				(rightNow.getHours() < 11 && rightNow.getMinutes() > 55)
+				(rightNow.getHours() >= 13 && rightNow.getMinutes() >= 55) ||
+				(rightNow.getHours() < 11 && rightNow.getMinutes() >= 55)
 			) {
 				localStorage.setItem("student", JSON.stringify([]));
 				localStorage.setItem("teacher", JSON.stringify([]));
