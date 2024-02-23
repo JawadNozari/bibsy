@@ -33,6 +33,24 @@ export const POST = async (req: NextRequest) => {
 		);
 	}
 	try {
+		let last = lastName;
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const response = await (prisma as any)[userType].findUnique({
+            where: {
+                ...(userType === "Staff" && {
+					email: `${firstName}.${lastName}@ntig.se`,
+				}),
+				...(userType === "Student" && {
+					email: `${firstName}.${lastName}@elev.ntig.se`,
+				}),
+            }
+        });
+        if(response.firstName === firstName && response.lastName === lastName){
+            last = `${lastName}2`;
+        };
+		
+		
+        
 		// Update for users
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		const updatedUser = await (prisma as any)[userType].update({
@@ -42,15 +60,20 @@ export const POST = async (req: NextRequest) => {
 				firstName: firstName,
 				lastName: lastName,
 				password: password,
-				email: email,
+				...(userType === "Student" && {
+					email: email === response.email ? `${firstName}.${last}@elev.ntig.se` : email
+				}),
+				...(userType === "Staff" && {
+					email: email === response.email ? `${firstName}.${last}@ntig.se` : email
+				}),
 				phone: phone,
 				...(userType === "Staff" && { admin: Boolean(admin) }),
 				...(userType === "Staff" && {
-					qrCode: firstName + lastName + userType,
+					qrCode: firstName + last + userType,
 				}),
 				...(userType === "Student" && { classroom: studentclass }),
 				...(userType === "Student" && {
-					qrCode: firstName + lastName + studentclass,
+					qrCode: firstName + last + studentclass,
 				}),
 			},
 		});

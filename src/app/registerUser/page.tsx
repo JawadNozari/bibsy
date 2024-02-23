@@ -110,7 +110,7 @@ export default function RegisterMember() {
 		let imagePath = "";
 		if (file !== undefined) {
 			formData.append("file", file);
-			formData.append("path", role === "student" ? "studentPFP" : "staffPFP");
+			formData.append("path", role === "Student" ? "studentPFP" : "staffPFP");
 			imagePath = await axios
 				.post("/api/uploader", formData, {
 					headers: { "Content-Type": "multipart/form-data" },
@@ -128,22 +128,10 @@ export default function RegisterMember() {
 				password: hashedPassword,
 				firstName: firstName,
 				lastName: lastName,
-				email: `${firstName}.${lastName}${email}`,
 				phone: phone,
 				image: imagePath.slice(7),
 				classroom: selectedClassroom,
 				admin: Boolean(admin),
-				qrCode:
-					role === "staff"
-						? firstName +
-						  lastName +
-						  role.charAt(0).toUpperCase() +
-						  role.slice(1)
-						: firstName +
-						  lastName +
-						  selectedClassroom +
-						  role.charAt(0).toUpperCase() +
-						  role.slice(1),
 				role: role,
 			})
 			.then((res) => {
@@ -301,15 +289,15 @@ export default function RegisterMember() {
 										onChange={handleRoleChange}
 									>
 										<option value="">Välj roll</option>
-										<option value="student">Student</option>
-										<option value="staff">Personal</option>
+										<option value="Student">Student</option>
+										<option value="Staff">Personal</option>
 									</select>
-									{role === "student" && (
+									{role === "Student" && (
 										<div className="flex justify-center">
 											<SelectComponent />
 										</div>
 									)}
-									{role === "staff" && (
+									{role === "Staff" && (
 										<div className="flex items-center mt-5">
 											<input
 												type="checkbox"
