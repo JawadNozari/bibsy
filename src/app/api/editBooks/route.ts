@@ -35,7 +35,6 @@ export const POST = async (req: NextRequest) => {
 		!publishers ||
 		!invNr ||
 		!price ||
-		!bookImg ||
 		!isbn ||
 		!published
 	) {
