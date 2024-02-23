@@ -132,7 +132,7 @@ export default function Home() {
 				<div className="flex flex-col overflow-y-auto max-h-screen w-full sm:w-2/3 shadow-md sm:rounded-lg ">
 					<div className="text-center w-full sticky top-0">
 						<h2 className="text-3xl font-bold px-4 py-5">Loaned Books</h2>
-						<table className="text-sm text-left text-gray-500 dark:text-gray-400 dark:bg-gray-800 ">
+						<table className="text-sm text-left text-gray-500 dark:text-gray-400 dark:bg-gray-800 min-w-full">
 							<thead className="text-xs top-[60px] text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 								<tr>
 									<th scope="col" className="px-6 py-3">
