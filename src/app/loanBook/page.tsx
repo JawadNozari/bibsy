@@ -115,6 +115,7 @@ export default function LoanBook() {
 		fetchData();
 	}, []);
 
+	// * Timer to hide the alert message after 5 seconds
 	useEffect(() => {
 		if (showMessage) {
 			setTimeout(() => {
@@ -143,6 +144,13 @@ export default function LoanBook() {
 
 		//*  Update the selected book
 		setSelectedBook(book || null);
+
+		if (book) {
+			if (!book.available) {
+			  setAlertMessage("The book is already loaned.");
+			  setShowMessage(true);
+			}
+		}
 	};
 
 	// * Filter users based on search query
@@ -220,7 +228,7 @@ export default function LoanBook() {
 					);
 				} else {
 					setAlertMessage(
-						"An unexpected error occurred. Please try again later.",
+						"An unexpected error occurred or the book as already been borrowed.",
 					);
 				}
 				//* Show the alert message
@@ -232,7 +240,7 @@ export default function LoanBook() {
 			//* Set the alert type to error
 			setAlertType("alert-error");
 			//* Set the alert message
-			setAlertMessage("An unexpected error occurred. Please try again later.");
+			setAlertMessage("An unexpected error occurred or the book as already been borrowed.");
 			//* Show the alert message
 			setShowMessage(true);
 		}
@@ -389,18 +397,16 @@ export default function LoanBook() {
 
 								<div className="flex">
 									<input
-										type="text"
-										id="invNr"
-										placeholder="Enter InvNR..."
-										value={invNr}
-										onChange={handleinvNrChange}
-										className="input bg-neutral-50  text-gray-700  font-medium text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									type="number"
+									id="invNr"
+									placeholder="Enter InvNR..."
+									value={invNr}
+									onChange={handleinvNrChange}
+									className="input bg-neutral-50  text-gray-700  font-medium text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
 									/>
 								</div>
 							</div>
-
 							<div className="mt-10 mb-10 justify-center flex">
-								¨
 								<button
 									type="submit"
 									className="btn block   m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700  btn-active btn-neutral hover:text-gray-300"
@@ -408,8 +414,8 @@ export default function LoanBook() {
 									Loan
 								</button>
 							</div>
-						</form>
-					</div>
+					</form>
+				</div>
 
 					<div className="flex justify-end">
 						{selectedBook && (
