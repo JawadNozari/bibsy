@@ -32,10 +32,11 @@ export const POST = async (req: NextRequest) => {
 			{ status: 400 },
 		);
 	}
-	try {
+	try { // The Prisma funcitons
 		let last = lastName;
+			//* Check if a prisam user with the mail already exists
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        const response = await (prisma as any)[userType].findUnique({
+        const response = await (prisma as any)[userType].findUnique({ 
             where: {
                 ...(userType === "Staff" && {
 					email: `${firstName}.${lastName}@ntig.se`,
@@ -45,6 +46,7 @@ export const POST = async (req: NextRequest) => {
 				}),
             }
         });
+		// If a user alredy exists adds a 2 to the end of the lastname
         if(response.firstName === firstName && response.lastName === lastName){
             last = `${lastName}2`;
         };
