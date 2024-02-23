@@ -35,7 +35,7 @@ export const POST = async (req: NextRequest) => {
 				}),
             }
         });
-        if(response.firstName === firstName && response.lastName === lastName){
+        if(response?.firstName === firstName && response?.lastName === lastName){
             last = `${lastName}2`;
         };
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
