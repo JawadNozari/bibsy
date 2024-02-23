@@ -15,7 +15,6 @@ const Page = () => {
 	//! Fix Remember me
 	// eslint-disable-next-line no-unused-vars
 	const [checked, setChecked] = useState<boolean>(false);
-	const [loading, setLoading] = useState<boolean>(true);
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [errorMessage, SetErrorMessage] = useState<string>("");
@@ -33,8 +32,6 @@ const Page = () => {
 		const token = localStorage.getItem("token");
 		if (token) {
 			router.push("/");
-		} else {
-			setLoading(false);
 		}
 	}, [router]);
 

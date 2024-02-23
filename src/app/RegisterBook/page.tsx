@@ -46,7 +46,6 @@ export default function Home() {
 	// variables for book search result and error handling
 	const [bookData, setBookData] = useState<BookData | null>(null);
 	const [message, setMessage] = useState<string | undefined>("");
-	const [status, setStatus] = useState<number>(0);
 	const [alertType, setAlertType] = useState<alertType>("alert-success");
 	const [showMessage, setShowMessage] = useState(false);
 	useEffect(() => {

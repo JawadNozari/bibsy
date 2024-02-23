@@ -1,4 +1,5 @@
-const loading = () => {
+const Loading = () => {
+
     return(
     <div className="text-center	flex flex-col justify-center items-center h-screen w-screen">
         <h1 className="mb-2">Loading...</h1>
@@ -9,4 +10,4 @@ const loading = () => {
     );
 };
 
-export default loading;
+export default Loading;

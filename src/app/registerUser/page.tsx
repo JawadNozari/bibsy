@@ -7,7 +7,6 @@ import Papa from "papaparse";
 import bcrypt from "bcryptjs";
 import { useRouter } from "next/navigation";
 import { toJpeg } from "html-to-image";
-import Page from "../components/navigation";
 import Loading from "../components/loading";
 
 type PapaData = {
@@ -184,7 +183,6 @@ export default function RegisterMember() {
 
 	return loading ? (<div><Loading /></div>) : (
 		<div className="flex justify-center items-center  md: h-screen bg-white dark:bg-gray-900 gap-11 w-full ">
-			<Page />
 			<div className="flex items-center justify-center  md:flex-row md:items-start w-full">
 				<div className="shadow-2xl  shadow-black bg-gray-800  text-neutral-50 p-6 rounded-2xl max-w-2xl  w-10/12">
 					<form onSubmit={handleSubmit}>

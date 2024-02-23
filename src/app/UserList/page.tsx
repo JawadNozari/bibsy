@@ -1,6 +1,6 @@
 // userlist code
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Staff from "./component/Staff";
 import Student from "./component/Student";
