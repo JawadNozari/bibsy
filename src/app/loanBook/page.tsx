@@ -3,9 +3,9 @@ import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import axios from "axios";
 import ProtectedPage from "../protectedPage/page";
-import Navigation from "../components/navigation";
 import Loading from "../components/loading";
 import Alert from "../components/alert";
+import { Suspense } from "react";
 
 interface User {
 	id: number;
@@ -69,7 +69,6 @@ export default function LoanBook() {
 	const [invNr, setInvNr] = useState("");
 	const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 	const [userType, setUserType] = useState<UserToken>();
-	const [loading, setLoading] = useState<boolean>(true);
 	const [alertType, setAlertType] = useState<alertType>("alert-success");
 	const [showMessage, setShowMessage] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
@@ -79,7 +78,6 @@ export default function LoanBook() {
 		const token = localStorage.getItem("token");
 		if (token) {
 			const decodedToken = JSON.parse(atob(token.split(".")[1]));
-			setLoading(false);
 			setUserType(decodedToken);
 		}
 		const invNr = new URLSearchParams(window.location.search).get("invNr");
@@ -249,205 +247,199 @@ export default function LoanBook() {
 	};
 
 	// * Render the page
-	return loading ? (
-		<div>
-			<Loading />
-		</div>
-	) : (
-		<main className="flex w-screen h-screen justify-center items-center bg-neutral-100 text-black dark:bg-gray-800">
-			<ProtectedPage />
-			<div className="fixed left-0">
-				<Navigation />
-			</div>
-			<div className="flex justify-center ">
-				{selectedUser && (
-					<div className="w-96 rounded card-normal mr-20 h-auto shadow-md  bg-gray-800 text-neutral-50 dark:bg-neutral-50 dark:text-gray-500 ">
-						<div className=" text-center">
-							<button
-								type="button"
-								className="btn m-3 btn-wide btn-active btn-neutral bg-neutral-50 text-gray-500 dark:bg-gray-700 dark:text-white"
-								onClick={() => setSelectedUser(null)}
-							>
-								Close
-							</button>
-						</div>
-
-						<div className="m-10 justify-center items-center flex">
-							<Image
-								src={
-									selectedUser.image.includes(".")
-										? `/${selectedUser.image}`
-										: "/"
-								}
-								alt="profile"
-								width={200}
-								height={200}
-							/>
-						</div>
-
-						<div className="m-5 ">
-							<p>
-								Name: {selectedUser.firstName} {selectedUser.lastName}
-							</p>
-						</div>
-
-						<div className="m-5">
-							<p>Email: {selectedUser.email}</p>
-						</div>
-
-						<div className="m-5 ">
-							<p>Class: {selectedUser.classroom}</p>
-						</div>
-					</div>
-				)}
-
-				<div className=" flex justify-center  items-center w-96 h-[27rem] mx-auto dark:bg-neutral-50  bg-gray-800  rounded-lg drop-shadow-2xl">
-					<form
-						onSubmit={handleSubmit}
-						className="flex flex-col w-64"
-						autoComplete="off"
-					>
-						<div className="flex justify-center mb-10 items-center m-3 ">
-							<h1 className="text-4xl font-bold text-center text-neutral-50 dark:text-gray-700">
-								Loan Book
-							</h1>
-						</div>
-
-						<div>
-							<div className="flex flex-col w-full  max-w-md">
-								<label
-									htmlFor="Users"
-									className="mb-2  w-64 text-lg text-center font-semibold text-neutral-50 dark:text-gray-700 "
+	return (
+		<Suspense fallback={<Loading />}>
+			<main className="flex w-screen h-screen justify-center items-center bg-neutral-100 text-black dark:bg-gray-800">
+				<ProtectedPage />
+				<div className="flex justify-center ">
+					{selectedUser && (
+						<div className="w-96 rounded card-normal mr-20 h-auto shadow-md  bg-gray-800 text-neutral-50 dark:bg-neutral-50 dark:text-gray-500 ">
+							<div className=" text-center">
+								<button
+									type="button"
+									className="btn m-3 btn-wide btn-active btn-neutral bg-neutral-50 text-gray-500 dark:bg-gray-700 dark:text-white"
+									onClick={() => setSelectedUser(null)}
 								>
-									Member
-								</label>
-								<input
-									id="Users"
-									type="text"
-									value={searchQuery}
-									onChange={handleSearchChange}
-									onFocus={() => setShowList(true)}
-									onBlur={handleFocusOut}
-									placeholder="Search User..."
-									className="rounded-md  input font-medium bg-neutral-50  text-gray-700 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									Close
+								</button>
+							</div>
+
+							<div className="m-10 justify-center items-center flex">
+								<Image
+									src={
+										selectedUser.image.includes(".")
+											? `/${selectedUser.image}`
+											: "/"
+									}
+									alt="profile"
+									width={200}
+									height={200}
 								/>
+							</div>
 
-								<div className="flex justify-center">
-									{isLoading ? (
-										<p>Loading data...</p>
-									) : (
-										//*  Conditionally render the list based on showList and searchQuery
-										showList && (
-											<div className=" mt-1 rounded-lg absolute no-scrollbar  overflow-x-auto overflow-scroll text-white w-72 h-64 bg-slate-800">
-												<h1 className="m-1 text-xl text-center border-b border-gray-300 bg-slate-800  p-2 cursor-pointer ">
-													{" "}
-													Staff Users:
-												</h1>
+							<div className="m-5 ">
+								<p>
+									Name: {selectedUser.firstName} {selectedUser.lastName}
+								</p>
+							</div>
 
-												{filterUsers(
-													apiData.flatMap((data) => data.staffUsers),
-												).map((staff) => (
-													<ul
-														className="border-b list-none  border-gray-300 bg-slate-800 p-2 cursor-pointer "
-														key={staff.id}
-													>
-														<li>
-															<button
-																type="button"
-																className="p-3 w-full  h-full"
-																key={staff.id}
-																onClick={() => handleUserClick(staff)}
-															>
-																{`${staff.firstName} ${staff.lastName}`}
-															</button>
-														</li>
-													</ul>
-												))}
-												<div className="bg-[#336699]">
-													<h1 className="m-1 text-xl text-center border-b border-gray-300  bg-[#336699]  p-2 cursor-pointer ">
+							<div className="m-5">
+								<p>Email: {selectedUser.email}</p>
+							</div>
+
+							<div className="m-5 ">
+								<p>Class: {selectedUser.classroom}</p>
+							</div>
+						</div>
+					)}
+
+					<div className=" flex justify-center  items-center w-96 h-[27rem] mx-auto dark:bg-neutral-50  bg-gray-800  rounded-lg drop-shadow-2xl">
+						<form
+							onSubmit={handleSubmit}
+							className="flex flex-col w-64"
+							autoComplete="off"
+						>
+							<div className="flex justify-center mb-10 items-center m-3 ">
+								<h1 className="text-4xl font-bold text-center text-neutral-50 dark:text-gray-700">
+									Loan Book
+								</h1>
+							</div>
+
+							<div>
+								<div className="flex flex-col w-full  max-w-md">
+									<label
+										htmlFor="Users"
+										className="mb-2  w-64 text-lg text-center font-semibold text-neutral-50 dark:text-gray-700 "
+									>
+										Member
+									</label>
+									<input
+										id="Users"
+										type="text"
+										value={searchQuery}
+										onChange={handleSearchChange}
+										onFocus={() => setShowList(true)}
+										onBlur={handleFocusOut}
+										placeholder="Search User..."
+										className="rounded-md  input font-medium bg-neutral-50  text-gray-700 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									/>
+
+									<div className="flex justify-center">
+										{isLoading ? (
+											<p>Loading data...</p>
+										) : (
+											//*  Conditionally render the list based on showList and searchQuery
+											showList && (
+												<div className=" mt-1 rounded-lg absolute no-scrollbar  overflow-x-auto overflow-scroll text-white w-72 h-64 bg-slate-800">
+													<h1 className="m-1 text-xl text-center border-b border-gray-300 bg-slate-800  p-2 cursor-pointer ">
 														{" "}
-														Student Users:
+														Staff Users:
 													</h1>
+
 													{filterUsers(
-														apiData.flatMap((data) => data.studentUsers),
-													).map((student) => (
+														apiData.flatMap((data) => data.staffUsers),
+													).map((staff) => (
 														<ul
-															className="border-b list-none border-gray-300 bg-[#336699]    cursor-pointer "
-															key={student.id}
+															className="border-b list-none  border-gray-300 bg-slate-800 p-2 cursor-pointer "
+															key={staff.id}
 														>
 															<li>
 																<button
 																	type="button"
-																	className=" p-3 w-full  h-full"
-																	key={student.id}
-																	onClick={() => handleUserClick(student)}
+																	className="p-3 w-full  h-full"
+																	key={staff.id}
+																	onClick={() => handleUserClick(staff)}
 																>
-																	{`${student.firstName} ${student.lastName}`}
+																	{`${staff.firstName} ${staff.lastName}`}
 																</button>
 															</li>
 														</ul>
 													))}
+													<div className="bg-[#336699]">
+														<h1 className="m-1 text-xl text-center border-b border-gray-300  bg-[#336699]  p-2 cursor-pointer ">
+															{" "}
+															Student Users:
+														</h1>
+														{filterUsers(
+															apiData.flatMap((data) => data.studentUsers),
+														).map((student) => (
+															<ul
+																className="border-b list-none border-gray-300 bg-[#336699]    cursor-pointer "
+																key={student.id}
+															>
+																<li>
+																	<button
+																		type="button"
+																		className=" p-3 w-full  h-full"
+																		key={student.id}
+																		onClick={() => handleUserClick(student)}
+																	>
+																		{`${student.firstName} ${student.lastName}`}
+																	</button>
+																</li>
+															</ul>
+														))}
+													</div>
 												</div>
-											</div>
-										)
-									)}
+											)
+										)}
+									</div>
 								</div>
 							</div>
-						</div>
 
-						<div className="mt-5 ">
-							<label
-								htmlFor="invNr"
-								className="block mb-2 text-lg font-semibold text-gray-50 text-center dark:text-gray-700"
-							>
-								invNr
-							</label>
+							<div className="mt-5 ">
+								<label
+									htmlFor="invNr"
+									className="block mb-2 text-lg font-semibold text-gray-50 text-center dark:text-gray-700"
+								>
+									invNr
+								</label>
 
-							<div className="flex">
-								<input
+								<div className="flex">
+									<input
 									type="number"
 									id="invNr"
 									placeholder="Enter InvNR..."
 									value={invNr}
 									onChange={handleinvNrChange}
 									className="input bg-neutral-50  text-gray-700  font-medium text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-								/>
+									/>
+								</div>
 							</div>
-						</div>
-
-						<div className="mt-10 mb-10 justify-center flex">
-							<button
-								type="submit"
-								className="btn block   m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700  btn-active btn-neutral hover:text-gray-300"
-							>
-								Loan
-							</button>
-						</div>
+							<div className="mt-10 mb-10 justify-center flex">
+								<button
+									type="submit"
+									className="btn block   m-3 bg-neutral-50  text-gray-500 dark:bg-gray-700  btn-active btn-neutral hover:text-gray-300"
+								>
+									Loan
+								</button>
+							</div>
 					</form>
 				</div>
 
-				<div className="flex justify-end">
-					{selectedBook && (
-						<div className="w-[15rem] h-[20rem] ml-20 border">
-							<Image
-								// src={`/${selectedBook.bookImg}`}
-								src={`/${selectedBook.bookImg.replace("public/", "")}`}
-								alt="book cover"
-								width={300}
-								height={80}
-							/>
-							<h1 className="text-center mt-5  dark:text-gray-100 text-2xl">
-								{selectedBook.title}
-							</h1>
-						</div>
-					)}
+					<div className="flex justify-end">
+						{selectedBook && (
+							<div className="w-[15rem] h-[20rem] ml-20 border">
+								<Image
+									// src={`/${selectedBook.bookImg}`}
+									src={`/${selectedBook.bookImg.replace("public/", "")}`}
+									alt="book cover"
+									width={300}
+									height={80}
+								/>
+								<h1 className="text-center mt-5  dark:text-gray-100 text-2xl">
+									{selectedBook.title}
+								</h1>
+							</div>
+						)}
+					</div>
+					<div className="fixed bottom-10 right-10">
+						{showMessage && (
+							<Alert alertType={alertType} message={alertMessage} />
+						)}
+					</div>
 				</div>
-				<div className="fixed bottom-10 right-10">
-					{showMessage && (
-						<Alert alertType={alertType} message={alertMessage} />
-					)}
-				</div>
-			</div>
-		</main>
+			</main>
+		</Suspense>
 	);
 }
