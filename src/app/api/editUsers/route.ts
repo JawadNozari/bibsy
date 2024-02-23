@@ -44,12 +44,12 @@ export const POST = async (req: NextRequest) => {
 				password: password,
 				email: email,
 				phone: phone,
-				...(userType === "staff" && { admin: Boolean(admin) }),
-				...(userType === "staff" && {
+				...(userType === "Staff" && { admin: Boolean(admin) }),
+				...(userType === "Staff" && {
 					qrCode: firstName + lastName + userType,
 				}),
-				...(userType === "student" && { classroom: studentclass }),
-				...(userType === "student" && {
+				...(userType === "Student" && { classroom: studentclass }),
+				...(userType === "Student" && {
 					qrCode: firstName + lastName + studentclass,
 				}),
 			},

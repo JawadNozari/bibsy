@@ -107,7 +107,7 @@ const StaffList: React.FC<StaffListProps> = ({
 				}
 				const user = {
 					...updatedUsers[index],
-					userType: "staff",
+					userType: "Staff",
 				};
 				await axios.post("/api/editUsers", user, {
 					headers: { "Content-Type": "application/json" },

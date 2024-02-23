@@ -110,7 +110,7 @@ const StudentList: React.FC<StudentListProps> = ({
 				}
 				const user = {
 					...updatedUsers[index],
-					userType: "student",
+					userType: "Student",
 				};
 				await axios.post("/api/editUsers", user, {
 					headers: { "Content-Type": "application/json" },
