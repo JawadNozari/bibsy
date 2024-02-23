@@ -130,7 +130,7 @@ export default function Page() {
 				</ul>
 					</div>
 			}
-			{isOnloginPage && ( //Phone menu
+			{!isOnloginPage && ( //Phone menu
 				// ! Don't touch !
 
 				// <div className="flex h-screen w-screen justify-center items-center">
