@@ -247,6 +247,24 @@ export default function Page() {
 								</p>
 							</div>
 						)}
+						{isAdmin && (
+							<div
+								onClick={RegUserRedirect}
+								onKeyDown={RegUserRedirect}
+								className="flex flex-row items-center gap-10 w-10 py-1 ml-1 rounded-3xl transition-all duration-300 hover:bg-slate-900 hover:bg-opacity-40 hover:pl-3 group-hover:w-60 group-hover:ml-52"
+							>
+								<Image
+									className="w-9"
+									src="/Navbar_img/newAddUser.png"
+									alt="Members icon"
+									width={36}
+									height={36}
+								/>
+								<p className="text-lg whitespace-nowrap transition-all !duration-150 ease-in-out hidden group-hover:block">
+									Add User
+								</p>
+							</div>
+						)}
 
 						<div
 							onClick={AllBooksRedirect}

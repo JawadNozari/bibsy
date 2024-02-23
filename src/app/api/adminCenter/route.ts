@@ -22,21 +22,44 @@ export const POST = async (req: NextRequest) => {
         }
 
 		//* Extract the data from the request
-        const { password, firstName, lastName, email, phone, image, classroom, qrCode, admin, role } = request;
-
+        const { password, firstName, lastName, phone, image, classroom, admin, role } = request;
+        let last = lastName;
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const response = await (prisma as any)[role].findUnique({
+            where: {
+                ...(role === "Staff" && {
+					email: `${firstName}.${lastName}@ntig.se`,
+				}),
+				...(role === "Student" && {
+					email: `${firstName}.${lastName}@elev.ntig.se`,
+				}),
+            }
+        });
+        if(response?.firstName === firstName && response?.lastName === lastName){
+            last = `${lastName}2`;
+        };
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		const  newUser = await (prisma as any)[role].create({ // Create a new user based on the role
 			data: {
 				password,
 				firstName,
-				lastName,
-				email,
+				lastName: lastName,
 				phone,
 				image: image,
-				qrCode,
 				...(role === "staff" && {admin}),
 				...(role === "student" && {classroom}),
-				
+				...(role === "Staff" && {
+					qrCode: firstName + last + role,
+				}),
+				...(role === "Student" && {
+					qrCode: firstName + last + classroom,
+				}),
+				...(role === "Staff" && {
+					email: `${firstName}.${last}@ntig.se`,
+				}),
+				...(role === "Student" && {
+					email: `${firstName}.${last}@elev.ntig.se`,
+				}),
 			},
 		});
         // Return success response with created user data

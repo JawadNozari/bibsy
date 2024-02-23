@@ -77,7 +77,10 @@ export default function Page() {
 	useEffect(() => {
 		setInterval(() => {
 			const rightNow = new Date();
-			if (rightNow.getHours() === 23 && rightNow.getMinutes() > 50) {
+			if (
+				(rightNow.getHours() >= 13 && rightNow.getMinutes() >= 55) ||
+				(rightNow.getHours() < 11 && rightNow.getMinutes() >= 55)
+			) {
 				localStorage.setItem("student", JSON.stringify([]));
 				localStorage.setItem("teacher", JSON.stringify([]));
 				setStudents([]);
@@ -142,7 +145,7 @@ export default function Page() {
 
 	//* Makes the page reload when the page is focused because auto focus was the only working fix
 	const setFocused = () => {
-		//window.location.reload();
+		window.location.reload();
 	};
 
 	return (
@@ -192,8 +195,8 @@ export default function Page() {
 						/>
 						<h2 className="text-3xl -mt-1">Last Check In</h2>
 					</div>
-					<div className="flex justify-around w-4/5 grid-cols-2 mt-10 h-2/4 place-content-center">
-						<div className="">
+					<div className="flex justify-around w-4/5 grid-cols-2 mt-10 h-4/5 place-content-center overflow-hidden">
+						<div className="overflow-hidden">
 							<h3 className="text-2xl">Students</h3>
 							{students
 								? students.map((student) => {

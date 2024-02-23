@@ -58,7 +58,7 @@ export const POST = async (req: NextRequest) => {
 					invNr: invNr,
 					price: price,
 					isbn: isbn,
-					bookImg: bookImg.slice(7),
+					bookImg: bookImg.slice(0, 7) === "public/" ? bookImg.slice(7) : bookImg,
 				},
 			})
 			.then((book: Book) => {

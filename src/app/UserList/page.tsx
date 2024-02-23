@@ -12,7 +12,6 @@ import { useRouter } from "next/navigation";
 import { CheckIfLoggedIn } from "../components/loginChecks";
 import Loading from "../components/loading";
 
-
 // Define interfaces for User and ApiResponse
 interface User {
 	id: number;
@@ -36,7 +35,6 @@ export default function Home() {
 	const router = useRouter();
 
 	const [loading, setLoading] = useState<boolean>(true);
-
 
 	const [apiData, setApiData] = useState<ApiResponse | null>(null);
 	const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -107,11 +105,13 @@ export default function Home() {
 		}
 		return "staff";
 	};
-	
-	
-	
+
 	// Return the user list page
-	return loading ? (<div><Loading/></div>) : (
+	return loading ? (
+		<div>
+			<Loading />
+		</div>
+	) : (
 		<main className="flex items-center h-screen bg-neutral-200 dark:bg-gray-800 justify-between overflow-x-auto w-screen">
 			<div className="flex items-center h-screen justify-around w-full">
 				{showUserDetails && (
@@ -146,9 +146,14 @@ export default function Home() {
 									School Card
 								</button>
 
-								
-
-								<a href={`/profile/${schoolCardUserType(selectedUser)}/${selectedUser.id}`} className="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium">Profile</a>
+								<a
+									href={`/profile/${schoolCardUserType(selectedUser)}/${
+										selectedUser.id
+									}`}
+									className="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
+								>
+									Profile
+								</a>
 							</div>
 							<table className="text-1xl my-2 w-full h-2/4 overflow-hidden text-wrap">
 								{/* Conditionally display details based on user type */}
@@ -204,7 +209,7 @@ export default function Home() {
 				)}
 				{/* User List */}
 				<div className="flex flex-col bg-white  dark:bg-gray-900 overflow-y-auto max-h-screen w-2/3 h-3/4 shadow-md sm:rounded-lg">
-					<div className="flex items-center justify-between border-b px-4 py-2 bg-white dark:bg-gray-900 dark:border-gray-700">
+					<div className="flex sticky top-0 items-center justify-between border-b px-4 py-2 bg-white dark:bg-gray-900 dark:border-gray-700">
 						<h2 className="text-3xl font-bold text-nowrap">User List</h2>
 						<div className="flex items-center justify-between bg-white dark:bg-gray-900 dark:border-gray-700">
 							<div className="dropdown dropdown-end mx-4">
