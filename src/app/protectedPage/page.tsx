@@ -84,7 +84,7 @@ const ProtectedPage = () => {
 	return (
 		<div>
 			{loggedIn ? (
-				<div>Logged In</div>
+				<></>
 			) : (
 				<div style={{ height: 1000, color: "white" }}>
 					<h1>Checking if logged in. . .</h1>

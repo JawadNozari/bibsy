@@ -8,7 +8,9 @@ import StaticModal from "./component/StaticModal"; // Import the StaticModal com
 import axios from "axios";
 import "../globals.css";
 import { useSpring, animated } from "react-spring"; // Import react-spring library
-import Navigation from "../components/navigation"; // Import the Navigation component
+import { useRouter } from "next/navigation";
+import { CheckIfLoggedIn } from "../components/loginChecks";
+import Loading from "../components/loading";
 
 // Define interfaces for User and ApiResponse
 interface User {
@@ -21,7 +23,7 @@ interface User {
 	image: string;
 	classroom: string;
 	admin: boolean;
-	qrCode: number;
+	qrCode: string;
 }
 
 interface ApiResponse {
@@ -30,14 +32,31 @@ interface ApiResponse {
 }
 
 export default function Home() {
+	const router = useRouter();
+
+	const [loading, setLoading] = useState<boolean>(true);
+
 	const [apiData, setApiData] = useState<ApiResponse | null>(null);
 	const [selectedUser, setSelectedUser] = useState<User | null>(null);
 	const [userType, setUserType] = useState<string>("all");
 	const [searchTerm, setSearchTerm] = useState<string>("");
 	const [showUserDetails, setShowUserDetails] = useState(false);
 	const [showModal, setShowModal] = useState(false);
+	const [isAdmin, setIsAdmin] = useState(false);
 
 	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (!token) {
+			router.push("/login");
+		} else {
+			const { areYouAdmin, whatUserAreYou } = CheckIfLoggedIn(token);
+			setLoading(false);
+			setIsAdmin(areYouAdmin);
+			if (whatUserAreYou !== "Staff" && whatUserAreYou !== "Admin") {
+				router.push("/");
+			}
+		}
+
 		const fetchData = async () => {
 			try {
 				const response = await axios("/api/getUsers"); // Fetch data from API endpoint
@@ -49,7 +68,7 @@ export default function Home() {
 		};
 
 		fetchData(); // Call fetchData function on component mount
-	}, []);
+	}, [router]);
 
 	// Function to handle click on a user
 	const handleClick = (user: User | null) => {
@@ -80,43 +99,63 @@ export default function Home() {
 		transform: "translateX(-100%)", // Hide user details off-screen
 		config: { mass: 1, tension: 170, friction: 26 }, // Set animation configuration
 	}));
+	const schoolCardUserType = (user: User) => {
+		if (user.classroom) {
+			return "student";
+		}
+		return "staff";
+	};
 
 	// Return the user list page
-	return (
-		<main className="flex items-center h-screen  bg-neutral-200 dark:bg-gray-800 justify-between">
-			<div>
-				<Navigation />
-			</div>
+	return loading ? (
+		<div>
+			<Loading />
+		</div>
+	) : (
+		<main className="flex items-center h-screen bg-neutral-200 dark:bg-gray-800 justify-between overflow-x-auto w-screen">
 			<div className="flex items-center h-screen justify-around w-full">
 				{showUserDetails && (
 					// Conditionally show user details based on state
 					<animated.div
 						// Apply animation to user details
-						className="bg-white dark:bg-gray-900 dark:border-gray-700 px-4 shadow-xl rounded-lg min-h-content w-80 flex items-center justify-center flex-col max-h-screen py-3"
+						className="bg-white dark:bg-gray-900 dark:border-gray-700 shadow-xl rounded-lg min-h-content w-80 flex items-center justify-center flex-col h-3/4 py-6 px-2"
 						style={detailsAnimation} // Set animation style
 					>
 						<Image
-							className="w-10 h-10 rounded-full "
+							className="w-56 h-56 rounded-full "
 							width={200}
 							height={200}
-							src={`/images/${selectedUser?.image}`} // Add null check for selectedUser
+							src={
+								selectedUser.image.includes(".") && selectedUser.image != null
+									? `/${selectedUser.image}`
+									: "/pfp.jpg"
+							}
 							alt={`${selectedUser?.firstName} ${selectedUser?.lastName}`} // Add null check for selectedUser
 						/>
-						<div className="p-2 max-h-screen ">
-							<h3 className="text-center text-3xl text-gray-400 font-medium leading-8 sticky top-0 text-nowrap">
+						<div className="py-2 max-h-screen text-wrap w-full overflow-hidden">
+							<h3 className=" text-center text-3xl text-gray-700 dark:text-gray-400 font-medium leading-8 sticky py-2 top-0 text-wrap ">
 								{selectedUser?.firstName} {selectedUser?.lastName}
 							</h3>
-							<div className="text-center my-3">
+							<div className="text-center my-3 flex justify-center">
 								{/* Render the button to toggle modal */}
 								<button
-									className="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
+									className="mr-2 text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
 									type="button"
 									onClick={toggleModal} // Call toggleModal function when button is clicked
 								>
-									View more info
+									School Card
 								</button>
+
+								<a
+									href={`/profile/${schoolCardUserType(selectedUser)}/${
+										selectedUser.id
+									}`}
+									className="text-xs text-indigo-500 italic hover:underline hover:text-indigo-600 font-medium"
+								>
+									Profile
+								</a>
 							</div>
-							<table className="text-1xl my-2">
+							<table className="text-1xl my-2 w-full h-2/4 overflow-hidden text-wrap">
 								{/* Conditionally display details based on user type */}
 								{selectedUser?.classroom ? (
 									// Check for presence of "classroom" property
@@ -125,7 +164,7 @@ export default function Home() {
 											<td className="px-4 py-1 text-gray-500 font-semibold">
 												Email
 											</td>
-											<td className="px-4 py-1">{selectedUser?.email}</td>
+											<td className="px-4 py-1 ">{selectedUser?.email}</td>
 										</tr>
 										<tr>
 											<td className="px-4 py-1 text-gray-500 font-semibold">
@@ -146,7 +185,7 @@ export default function Home() {
 											<td className="px-4 py-1 text-gray-500 font-semibold">
 												Email
 											</td>
-											<td className="px-4 py-1">{selectedUser?.email}</td>
+											<td className="px-4 py-1 ">{selectedUser?.email}</td>
 										</tr>
 										<tr>
 											<td className="px-4 py-1 text-gray-500 font-semibold">
@@ -169,61 +208,63 @@ export default function Home() {
 					</animated.div>
 				)}
 				{/* User List */}
-				<div className="flex flex-col bg-white  dark:bg-gray-900 overflow-y-auto max-h-screen w-1/2 h-3/4 shadow-md sm:rounded-lg">
-					<div className="flex items-center justify-between border-b px-4 py-2 bg-white dark:bg-gray-900 dark:border-gray-700">
+				<div className="flex flex-col bg-white  dark:bg-gray-900 overflow-y-auto max-h-screen w-2/3 h-3/4 shadow-md sm:rounded-lg">
+					<div className="flex sticky top-0 items-center justify-between border-b px-4 py-2 bg-white dark:bg-gray-900 dark:border-gray-700">
 						<h2 className="text-3xl font-bold text-nowrap">User List</h2>
-						<div className="dropdown dropdown-end">
-							<div tabIndex={0} role="button" className="btn w-48 capitalize">
-								Select type of users
+						<div className="flex items-center justify-between bg-white dark:bg-gray-900 dark:border-gray-700">
+							<div className="dropdown dropdown-end mx-4">
+								<div tabIndex={0} role="button" className="btn w-40 capitalize">
+									Select users
+								</div>
+								<ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40">
+									<li>
+										{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+										<button onClick={() => handleUserTypeChange("all")}>
+											All Users
+										</button>
+									</li>
+									<li>
+										{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+										<button onClick={() => handleUserTypeChange("staff")}>
+											Staffs
+										</button>
+									</li>
+									<li>
+										{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+										<button onClick={() => handleUserTypeChange("student")}>
+											Students
+										</button>
+									</li>
+								</ul>
 							</div>
-							<ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48 top-42">
-								<li>
-									{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
-									<button onClick={() => handleUserTypeChange("all")}>
-										All Users
-									</button>
-								</li>
-								<li>
-									{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
-									<button onClick={() => handleUserTypeChange("staff")}>
-										Staffs
-									</button>
-								</li>
-								<li>
-									{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
-									<button onClick={() => handleUserTypeChange("student")}>
-										Students
-									</button>
-								</li>
-							</ul>
-						</div>
-						<div className="relative">
-							<div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-								<svg
-									className="w-4 h-4 text-gray-500 dark:text-gray-400"
-									aria-hidden="true"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 20 20"
-								>
-									<path
-										stroke="currentColor"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="2"
-										d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-									/>
-								</svg>
+							<div className="relative">
+								<div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+									<svg
+										className="w-4 h-4 text-gray-500 dark:text-gray-400"
+										aria-hidden="true"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 20 20"
+									>
+										<path
+											stroke="currentColor"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
+											d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+										/>
+									</svg>
+								</div>
+								<input
+									// Add input element for search
+									type="text"
+									id="table-search-users"
+									className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									placeholder="Search for users"
+									value={searchTerm} // Set value to searchTerm
+									onChange={handleSearch} // Add onChange event to handle search
+								/>
 							</div>
-							<input
-								// Add input element for search
-								type="text"
-								id="table-search-users"
-								className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-								placeholder="Search for users"
-								value={searchTerm} // Set value to searchTerm
-								onChange={handleSearch} // Add onChange event to handle search
-							/>
 						</div>
 					</div>
 					<div>
@@ -244,6 +285,7 @@ export default function Home() {
 															.includes(searchTerm.toLowerCase()), // Check if it includes the search term
 												)}
 												handleClick={handleClick} // Pass handleClick
+												isAdmin={isAdmin} // Pass isAdmin
 											/>
 											<Student
 												studentUsers={apiData.studentUsers.filter((user) =>
@@ -252,6 +294,7 @@ export default function Home() {
 														.includes(searchTerm.toLowerCase()),
 												)}
 												handleClick={handleClick}
+												isAdmin={isAdmin}
 											/>
 										</>
 									)}
@@ -263,6 +306,7 @@ export default function Home() {
 													.includes(searchTerm.toLowerCase()),
 											)}
 											handleClick={handleClick}
+											isAdmin={isAdmin}
 										/>
 									)}
 									{userType === "student" && (
@@ -273,6 +317,7 @@ export default function Home() {
 													.includes(searchTerm.toLowerCase()),
 											)}
 											handleClick={handleClick}
+											isAdmin={isAdmin}
 										/>
 									)}
 								</>
@@ -285,8 +330,10 @@ export default function Home() {
 					<StaticModal
 						showModal={showModal}
 						toggleModal={toggleModal}
-						//@ts-ignore
-						selectedUser={selectedUser} //! FIX THIS SHIT
+						selectedUser={{
+							...selectedUser,
+							qrCode: selectedUser.qrCode.toString(),
+						}}
 					/>
 				)}
 			</div>

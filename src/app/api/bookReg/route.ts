@@ -17,7 +17,7 @@ export const POST = async (req: NextRequest) => {
 	const resp = await prisma.book
 		.create({
 			data: {
-				bookImg: bookImg,
+				bookImg: bookImg.slice(7),
 				title,
 				author,
 				publishers,

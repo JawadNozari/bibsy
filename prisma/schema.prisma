@@ -88,3 +88,9 @@ model bookHistory {
   Staff     Staff?   @relation(fields: [staffId], references: [id])
   Student   Student? @relation(fields: [studentId], references: [id])
 }
+
+model food {
+  id       Int    @id @default(autoincrement())
+  name     String
+  usertype String
+}

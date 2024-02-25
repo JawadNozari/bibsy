@@ -5,6 +5,8 @@ import React, { useState } from "react"; // Import React and useState hook from 
 import Image from "next/image"; // Import Image component from Next.js library for displaying images
 import StaffEditModal from "./StaffEditModal"; // Import StaffEditModal component from another file
 import axios from "axios";
+import bcrypt from "bcryptjs";
+
 
 // Defines an interface for a user
 interface User {
@@ -17,17 +19,22 @@ interface User {
 	image: string;
 	classroom: string;
 	admin: boolean;
-	qrCode: number;
+	qrCode: string;
 }
 
 // Defines an interface for the properties that the StaffList component expects to receive
 interface StaffListProps {
 	staffUsers: User[]; // An array of users
 	handleClick: (user: User | null) => void; // A function to handle click on user
+	isAdmin: boolean; // A boolean indicating whether the user is an admin
 }
 
 // Defines a functional component StaffList that receives properties defined by StaffListProps
-const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
+const StaffList: React.FC<StaffListProps> = ({
+	staffUsers,
+	handleClick,
+	isAdmin,
+}) => {
 	// State hooks
 	const [showModal, setShowModal] = useState(false); // Shows or hides the modal for editing user
 	const [selectedUser, setSelectedUser] = useState<User | null>(null); // The user selected for editing
@@ -36,6 +43,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 	const [editedLastName, setEditedLastName] = useState(""); // The edited last name
 	const [editedEmail, setEditedEmail] = useState(""); // The edited email address
 	const [editedPhone, setEditedPhone] = useState(""); // The edited phone number
+	const [editedPassword, setEditedPassword] = useState(""); // The edited password
 	const [editedAdmin, setEditedAdmin] = useState("false"); // The boolean value for whether the user is an admin
 	const [selectedImage, setSelectedImage] = useState<File | null>(null); // The selected image for the user
 	const [imagePreview, setImagePreview] = useState<string | null>(null); // Image preview
@@ -49,6 +57,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 		setEditedLastName(user.lastName); // Set the edited last name
 		setEditedEmail(user.email); // Set the edited email
 		setEditedPhone(user.phone); // Set the edited phone number
+		setEditedPassword(user.password); // Set the edited password
 		setEditedAdmin(String(user.admin)); // Convert boolean value to string for radio button
 		setImagePreview(user.image); // Show image preview when the modal opens
 		setShowModal(true); // Show the modal
@@ -73,21 +82,42 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					lastName: editedLastName, // Update the last name
 					email: editedEmail, // Update the email
 					phone: editedPhone, // Update the phone number
+					password: bcrypt.hashSync(editedPassword, 10), // Update the password
 					admin: editedAdmin === "true", // Convert the string to boolean and update the admin status
 					image: selectedImage ? selectedImage.name : editedUser.image, // Update the image if a new one is selected
 				};
+				if (selectedImage !== null && selectedImage !== undefined) {
+					const formData = new FormData();
+					formData.append("file", selectedImage || undefined);
+					formData.append("path", "staffPFP");
+					const imagePath = await axios
+					.post("/api/uploader", formData, {
+						headers: { "Content-Type": "multipart/form-data" },
+					})
+					.then((res) => {
+						return res.data.path;
+					})
+					.catch((error: Error) => {
+						console.debug(error);
+					});
+					updatedUsers[index] = {
+						...updatedUsers[index],
+						image: imagePath
+					};
+				}
 				const user = {
 					...updatedUsers[index],
-					userType: "staff",
+					userType: "Staff",
 				};
 				await axios.post("/api/editUsers", user, {
 					headers: { "Content-Type": "application/json" },
 				});
 			}
 
-			console.log("Updated user information:", updatedUsers[index]); // Log updated user information
 			closeModal(); // Close the modal
 		}
+		window.location.reload();
+
 	};
 
 	// Handles changes in the input field
@@ -108,6 +138,9 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 				break;
 			case "phone":
 				setEditedPhone(value); // Updates the edited phone number
+				break;
+			case "password":
+				setEditedPassword(value); // Updates the edited password
 				break;
 			case "admin":
 				setEditedAdmin(value); // Updates the edited admin status
@@ -141,7 +174,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 			id: editedUser?.id || 0, // Assigns the user id if available, otherwise assign 0
 			password: editedUser?.password || "", // Assigns the user password if available, otherwise assign an empty string
 			admin: editedUser?.admin || false, // Assigns the user admin status if available, otherwise assign false
-			qrCode: editedUser?.qrCode || 0, // Assigns the user QR code if available, otherwise assign 0
+			qrCode: String(editedUser?.qrCode || 0), // Converts the qrCode to a string and assigns the value if available, otherwise assign "0"
 			image: selectedImage ? selectedImage.name : editedUser?.image || "", // Assigns the selected image name if available, otherwise assign the previous image name or an empty string
 		}));
 	};
@@ -167,9 +200,13 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 				<th scope="col" className="px-6 py-3">
 					Admin {/* Classroom */}
 				</th>
-				<th scope="col" className="px-6 py-3">
-					Action {/* Action */}
-				</th>
+				{isAdmin ? (
+					<th scope="col" className="px-6 py-3">
+						Action {/* Action */}
+					</th>
+				) : (
+					<></>
+				)}
 			</tr>
 			{staffUsers?.map((user) => (
 				<tbody key={user.id}>
@@ -193,8 +230,8 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 								className="w-10 h-10 rounded-full"
 								width={10}
 								height={10}
-								src={`/image/${user.image}`}
-								alt={`${user.firstName} ${user.lastName}`}
+								src={user.image.includes(".") ? `/${user.image}` : "/pfp.jpg"}
+								alt={"Image"}
 							/>
 							<div className="ps-3">
 								<div className="text-base font-semibold">{`${user.firstName} ${user.lastName}`}</div>
@@ -207,19 +244,23 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 								<div className="h-4 w-0.5">{user.admin ? "Yes" : "No"}</div>
 							</div>
 						</td>
-						<td className="px-6 py-4">
-							{/* Button to open the editing modal */}
-							<button
-								type="button"
-								onClick={(e) => {
-									e.stopPropagation();
-									openModal(user);
-								}}
-								className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-							>
-								Edit user
-							</button>
-						</td>
+						{isAdmin ? (
+							<td className="px-6 py-4">
+								{/* Button to open the editing modal */}
+								<button
+									type="button"
+									onClick={(e) => {
+										e.stopPropagation();
+										openModal(user);
+									}}
+									className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+								>
+									Edit user
+								</button>
+							</td>
+						) : (
+							<></>
+						)}
 					</tr>
 				</tbody>
 			))}
@@ -232,6 +273,7 @@ const StaffList: React.FC<StaffListProps> = ({ staffUsers, handleClick }) => {
 					editedLastName={editedLastName}
 					editedEmail={editedEmail}
 					editedPhone={editedPhone}
+					editedPassword={editedPassword}
 					editedAdmin={editedAdmin}
 					imagePreview={imagePreview}
 					showFullImage={showFullImage}

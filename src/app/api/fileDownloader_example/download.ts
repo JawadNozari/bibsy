@@ -9,14 +9,12 @@ export async function downloader({
 	url,
 }: { filename: string; url: string }) {
 	// Directory where the file will be uploaded
-	console.log(url);
 	const imageBuffer = await axios.get(url, {
 		responseType: "arraybuffer",
 	});
 
 	// Determine the content type and extract file extension
 	const firstBytes = imageBuffer.data.slice(0, 4).toString("hex");
-	console.log(`Your buffer is: ${firstBytes}`);
 	let extension = "";
 
 	// Match the file signature with known image formats

@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 //! Albin, snälla kör yarn lint och yarn build. Sen också sätt biome som default formatter, var typ 20 format fel i denna filen
 
@@ -13,7 +15,7 @@ async function seed() {
         firstName: "Admin",
         lastName: "Admin",
         email: "admin@admin.se",
-        password: "Admin",
+        password: bcrypt.hashSync("Admin", 10),
         phone: "1",
         image: "UploadedImage/testBild.png",
         qrCode: "123456789",
@@ -27,7 +29,7 @@ async function seed() {
         firstName: "Bondhon",
         lastName: "Shahriar Alam",
         email: "Bond@elev.ntig.se",
-        password: "123",
+        password: bcrypt.hashSync("123", 10),
         phone: "012345",
         image: "UploadedImage/testBild.png",
         qrCode: "123456789009dfghb87543212345678987654",
@@ -63,7 +65,6 @@ async function seed() {
         note: "This is a test",
     }
   });
-  console.log({ admin, elev, book, borrowed});
 }
 seed()
   .then(async () => {

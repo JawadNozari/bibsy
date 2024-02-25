@@ -1,59 +1,129 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
-//TODO: 1. Student authentication 2. Restrict access without token accordingly 3. Implement 'remember me' feature 4? Password hash
 export const POST = async (req: NextRequest) => {
-	try {
-		// Parse from request
-		const body = await req.json();
+	const secretKey = String(process.env.NEXT_PUBLIC_SECRET_KEY);
 
-		// * Assign credentials to variables
-		const userInfo = {
-			username: body.userCredentials.username, // ! USERNAME IS EMAIL !
-			password: body.userCredentials.password,
-			remember: body.remember,
-		};
-
-		// Find user that matches with given credentials
-		return await prisma.staff //* Currently only for staff
-			.findFirst({
+	// * Parse from request (../src/login)
+	const request = await req.json();
+	const { email, password, rememberMe } = request.userData;
+	// * Assign credentials to variables
+	const isStaff = async () => {
+		return await prisma.staff
+			.findUnique({
 				where: {
-					AND: [
-						{ email: userInfo.username },
-						{ password: userInfo.password },
-						{ admin: true },
-					],
+					email: email,
 				},
 			})
+			.then((res) => {
+				console.debug(`Found Admin with id: ${res.id}`);
+				return true;
+			})
+			.catch(() => {
+				return false;
+			});
+	};
 
-			// Give token on login (session)
-			.then((user) => {
-				if (!user) {
+	// * Find user that matches with given credentials
+	if (await isStaff()) {
+		console.debug("Found Staff");
+		return prisma.staff
+			.findFirst({
+				where: {
+					AND: [{ email: email }],
+				},
+			})
+			.then((staffUser) => {
+				// * Compare hashed password with stored hashed password
+				const passwordMatch = bcrypt.compareSync(password, staffUser.password);
+				if (passwordMatch) {
+					// * Passwords match, proceed with generating the token
+					const role = staffUser.admin ? "Admin" : "Staff";
+					const token = jwt.sign(
+						{ user: staffUser, role },
+						secretKey,
+						rememberMe ? { expiresIn: "7d" } : { expiresIn: "1d" },
+					);
 					return NextResponse.json(
-						{ error: "Invalid username or password" },
-						{ status: 401 },
+						{ token },
+						{
+							status: 200,
+						},
 					);
 				}
-				if (user) {
-					const token = jwt.sign({ user }, "admin", { expiresIn: "1h" });
-					return NextResponse.json({ token }, { status: 200 });
-				}
+				return NextResponse.json(
+					{ message: "Invalid email or password" },
+					{ status: 401 },
+				);
 			})
-			.catch((error: Error) => {
-				return NextResponse.json({ error: error.message }, { status: 500 });
+			.catch((err: Error) => {
+				console.error("Login failed:", err);
+				return NextResponse.json(
+					{ error: err.message },
+					{
+						status: 500,
+					},
+				);
 			})
 			.finally(() => {
 				prisma.$disconnect();
+				return NextResponse.json(
+					{ error: "Invalid username or password" },
+					{ status: 401 },
+				);
 			});
-	} catch (error) {
-		return new NextResponse(
-			JSON.stringify({ error: "Internal Server Error" }),
-			{ status: 500 },
-		);
 	}
-};
 
-export const GET = async () => {};
+	// * If not found in staff, check in student * //
+
+	/* This works since you cannot create duplicate/identical (same email/id) 
+        accounts with different roles, therefore conflicts will not appear. */
+
+	console.debug("Check Student");
+	return prisma.student
+		.findFirst({
+			where: {
+				AND: [{ email: email }],
+			},
+		})
+		.then((studentUser) => {
+			// * Compare hashed password with stored hashed password
+			const passwordMatch = bcrypt.compareSync(password, studentUser.password);
+
+			if (passwordMatch) {
+				// * Passwords match, generate the token
+				const token = jwt.sign(
+					{ user: studentUser, role: "Student" },
+					secretKey,
+					rememberMe ? { expiresIn: "7d" } : { expiresIn: "1d" },
+				);
+				return NextResponse.json(
+					{ token },
+					{
+						status: 200,
+					},
+				);
+			}
+			return NextResponse.json(
+				{ error: "Invalid username or password" },
+				{ status: 401 },
+			);
+		})
+		.catch(() => {
+			return NextResponse.json(
+				{ error: "Invalid username or password" },
+				{ status: 401 },
+			);
+		})
+		.finally(() => {
+			prisma.$disconnect();
+			return NextResponse.json(
+				{ error: "Invalid username or password" },
+				{ status: 401 },
+			);
+		});
+};

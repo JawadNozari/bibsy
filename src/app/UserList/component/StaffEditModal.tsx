@@ -4,6 +4,7 @@
 import React from "react"; // Import React library for using React components
 import Image from "next/image"; // Import Image component from Next.js for optimized image loading
 
+
 // Defines interface for User object
 interface User {
 	id: number;
@@ -15,7 +16,7 @@ interface User {
 	image: string;
 	classroom: string;
 	admin: boolean;
-	qrCode: number;
+	qrCode: string;
 }
 
 // Defines interface for props passed to StaffEditModal component
@@ -26,6 +27,7 @@ interface StaffEditModalProps {
 	editedLastName: string; // Edited last name
 	editedEmail: string; // Edited email
 	editedPhone: string; // Edited phone number
+	editedPassword: string; // Edited password
 	editedAdmin: string; // Edited admin status
 	imagePreview: string | null; // Preview of selected image
 	showFullImage: boolean; // Boolean to control whether full image is shown or not
@@ -46,6 +48,7 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 	editedLastName,
 	editedEmail,
 	editedPhone,
+	editedPassword,
 	editedAdmin,
 	imagePreview,
 	showFullImage,
@@ -54,6 +57,7 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 	handleEditUser,
 	closeModal,
 }) => {
+	
 	// Function to handle keydown event
 	function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
 		if (event.key === "Escape") {
@@ -61,8 +65,6 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 			setShowFullImage(false); // Hide full image
 		}
 	}
-
-	console.log(imagePreview);
 
 	return (
 		<div
@@ -153,11 +155,26 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 								Phone
 							</label>
 							<input
-								type="text"
+								type="tel"
 								id="phone"
 								className="mt-1 p-1 border rounded-md"
 								value={editedPhone}
 								onChange={(e) => handleInputChange(e, "phone")}
+							/>
+						</div>
+						<div className="mb-4">
+							<label
+								htmlFor="password"
+								className="block text-sm font-medium text-gray-700"
+							>
+								Password
+							</label>
+							<input
+								type="password"
+								id="password"
+								className="mt-1 p-1 border rounded-md"
+								value={editedPassword}
+								onChange={(e) => handleInputChange(e, "password")}
 							/>
 						</div>
 						<div className="mb-4">
@@ -195,7 +212,7 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 						<div className="mb-4">
 							<label
 								htmlFor="image"
-								className="block text-sm font-medium text-gray-700"
+								className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
 							>
 								Image
 							</label>
@@ -204,7 +221,7 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 								id="image"
 								accept="image/*"
 								onChange={(e) => handleInputChange(e, "image")}
-								className="mt-1 p-1 border rounded-md"
+								className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
 							/>
 							{/* If there is an image preview, a thumbnail is displayed that can be clicked to view it full size */}
 							{imagePreview && (
@@ -229,7 +246,7 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({
 										<Image
 											src={
 												imagePreview !== null
-													? `/images/${imagePreview}`
+													? `/${imagePreview}`
 													: "/default-image.png"
 											} // Provide a default image
 											alt="Full size"
