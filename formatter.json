@@ -10,5 +10,10 @@
 		"formatter": {
 			"semicolons": "always"
 		}
+	},
+	"css": {
+		"formatter": {
+			"quoteStyle": "double"
+		}
 	}
 }

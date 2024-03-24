@@ -7,90 +7,95 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Staff {
-  id        Int             @id @default(autoincrement())
-  admin     Boolean         @default(false)
-  password  String?
-  firstName String?
-  lastName  String?
-  email     String          @unique
-  phone     String          @unique @db.VarChar(13)
-  image     String          @db.VarChar(255)
-  qrCode    String          @unique @db.VarChar(255)
-  history   bookHistory[]
-  borrowed  borrowedBooks[]
-  missing   missingBooks[]
-}
-
-model Student {
-  id        Int             @id @default(autoincrement())
-  password  String?
-  firstName String?
-  lastName  String?
-  email     String          @unique
-  phone     String          @unique @db.VarChar(13)
-  image     String          @db.VarChar(255)
-  qrCode    String          @unique @db.VarChar(255)
-  classroom String?
-  history   bookHistory[]
-  borrowed  borrowedBooks[]
-  missing   missingBooks[]
+model Administrative {
+  id             Int     @id
+  canEditLibrary Boolean
+  canEditUsers   Boolean
+  fullAcess      Boolean
+  Users          Users   @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "administrative_id_foreign")
 }
 
 model Book {
-  id         Int             @id @default(autoincrement())
-  bookImg    String          @db.VarChar(255)
-  title      String?         @db.VarChar(255)
-  author     String?
-  publishers String?
-  published  DateTime
-  regDate    DateTime        @default(now())
-  isbn       String
-  invNr      Int             @unique
-  price      Int
-  available  Boolean         @default(true)
-  history    bookHistory[]
-  borrowed   borrowedBooks[]
-  missing    missingBooks[]
+  id              Int            @id
+  bookImg         String         @db.VarChar(255)
+  title           String         @db.VarChar(255)
+  author          String         @db.VarChar(255)
+  publisher       String         @db.VarChar(255)
+  publishedDate   DateTime       @db.Date
+  regDate         DateTime       @db.Date
+  isbn            String         @db.VarChar(255)
+  inventoryNumber Int            @unique(map: "book_inventorynumber_unique")
+  price           Int
+  available       Boolean
+  isBorrowed      Boolean
+  isMissing       Boolean
+  bookHistory     bookHistory[]
+  borrowedBooks   borrowedBooks?
+  missingBooks    missingBooks?
 }
 
-model missingBooks {
-  id        Int      @id @default(autoincrement())
-  regDate   DateTime @default(now())
-  note      String   @db.VarChar(255)
-  bookId    Int?
-  staffId   Int?
-  studentId Int?
-  Book      Book?    @relation(fields: [bookId], references: [id])
-  Staff     Staff?   @relation(fields: [staffId], references: [id])
-  Student   Student? @relation(fields: [studentId], references: [id])
-}
-
-model borrowedBooks {
-  id        Int      @id @default(autoincrement())
-  regDate   DateTime @default(now())
-  note      String   @db.VarChar(255)
-  bookId    Int
-  staffId   Int?
-  studentId Int?
-  Book      Book     @relation(fields: [bookId], references: [id])
-  Staff     Staff?   @relation(fields: [staffId], references: [id])
-  Student   Student? @relation(fields: [studentId], references: [id])
+model Users {
+  id                                            Int             @id @default(autoincrement())
+  firstName                                     String          @db.VarChar(255)
+  lastName                                      String          @db.VarChar(255)
+  username                                      String          @db.VarChar(255) @unique
+  password                                      String          @db.VarChar(255)
+  email                                         String          @db.VarChar(255) @unique
+  phone                                         String          @db.VarChar(15) @unique
+  image                                         String          @db.VarChar(255)
+  qrCode                                        String          @db.VarChar(255)
+  isAdmin                                       Boolean
+  isStaff                                       Boolean
+  isStudent                                     Boolean
+  Administrative                                Administrative?
+  borrowedBooks_borrowedBooks_borrowedByToUsers borrowedBooks[] @relation("borrowedBooks_borrowedByToUsers")
+  borrowedBooks_borrowedBooks_borrowedToToUsers borrowedBooks[] @relation("borrowedBooks_borrowedToToUsers")
+  classRoom                                     classRoom?
 }
 
 model bookHistory {
-  id        Int      @id @default(autoincrement())
-  regDate   DateTime @default(now())
-  bookId    Int?
-  staffId   Int?
-  studentId Int?
-  Book      Book?    @relation(fields: [bookId], references: [id])
-  Staff     Staff?   @relation(fields: [staffId], references: [id])
-  Student   Student? @relation(fields: [studentId], references: [id])
+  id           Int      @id
+  regDate      DateTime @db.Date
+  bookId       Int
+  returnedDate Int
+  Book         Book     @relation(fields: [bookId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "bookhistory_bookid_foreign")
+
+  @@index([bookId], map: "bookhistory_bookid_index")
 }
 
-model food {
-  id       Int    @id @default(autoincrement())
-  name     String
-  usertype String
+model borrowedBooks {
+  id                                    Int      @id
+  borrowedDate                          DateTime @db.Date
+  note                                  String
+  bookId                                Int      @unique(map: "borrowedbooks_bookid_unique")
+  borrowedBy                            Int
+  borrowedTo                            Int
+  Book                                  Book     @relation(fields: [bookId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "borrowedbooks_bookid_foreign")
+  Users_borrowedBooks_borrowedByToUsers Users    @relation("borrowedBooks_borrowedByToUsers", fields: [borrowedBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "borrowedbooks_borrowedby_foreign")
+  Users_borrowedBooks_borrowedToToUsers Users    @relation("borrowedBooks_borrowedToToUsers", fields: [borrowedTo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "borrowedbooks_borrowedto_foreign")
+}
+
+model classRoom {
+  id           Int            @id
+  password     String         @db.VarChar(255)
+  firstName    String         @db.VarChar(255)
+  lastName     String         @db.VarChar(255)
+  email        String         @unique(map: "classroom_email_unique") @db.VarChar(255)
+  phone        String         @unique(map: "classroom_phone_unique") @db.VarChar(255)
+  image        String         @db.VarChar(255)
+  qrCode       String         @unique(map: "classroom_qrcode_unique") @db.VarChar(255)
+  classroom    String         @db.VarChar(255)
+  Users        Users          @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "classroom_id_foreign")
+  missingBooks missingBooks[]
+}
+
+model missingBooks {
+  id        Int       @id
+  regDate   DateTime  @db.Date
+  note      String
+  staffId   Int
+  studentId Int
+  bookId    Int       @unique(map: "missingbooks_bookid_unique")
+  Book      Book      @relation(fields: [bookId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "missingbooks_bookid_foreign")
+  classRoom classRoom @relation(fields: [studentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "missingbooks_studentid_foreign")
 }

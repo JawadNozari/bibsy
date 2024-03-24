@@ -2,7 +2,7 @@
 // TODO: Comment the code
 
 import { PrismaClient } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 // Function to handle GET requests
 export const GET = async () => {

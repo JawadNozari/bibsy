@@ -65,5 +65,7 @@
 			"bold": false,
 			"italic": false
 		}
-	]
+	],
+	"editor.defaultFormatter": "biomejs.biome",
+	"editor.formatOnSave": true
 }

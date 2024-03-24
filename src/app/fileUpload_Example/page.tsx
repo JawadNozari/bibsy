@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+
 export default function Home() {
 	const [file, setFile] = useState<File | undefined>(undefined);
 	const [message, setMessage] = useState<string | undefined>("");
@@ -14,13 +15,13 @@ export default function Home() {
 		}
 
 		await axios
-			.post("/api/upload", formData, {
+			.post("/api/utils/uploader", formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
 			})
 			.then((res) => {
-				setMessage(res.data.Message);
+				setMessage(res.data.path);
 			})
 			.catch(() => {
 				setMessage("There was a problem with the server");
