@@ -23,7 +23,7 @@ import { Command, Home, Users, Package, Settings, School } from "lucide-react";
 
 export default function Sidebar() {
 	const { data: session } = useSession();
-	
+
 	if (!session) {
 		return <></>;
 	}

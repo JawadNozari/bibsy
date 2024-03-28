@@ -1,7 +1,7 @@
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { getServerSession } from "next-auth";
-import SessionProvider from "../components/SessionProvider";
+import SessionProvider from "@/components/SessionProvider";
 
 import Sidebar from "../components/Sidebar";
 export default async function RootLayout({

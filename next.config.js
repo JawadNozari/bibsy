@@ -17,6 +17,8 @@ module.exports = {
 			"books.google.com",
 			"lh3.googleusercontent.com",
 			"ui-avatars.com",
+			"cloudflare-ipfs.com",
+			"avatars.githubusercontent.com",
 		],
 	},
 };

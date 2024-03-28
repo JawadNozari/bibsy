@@ -9,7 +9,7 @@ async function main() {
 	await prisma.users.createMany({
 		data: [
 			{
-				id: 1,
+			
 				firstName: "John",
 				lastName: "Doe",
 				username: "johndoe",
@@ -23,7 +23,7 @@ async function main() {
 				qrCode: "123456789",
 			},
 			{
-				id: 2,
+				
 				firstName: "Jane",
 				lastName: "Smith",
 				username: "janesmith",

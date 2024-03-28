@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 const prisma = new PrismaClient();
 
 // This way you can use the same function to fetch both staff and student users
-const fetchUsers = async () => {
+const fetchUsersList = async () => {
 	// This way you can use the same function to fetch both staff and student users
 	try {
 		const users = await prisma.users.findMany({});
@@ -35,9 +35,8 @@ const findUser = async (id: number) => {
 export const GET = async () => {
 	try {
 		// Fetch staff and student users
-		const sUsers = await fetchUsers(); // Fetch staff users
-
-		const data = { sUsers: sUsers }; // Combine the data
+		const Users = await fetchUsersList(); // Fetch staff users
+		const data = { Users: Users }; // Combine the data
 		return NextResponse.json(data);
 	} catch (error) {
 		// If there is an error, return the error

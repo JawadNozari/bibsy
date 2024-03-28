@@ -7,7 +7,7 @@ import {
 	Users,
 } from "lucide-react";
 
-export const dashboardConfig = {
+const dashboardConfig = {
 	sidebarNav: [
 		{
 			title: "Books",
@@ -36,7 +36,7 @@ export const dashboardConfig = {
 		},
 		{
 			title: "User List",
-			href: "/Admin/depricated//UserList",
+			href: "/Admin/UserList",
 			icon: <Users />,
 		},
 		{
