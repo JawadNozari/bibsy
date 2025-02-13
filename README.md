@@ -1,34 +1,37 @@
 # Bibsy
 
-🎋 **Intro:**
-
-Short description of what this project is about. It could be 1–2 sentences.
-
-📦 **Tech Stack:**
-
-List the main technologies you used. For small, extra packages, there is no need to write them down.
-
-👩🏽‍🍳 **Features:**
-
-Describe what your project can do, like what the user can do. Include all features, every little detail matters.
-
-💭 **Process:**
-
-Describe how you started, what the experience was like, whether you struggled with anything, and include conclusions and other relevant details.
-
-📚 **Learnings:**
-
-It’s always good to note what you’ve learned, as that shows the project was a valuable endeavor. Building = learning.
-
-✨ **Improvement:**
-
-Nothing is perfect. Write down what could have been improved.
-
 🚦 **Running the Project:**
 
-If someone clones it, explain how they can run the project, which command lines need to be run, etc.
+Create a PostgreSQL database and add its URL to the .env file at the root of the project.
+DATABASE_URL=LINK_TO_YOUR_DATABASE
 
-📸 **Video or Image:**
+Using [Bun](https://bun.sh/) for package management is recommended due to its speed and modern features. If you prefer, you can use [Yarn](https://yarnpkg.com/) as an alternative.
 
-It’s always beneficial to showcase. Give them the result now instead of having them go to a website and then look for it.🎋 Intro:
-Short description of what this project is about. It could be 1–2 sentences.
+### Install Dependencies
+
+#### Using Bun (Recommended):
+```sh
+bun install
+```
+
+#### Using Yarn:
+```sh
+yarn install
+```
+
+### Running the Project
+
+#### With Bun:
+```sh
+bun run dev
+```
+
+#### With Yarn:
+```sh
+yarn dev
+```
+
+### Environment Setup
+Create a PostgreSQL database and add its URL to the `.env` file at the root of the project.
+```env
+DATABASE_URL=LINK_TO_YOUR_DATABASE
