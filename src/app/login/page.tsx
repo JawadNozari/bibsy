@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState, FormEvent, ChangeEvent, Suspense, useEffect } from "react";
+import { useState, type FormEvent, type ChangeEvent, Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 import axios from "axios";
